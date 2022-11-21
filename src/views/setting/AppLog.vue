@@ -302,7 +302,6 @@ export default {
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -516,7 +515,6 @@ export default {
   async getRecipientData() {
     let uri = '';
     let addrCd = ''
-    console.log(this.sggCd.startsWith('0', 4))
     if(this.selectedSidoItems != '' && this.selectedSggItems == ''){
         addrCd = this.sidoCd.substring(0,2)
       }else if(this.selectedSggItems != ''){ 
@@ -528,14 +526,12 @@ export default {
       }else{
         addrCd = ''
       }
-      console.log(this.sggCd)
         uri = this.$store.state.serverApi
         +"/admin/gateways/firmware/targetlist?pageIndex=1&recordCountPerPage=500"
         +"&addrCd="+addrCd
         +"&orgId="+this.selectedOrgItems
         +"&recipientNm="+this.filterName
         +"&updateVersion=applog"
-    console.log(uri)
     await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(response => {
           this.recipientItems = response.data.data
@@ -556,9 +552,7 @@ export default {
       this.saveChangeData = ''
       return false
     }
-    console.log(this.recipientItems[this.saveChangeData])
     let uri = this.$store.state.serverApi+`/admin/logs/applog/requestAppLog?recipientId=${this.recipientItems[this.saveChangeData].recipientId}&userId=${this.$store.state.userId}`
-    console.log(uri)
     await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(response => {
           let tmpArr = response.data.data
@@ -581,7 +575,6 @@ export default {
         });
   },
   async equestAppLogPopup(){
-    console.log(this.saveChangeData)
     if(this.saveChangeData === '' || this.saveChangeData === null || this.saveChangeData === undefined){
       alert("로그수집 대상자를 선택해 주세요")
       return false
@@ -590,10 +583,7 @@ export default {
     
   },
   async requestRecordReset(index){
-    console.log(index)
-    console.log(this.recipientItems[index])
     this.recordNm = this.recipientItems[index].recipientNm
-    console.log(this.recordNm)
     let url  = this.$store.state.serverApi + `/admin/logs/applog/logFileList?recipientId=${this.recipientItems[index].recipientId}`
     await axios.get(url,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
     .then(res => {
@@ -621,9 +611,7 @@ export default {
     return tmp2.diff(tmp1, 'years');
   },
   fileUrl(index){
-    console.log(index)
     let FilesUrl = this.$store.state.serverApi+'/files/applogs/'+index
-    console.log(FilesUrl)
     return FilesUrl
   },
   fileSizeChange(input){
@@ -634,9 +622,6 @@ export default {
   getMask(birthday){
       let res = ''
       birthday = birthday.replace(/[^0-9]/g, '')
-      console.log(birthday.substring(0,4))
-      console.log(birthday.substring(5,7))
-      console.log(birthday.substring(8,10))
       if(birthday.length <5){
         res = birthday
       }else{

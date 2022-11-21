@@ -305,7 +305,8 @@ export default {
         cBirthday:'', cAddr: '', NCount: 0,
         selectedSidoItems:'', selectedSggItems:'', selectedOrgItems:'', selectedRecipientNm: '',
         errorpopup1: false, errorpopup2: false, asRequestData: null,popCheck:false,
-        equipTypeList:[{value:'', label:'전체'},{value:'EQP001', label:'게이트웨이'},{value:'EQP002', label:'태블릿'},{value:'EQP003', label:'센서'}], selectedEquipType:'',
+        equipTypeList:[{value:'', label:'전체'},{value:'EQP001', label:'게이트웨이'},{value:'EQP002', label:'태블릿'},{value:'EQP003', label:'응급호출기'},
+        {value:'EQP004', label:'활동감지기'},{value:'EQP005', label:'화재감지기'},{value:'EQP006', label:'출입문감지기'},{value:'EQP007', label:'생활안심센서'},], selectedEquipType:'',
         checkStartDate:moment().subtract(6,'days').format('YYYY-MM-DD'),
         checkEndDate:moment().format('YYYY-MM-DD'),
       }
@@ -372,7 +373,6 @@ export default {
           });
           
           this.sggItems = [...tmpResult2,...tmpResult]
-          console.log(this.sggItems )
         })
         .catch(error => {
           this.errorMessage = error.message;
@@ -444,7 +444,6 @@ export default {
           .then(response => {
             this.recipientItems = response.data.data
             this.NCount = this.recipientItems.length
-            console.log(uri)
           })
           .catch(error => {
             this.errorMessage = error.message;
@@ -460,7 +459,6 @@ export default {
       }
     },
     onChangeSido(event){
-      console.log("====onChangeSido($event) execution")
       this.getSggData()
       this.orgSido = event.target.value;
     },
@@ -480,7 +478,6 @@ export default {
       return tmp2.diff(tmp1, 'years');
     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
@@ -511,7 +508,11 @@ export default {
       switch (input){
           case "EQP001" : result='게이트웨이'; break;
           case "EQP002" : result='태블릿'; break;
-          case "EQP003" : result='센서'; break;
+          case "EQP003" : result='응급호출기'; break;
+          case "EQP004" : result='활동감지기'; break;
+          case "EQP005" : result='화재감지기'; break;
+          case "EQP006" : result='출입문감지기'; break;
+          case "EQP007" : result='생활안심센서'; break;
         }
         return result
     },
@@ -538,8 +539,6 @@ export default {
             await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
                 this.asRequestData = res.data.data
-                console.log("as 요청")
-                console.log(this.asRequestData)
             })
             .catch(error => {
                 console.log("fail to load")

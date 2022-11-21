@@ -382,8 +382,6 @@ export default {
       }
     },
     reset(index){
-      console.log(index)
-      console.log(this.recipientItems[index])
       this.radioCheck = this.recipientItems[index].numberAreaString
       this.numberFire = this.recipientItems[index].numberFire
       this.numberEmg = this.recipientItems[index].numberEmg
@@ -400,8 +398,6 @@ export default {
         return;
       }
       let tmpSaveData = this.recipientItems[this.saveChangeData]
-      console.log(this.saveChangeData)
-      console.log(this.recipientItems[this.saveChangeData])
       let tmpObjectData = {
         areaNumberId: this.recipientItems[this.saveChangeData].areaNumberId , 
         firstZip: this.recipientItems[this.saveChangeData].firstZip ,
@@ -417,7 +413,6 @@ export default {
       tmpObjectData.numberEmg = this.numberEmg
       tmpObjectData.firstZip = this.firstZip
       tmpObjectData.lastZip = this.lastZip
-      console.log(tmpObjectData)
 
       const url = this.$store.state.serverApi+`/admin/ippbx/update.do?areaNumberId=${this.recipientItems[this.saveChangeData].areaNumberId}
       &firstZip=${this.firstZip}

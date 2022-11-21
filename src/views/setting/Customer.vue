@@ -700,13 +700,11 @@ export default {
           (page - 1) * this.limit,
           page * this.limit
         )
-        console.log(this.listData)
         this.page = page
         this.pageDataSetting(this.total, this.limit, this.block, page)
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -784,7 +782,6 @@ export default {
           });
           
           this.sggItems = [...tmpResult2,...tmpResult]
-          console.log(this.sggItems)
           this.chargeRegionItems = [...tmpResult2,...tmpResult]
           this.autoUpdateSgg()
         })
@@ -898,7 +895,6 @@ export default {
       if(typeof event === 'object'){
         this.sidoCd = event.target.value
       }else if(typeof event === 'string'){
-      console.log(event)
       address = event.split(' ')
       let address1 = address[0]
       if(address1 === '서울'){
@@ -1050,7 +1046,6 @@ export default {
         alert("전화번호는 세자리 이상을 입력해 주세요")
         return false;
       }
-      console.log(this.selectedUpdateBirthday.length)
       if(this.selectedUpdateBirthday.substring(0,4) < '1000' || this.selectedUpdateBirthday.substring(0,4) > this.e_date.substring(0,4) ||
       this.selectedUpdateBirthday.substring(5,7) > '12' || this.selectedUpdateBirthday.substring(5,7) === '00' ||
       this.selectedUpdateBirthday.substring(8,10) > '31' || this.selectedUpdateBirthday.substring(8,10) === '00' || this.selectedUpdateBirthday.length < 10){
@@ -1081,7 +1076,6 @@ export default {
         regId:this.$store.state.userId,
         deptNm:this.selectedUpdateDeptNm,
       }
-      console.log(data)
         let url = this.$store.state.serverApi+`/admin/users`
         await axios.post(url,data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
@@ -1105,7 +1099,6 @@ export default {
     async detailCuspopup(index){
       this.detailArr=this.userItems[index]
       this.selectUserData = this.userItems[index]
-      console.log(this.detailArr)
       let url =this.$store.state.serverApi + "/admin/address/sgg";
       await axios.get(url, {headers: {"Authorization": sessionStorage.getItem("token")}})
         .then(response => {
@@ -1129,7 +1122,6 @@ export default {
       this.DetailTypeCd = this.userTypeItems.filter(cd=>{
         return cd.value === detailtyppe
       })
-      console.log(this.DetailTypeCd)
       this.selectedDetailSidoItems = this.detailArr.sido
       this.selectedDetailSggItems = this.detailArr.sgg
       this.selectedDetailOrgItems = this.detailArr.orgNm
@@ -1168,7 +1160,6 @@ export default {
       await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             this.checkUserItems = res.data.data
-            console.log(this.checkUserItems)
           })
           .catch(error => {
             console.log("fail to load")
@@ -1179,7 +1170,6 @@ export default {
           this.userId = this.checkUserItems.filter(cd=>{
             return cd.userId === this.selectedUpdateUserId
           })
-          console.log(this.userId2)
           if(this.userId[0]){ 
             alert("이미 등록된 아이디 입니다.")
             return this.checkUserId = 'None'
@@ -1232,13 +1222,9 @@ export default {
             this.errorMessage = error.message;
             console.error("There was an error!", error);
           });
-          console.log(this.checkEmailItems)
-          console.log(this.selectedUpdateEmail)
           this.useremail = this.checkEmailItems.filter(cd=>{
             return cd.email === this.selectedUpdateEmail
           })
-          console.log(this.useremail)
-          console.log(this.selectedUpdateEmail)
           if(this.useremail[0]){
             alert("이미 등록된 이메일 입니다.")
             return this.checkemaildata = 'None'
@@ -1277,7 +1263,6 @@ export default {
     },
     // 사용자 정보 수정 시 상세 정보 값 띄우기 및 일부 초기화
     changeFormat(){
-      console.log(this.selectUserData)
       this.selectedChangeUserId = this.selectUserData.userId
       this.selectedChangeUserNm = this.selectUserData.userNm
       this.selectedChangePassword = ''
@@ -1391,7 +1376,6 @@ export default {
         regId:this.$store.state.userId,
         deptNm:this.selectedChangeDeptNm,
       }
-      console.log(data)
 
         let url = this.$store.state.serverApi+`/admin/users/${this.selectedChangeUserId}`
         axios.post(url,data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
@@ -1415,7 +1399,6 @@ export default {
     },
     // 사용자 정보 삭제
     async deleteCusSuccess(){
-      console.log(this.selectedDetailUserId)
       let url = this.$store.state.serverApi+`/admin/users/${this.selectedDetailUserId}`
       await axios.delete(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
            .then(res => {
@@ -1494,15 +1477,12 @@ export default {
     },
     getMask(birthday){
       let res = ''
-      console.log("this ok")
       // if(!birthday){
       //   return birthday
       // } 
       birthday = birthday.replace(/[^0-9]/g, '')
-      console.log(birthday[0])
       if(birthday.length <5){
         res = birthday
-        console.log("this ok 2")
       }else{
         if(birthday.length < 7){
           res = birthday.substring(0,4) + '-' + birthday.substring(4)
@@ -1514,10 +1494,7 @@ export default {
     },
     getBirthdayMask(input){
       let res = this.getMask(input)
-      console.log(res)
-      console.log(input)
       this.selectedUpdateBirthday = res
-      console.log(this.selectedUpdateBirthday.substring(8,10))
       this.selectedChangeBirthday = res
     },
     // inputBirthday(check){
@@ -1669,7 +1646,6 @@ export default {
       })
       this.selectedUpdateSggItems = UpdateAutoSgg[0].value
       this.selectedChangeSggItems = ChangeAutoSgg[0].value
-      console.log(this.selectedChangeSggItems)
     },
     },
     mounted(){

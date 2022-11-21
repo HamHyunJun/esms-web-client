@@ -260,13 +260,11 @@ export default {
           (page - 1) * this.limit,
           page * this.limit
         )
-        console.log(this.listData)
         this.page = page
         this.pageDataSetting(this.total, this.limit, this.block, page)
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -432,18 +430,12 @@ export default {
       this.getData(input,input2,input3)
     },
      async getData(input,input2,input3) {  
-      console.log(input)
-      console.log(input2)
-      console.log(input3)
       let code = input ? input : input2 ? input2 : input3
       switch (code){
           case 1 : this.equipList2="gateway"; break;
           case 2 : this.equipList2="tablet"; break;
           case 3 : this.equipList2="sensor"; break;
       }
-      console.log(this.code1)
-      console.log(this.code2)
-      console.log(this.code3)
       let uri = '';
       let addrCode = '';
       if(this.selectedSidoItems != '' && this.selectedSggItems == ''){
@@ -480,7 +472,6 @@ export default {
         +"&sensorTypeCd="+this.selectedTypeItems
         +"&stateCd="+this.selectedStatedItems
       }
-      console.log(uri)
       await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(response => {
             this.recipientItems = response.data.data

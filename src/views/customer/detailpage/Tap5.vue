@@ -144,7 +144,7 @@
                                         </div>
                                     </td>
                                     <td v-else></td>
-                                    <td>{{item.sensorTypeNm}}</td>
+                                    <td>{{sensorNmChange(item.sensorTypeNm)}}</td>
                                     <!-- {{getCSensorsData[sensorsDetect]}} 이렇게 뽑아서 쓰면 된단말 -->
                                     <td> {{locationCode(item.sensorLocCd)}}</td>
                                     <td>{{item.macAddr}}</td>
@@ -243,7 +243,7 @@
                                             <label :for="`radio2_${index}`" class="chk"><i class="ico_chk"></i></label>
                                         </div>
                                     </td>
-                                    <td>{{item.sensorTypeNm}}</td>
+                                    <td>{{sensorNmChange(item.sensorTypeNm)}}</td>
                                     <td>{{locationCode(item.sensorLocCd)}}</td>
                                     <td>{{item.macAddr}}</td>
                                     <td >
@@ -316,7 +316,16 @@ import axios from "axios";
         
         
     },
-    
+    sensorNmChange(input){
+        let result = input
+        switch(input){
+            case "응급버튼" : result='응급호출기'; break;
+            case "활동감지" : result='활동감지기'; break;
+            case "도어감지" : result='출입문감지기'; break;
+            case "화재감지" : result='화재감지기'; break;
+        }
+        return result
+     },
     msChange(code,input){
         let result = 0
         switch (code){

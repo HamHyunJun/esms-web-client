@@ -159,7 +159,7 @@
                                     <td>{{item.macAddr}}</td>
                                     <td>{{codeChange(item.eventCd)}}</td>
                                     <td>{{item.occurDtime}}</td>
-                                    <td>{{item.regDtime}}</td>
+                                    <td>{{item.occurDtime}}</td>
                                     
                                 </tr>                                
                             </tbody>
@@ -234,7 +234,6 @@ export default {
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -315,7 +314,6 @@ export default {
     getOrgmData() {
       this.selectedOrgItems = ''
       let sggCode = ''
-      console.log(this.selectedOrgItems)
       let url =this.$store.state.serverApi + "/admin/organizations";
       if(this.sggCd != ''){
         if(this.sggCd.startsWith('0', 4) === true){
@@ -377,13 +375,10 @@ export default {
       +"&occurStartDate="+occurStartDate
       +"&occurEndDate="+occurEndDate;
       }
-      console.log(uri)
-      console.log(this.selectedEventItems)
       axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(response => {
             this.recipientItems = response.data.data
             this.NCount = response.data.totalCount
-            console.log(this.NCount)
             this.total = this.NCount
         //     if(this.searchCheck1 === 1){
         //     this.searchCheck1 = 0
@@ -449,7 +444,6 @@ export default {
         return result
     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;

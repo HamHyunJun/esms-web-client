@@ -43,10 +43,10 @@
               <col style="width:13%;">
               <col style="width:13%">
               <col style="width:15%;">
-              <col style="width:8%;" v-if="equipList === 'sensor'">
+              <col style="width:10%;" v-if="equipList === 'sensor'">
               <col style="width:8%;">
               <col style="width:12%;">
-              <col style="width:18%;">
+              <col style="width:15%;">
             </colgroup>
             <thead>
               <th scope="row">시/도</th>
@@ -181,7 +181,7 @@
                   <td>{{item.relationNm}}</td> <!--응급관리요원-->
                   <td>{{changeRecipientPhoneno(item.relationPhone)}}</td> <!--응급관리요원 전화번호-->
                   <td>{{equipList2 === 'sensor'? '센서' : item.equipTypeName}}</td> <!--장비구분-->
-                  <td v-if="equipList2 === 'sensor'">{{item.equipTypeName}}</td> <!--센서타입-->
+                  <td v-if="equipList2 === 'sensor'">{{sensorNmChange(item.equipTypeName)}}</td> <!--센서타입-->
                   <td>{{item.checkTypeName}}</td> <!--점검구분-->
                   <td>{{item.stateMeasureDtime}}</td> <!--상태측정일시-->
                   <td>{{item.updDtime}}</td> <!--서버보고일시-->
@@ -259,13 +259,11 @@ export default {
           (page - 1) * this.limit,
           page * this.limit
         )
-        console.log(this.listData)
         this.page = page
         this.pageDataSetting(this.total, this.limit, this.block, page)
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -431,8 +429,17 @@ export default {
       let tmp2 = this.$moment()
       return tmp2.diff(tmp1, 'years');
     },
+    sensorNmChange(input){
+        let result = input
+        switch(input){
+            case "응급버튼" : result='응급호출기'; break;
+            case "활동감지" : result='활동감지기'; break;
+            case "도어감지" : result='출입문감지기'; break;
+            case "화재감지" : result='화재감지기'; break;
+        }
+        return result
+     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
@@ -534,6 +541,17 @@ export default {
                 value: response.data.data[i].cmmnCd
               });
             }  
+            for(let i=0; i<this.sensorItems.length; i++){
+              if(this.sensorItems[i].label === '응급버튼'){
+                this.sensorItems[i].label = '응급호출기'
+              }else if(this.sensorItems[i].label === '활동감지'){
+                this.sensorItems[i].label = '활동감지기'
+              }else if(this.sensorItems[i].label === '화재감지'){
+                this.sensorItems[i].label = '화재감지기'
+              }else if(this.sensorItems[i].label === '도어감지'){
+                this.sensorItems[i].label = '출입문감지기'
+              }
+            }
           })
           .catch(error => {
             this.errorMessage = error.message;

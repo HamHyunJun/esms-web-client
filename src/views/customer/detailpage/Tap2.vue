@@ -82,15 +82,21 @@
                             <tbody>
                                 <tr v-for="(item,index) in listData" v-bind:key="index">
                                     <td>{{num(index+1)}}</td>
-                                    <td>{{item.typeNm}}</td>
+                                    <td>{{sensorNmChange(item.typeNm)}}</td>
                                     <td>{{item.macAddr}}</td>
                                     <td>{{item.signalStateNm}}</td>
                                     <td>{{!item.testYn ? '실제상황':'테스트'}}</td> 
-                                    <td>{{item.occurDtime}}</td>
+                                    <!-- <td>{{item.occurDtime}}</td> //원본
                                     <td>{{item.rcvDtime}}</td>
                                     <td v-if="item.signalStateCd !== 'STE001'">{{item.closeDtime}}</td>
                                     <td v-else></td>
                                     <td v-if="item.signalStateCd !== 'STE001'">{{item.updDtime}}</td>
+                                    <td v-else></td> -->
+                                    <td>{{item.occurDtime}}</td>
+                                    <td>{{item.occurDtime}}</td>
+                                    <td v-if="item.signalStateCd !== 'STE001'">{{item.closeDtime}}</td>
+                                    <td v-else></td>
+                                    <td v-if="item.signalStateCd !== 'STE001'">{{item.closeDtime}}</td>
                                     <td v-else></td>
                                 </tr>   
                                 
@@ -225,7 +231,14 @@ import pagination from "../../pages/pagination.vue"
           });
           
     },
-    
+    sensorNmChange(input){
+        let result = input
+        switch(input){
+            case "응급버튼" : result='응급호출기'; break;
+            case "화재감지" : result='화재감지기'; break;
+        }
+        return result
+     },
 
    },
    created() {

@@ -183,7 +183,7 @@
                                   <td>{{item.relationNm}}</td> <!--응급관리요원-->
                                   <td>{{changeRecipientPhoneno(item.relationPhone)}}</td> <!--응급관리요원 전화번호-->
                                   <td>센서</td> <!--장비구분-->
-                                  <td>{{item.equipTypeName}}</td> <!--센서타입-->
+                                  <td>{{sensorNmChange(item.equipTypeName)}}</td> <!--센서타입-->
                                   <td>{{item.serialNo}}</td> <!--시리얼번호-->
                                   <td>{{item.macAddr}}</td> <!--MAC Address-->
                                   <td>{{item.stateNm}}</td> <!--상태구분-->
@@ -260,13 +260,11 @@ export default {
           (page - 1) * this.limit,
           page * this.limit
         )
-        console.log(this.listData)
         this.page = page
         this.pageDataSetting(this.total, this.limit, this.block, page)
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -423,6 +421,16 @@ export default {
       this.sggCd = event.target.value
       this.getOrgmData()
     },
+    sensorNmChange(input){
+        let result = input
+        switch(input){
+            case "응급버튼" : result='응급호출기'; break;
+            case "활동감지" : result='활동감지기'; break;
+            case "도어감지" : result='출입문감지기'; break;
+            case "화재감지" : result='화재감지기'; break;
+        }
+        return result
+     },
     makeAge(birthDay){
       let tmp1 = this.$moment(birthDay).format('YYYY')
       let tmp2 = this.$moment()
@@ -432,18 +440,12 @@ export default {
       this.getData(input,input2,input3)
     },
      async getData(input,input2,input3) {  
-      console.log(input)
-      console.log(input2)
-      console.log(input3)
       let code = input ? input : input2 ? input2 : input3
       switch (code){
           case 1 : this.equipList2="gateway"; break;
           case 2 : this.equipList2="tablet"; break;
           case 3 : this.equipList2="sensor"; break;
       }
-      console.log(this.code1)
-      console.log(this.code2)
-      console.log(this.code3)
       let uri = '';
       let addrCode = '';
       if(this.selectedSidoItems != '' && this.selectedSggItems == ''){
@@ -480,7 +482,6 @@ export default {
         +"&sensorTypeCd="+this.selectedTypeItems
         +"&stateCd="+this.selectedStatedItems
       }
-      console.log(uri)
       await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(response => {
             this.recipientItems = response.data.data
@@ -505,7 +506,18 @@ export default {
                 label: response.data.data[i].cmmnCdNm,
                 value: response.data.data[i].cmmnCd
               });
-            }  
+            }
+            for(let i=0; i<this.sensorItems.length; i++){
+              if(this.sensorItems[i].label==='응급버튼'){
+                this.sensorItems[i].label='응급호출기'
+              }else if(this.sensorItems[i].label==='활동감지'){
+                this.sensorItems[i].label='활동감지기'
+              }else if(this.sensorItems[i].label==='화재감지'){
+                this.sensorItems[i].label='화재감지기'
+              }else if(this.sensorItems[i].label==='도어감지'){
+                this.sensorItems[i].label='출입문감지기'
+              }
+            }
           })
           .catch(error => {
             this.errorMessage = error.message;

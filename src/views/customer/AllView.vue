@@ -239,6 +239,7 @@
                     <col style="width:8%">
                     <col style="width:15%">
                     <col style="width:15%">
+                    <col style="width:15%">
                     <col style="width:20%">
                     <col style="width:auto;">
                 </colgroup>
@@ -248,6 +249,7 @@
                     <th scope="row">관리기관</th>
                     <th scope="row">성별</th>
                     <th scope="row">구분</th>
+                    <th scope="row">바이오센서</th>
                     <th scope="row">상태</th>
                     <th scope="row">대상자명</th>
                     
@@ -280,6 +282,11 @@
                         </select>
                       </td>
                       <td>
+                        <select v-model="selectedRadorSensorYn">
+                          <option v-for="(rador, index) in radorSensorItems" :value="rador.value" v-bind:key="index">{{rador.label}}</option>
+                        </select>
+                      </td>
+                      <td>
                         <select v-model="selectedUserState">
                           <option v-for="(state, index) in statusItems" :value="state.value" v-bind:key="index">{{state.label}}</option>
                         </select>
@@ -307,18 +314,20 @@
         <div class="list result">
             <table>
                 <colgroup>
-                    <col style="width:5%;">
+                    <col style="width:3%;">
                     <col style="width:5%;">
                     <col style="width:8%;">
                     <col style="width:4%;">
                     <col style="width:4%;">
-                    <col style="width:10%;"><!--전번-->
-                    <col style="width:8%;">
-                    <col style="width:8%;">
+                    <col style="width:8%;"><!--전번-->
+                    <col style="width:6%;">
+                    <col style="width:6%;">
+                    <col style="width:6%;">
                     <col style="width:auto;">
                     <col style="width:8%;">
-                    <col style="width:8%;">
-                    <col style="width:8%;"><!--등록시간-->
+                    <col style="width:6%;">
+                    <col style="width:6%;">
+                    <col style="width:6%;"><!--등록시간-->
                 </colgroup>
                 <thead>
                     <tr>
@@ -329,29 +338,33 @@
                         <th scope="col">성별<a href="#"><img @click="sortList(5)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
                         <th scope="col">전화번호<a href="#"><img @click="sortList(6)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
                         <th scope="col">구분<a href="#"><img @click="sortList(7)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
-                        <th scope="col">상태<a href="#"><img @click="sortList(8)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
-                        <th scope="col">주소<a href="#"><img @click="sortList(9)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
-                        <th scope="col">관리기관<a href="#"><img @click="sortList(10)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
-                        <th scope="col">생활관리사<a href="#"><img @click="sortList(11)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
-                        <th scope="col">등록일자<a href="#"><img @click="sortList(12)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
+                        <th scope="col">바이오센서<a href="#"><img @click="sortList(8)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
+                        <th scope="col">상태<a href="#"><img @click="sortList(9)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
+                        <th scope="col">주소<a href="#"><img @click="sortList(10)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
+                        <th scope="col">관리기관<a href="#"><img @click="sortList(11)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
+                        <th scope="col">생활관리사<a href="#"><img @click="sortList(12)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
+                        <th scope="col">설치일시<a href="#"><img @click="sortList(13)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
+                        <th scope="col">등록일자<a href="#"><img @click="sortList(14)" src = "@/assets/images/sortArrow.png" style="width: 18px; height: 50%"/></a></th>
                     </tr>
                 </thead>
             </table>
             <div class="tbody">
                 <table>
                     <colgroup>
-                        <col style="width:5%;">
+                        <col style="width:3%;">
                         <col style="width:5%;">
                         <col style="width:8%;">
                         <col style="width:4%;">
                         <col style="width:4%;">
-                        <col style="width:10%;"><!--전번-->
-                        <col style="width:8%;">
-                        <col style="width:8%;">
+                        <col style="width:8%;"><!--전번-->
+                        <col style="width:6%;">
+                        <col style="width:6%;">
+                        <col style="width:6%;">
                         <col style="width:auto;">
                         <col style="width:8%;">
-                        <col style="width:8%;">
-                        <col style="width:8%;"><!--등록시간-->
+                        <col style="width:6%;">
+                        <col style="width:6%;">
+                        <col style="width:6%;"><!--등록시간-->
                     </colgroup>
                     <tbody>
                         <tr v-for="(item,index) in recipientItems" v-bind:key="index" >
@@ -367,11 +380,13 @@
                             <td><a href="#" @click="goToDetailView(item.recipientId)">{{item.sex==="M"?'남':'여'}}</a></td>
                             <td><a href="#" @click="goToDetailView(item.recipientId)">{{changeRecipientPhoneno(item.recipientPhoneno)}}</a></td>
                             <td><a href="#" @click="goToDetailView(item.recipientId)">{{item.typeNm}}</a></td>
+                            <td><a href="#" @click="goToDetailView(item.recipientId)">{{item.radorSensorYn==="Y"?'사용':'미사용'}}</a></td>
                             <td><a href="#" @click="goToDetailView(item.recipientId)">{{item.stateNm}}</a></td>
                             <td style="text-align: left;" v-if="item.addr.length < 55"><a href="#" style="margin-right:10px;" @click="goToDetailView(item.recipientId)">{{item.addr}}</a></td>
                             <td style="text-align: left;" v-else><a href="#" style="margin-right:10px;" @click="goToDetailView(item.recipientId)">{{item.addr.substring(0,55)+"..."}}</a></td>
                             <td style="text-align: left;"><a href="#" @click="goToDetailView(item.recipientId)">{{item.orgNm}}</a></td>
                             <td><a href="#" @click="goToDetailView(item.recipientId)">{{item.managerNm}}</a></td>
+                            <td><a href="#" @click="goToDetailView(item.recipientId)">{{!item.installDtime? item.updDtime : item.installDtime}}</a></td>
                             <td><a href="#" @click="goToDetailView(item.recipientId)">{{$moment(item.regDtime).format('YYYY-MM-DD')}}</a></td>
                         </tr>
                     </tbody>
@@ -624,7 +639,7 @@ export default {
       counter: 0,pageIndex: 1,
       orgmItems: [], orgmItems2: [], partItems: [], statusItems: [], statusItems2: [], cycleItems: [], sexItems:[{label:'전체', value:''},{label: '남', value: 'M'}, {label: '여', value: 'F'}],
       orgCode: '', partCode: '', statusCode: '', sexCode: '', cycleCode: '',
-      modelOrg: '', modelPart: '', modelStatus: '', modelName: '', TypeItems:[], TypeItems2:[],
+      modelOrg: '', modelPart: '', modelStatus: '', modelName: '', TypeItems:[], TypeItems2:[], radorSensorItems:[{label:'전체', value:''},{label:'사용', value:'Y'},{label:'미사용', value:'N'}],
       orgNm:'',orgId:'', sido:'', sidoCd:'', sgg:'', sggCd:'', s_date: '', e_date: '',
       sidoItems:[], sidoItems2:[], sggItems:[], sggItems2:[], sggItems3:[],  actItems:[], recipientItems:[],recipientOrginItems:[], orgSido:'', orgSgg:'', filterName:'', modalOpen:false, changeOpen:false,
       recipientFields: [
@@ -644,7 +659,7 @@ export default {
       ],
       addCustomer: false, fileUpload: false,selectedUpdateSggItems:null,
       //대상자 조회
-      selectedSidoItems:null, selectedSggItems:null, selectedOrgItems:null, selectedUserSex:null, selectedUserType:null, selectedUserState:null,
+      selectedSidoItems:null, selectedSggItems:null, selectedOrgItems:null, selectedUserSex:null, selectedUserType:null, selectedUserState:null, selectedRadorSensorYn:null,
 
       //대상자 등록
       selectedUpdateZipCode:'', selectedUpdateAddr:'', selectedUpdateAddrDetail:'', selectedUpdateBirthday:'', selectedUpdateRecipient:'',
@@ -697,7 +712,6 @@ export default {
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -726,6 +740,7 @@ export default {
     getSidoData() {
       this.selectedSidoItems = ''
       this.selectedUserSex = ''
+      this.selectedRadorSensorYn = ''
     axios.get(this.$store.state.serverApi + "/admin/address/sido", {headers: {"Authorization": sessionStorage.getItem("token")}})
           .then(response => {
             this.sidoItems=[];
@@ -978,7 +993,6 @@ export default {
   getRecipientData() {
     let uri = '';
     let addrCd = ''
-    console.log(this.sggCd.startsWith('0', 4))
     if(this.selectedSidoItems != '' && this.selectedSggItems == ''){
         addrCd = this.sidoCd.substring(0,2)
       }else if(this.selectedSggItems != ''){ 
@@ -990,8 +1004,7 @@ export default {
       }else{
         addrCd = ''
       }
-      console.log(this.sggCd)
-    if(this.selectedOrgItems == '' && this.filterName == ''&& this.selectedSidoItems == ''&& this.selectedSggItems == '' && this.selectedUserType =='' && this.selectedUserState =='' && this.selectedUserSex ==''){
+    if(this.selectedOrgItems == '' && this.filterName == ''&& this.selectedSidoItems == ''&& this.selectedSggItems == '' && this.selectedUserType =='' && this.selectedUserState =='' && this.selectedUserSex =='' && this.selectedRadorSensorYn == ''){
       uri = this.$store.state.serverApi + "/admin/recipients?pageIndex="+this.page+"&recordCountPerPage=30"
     } else {
       uri = this.$store.state.serverApi + "/admin/recipients?pageIndex="+this.page+"&recordCountPerPage=30";
@@ -1001,6 +1014,7 @@ export default {
       if(this.selectedOrgItems != '') uri += "&orgId=" + this.selectedOrgItems;
       if(this.filterName != '') uri += "&recipientNm=" + this.filterName;
       if(this.selectedUserSex != '') uri += "&sex=" + this.selectedUserSex
+      if(this.selectedRadorSensorYn != '') uri += "&radorSensorYn=" + this.selectedRadorSensorYn
 
       // var fIdx = uri.indexOf("&", 0);
       // var uriArray = uri.split('');
@@ -1064,9 +1078,6 @@ export default {
   getMask(birthday){
       let res = ''
       birthday = birthday.replace(/[^0-9]/g, '')
-      console.log(birthday.substring(0,4))
-      console.log(birthday.substring(5,7))
-      console.log(birthday.substring(8,10))
       if(birthday.length <5){
         res = birthday
       }else{
@@ -1111,7 +1122,6 @@ export default {
         return;
     }
     let changeDatatmp = this.recipientItems[this.saveChangeData]
-    console.log(changeDatatmp)
     this.selectChangeRecipient = changeDatatmp.recipientNm
     this.selectChangeBirthday = changeDatatmp.birthday
     this.selectChangeSex = changeDatatmp.sex
@@ -1319,7 +1329,6 @@ export default {
         alert("전화번호는 세자리 이상을 입력해 주세요")
         return false;
       }
-      console.log(this.selectedUpdateBirthday.length)
       if(this.selectedUpdateBirthday.substring(0,4) < '1000' || this.selectedUpdateBirthday.substring(0,4) > this.e_date.substring(0,4) ||
       this.selectedUpdateBirthday.substring(5,7) > '12' || this.selectedUpdateBirthday.substring(5,7) === '00' ||
       this.selectedUpdateBirthday.substring(8,10) > '31' || this.selectedUpdateBirthday.substring(8,10) === '00' || this.selectedUpdateBirthday.length < 10){
@@ -1348,7 +1357,6 @@ export default {
         zipCode: this.selectedUpdateZipCode,//완
         regId: this.$store.state.userId//완
       }      
-      console.log(data)
        const url  = this.$store.state.serverApi + `/admin/recipients`
          ///sensors/{sensorId}/gw-send-cycle
          await axios.post(url,data,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
@@ -1450,7 +1458,6 @@ export default {
         zipCode: this.selectChangeZipCode,//완
         regId: this.$store.state.userId//완
       }
-      console.log(data)
        const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}`       
          // /sensors/{sensorId}/gw-send-cycle
          axios.post(url,data,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
@@ -1473,12 +1480,9 @@ export default {
       let arr = []
       if(this.sortCount !== 1){
         if(input === 1){  // 대상자명 오름차순
-        console.log(arr)
-        console.log(this.recipientItems)
           arr = this.recipientItems.slice().sort(function ascending(a,b){
             return a.recipientNm<b.recipientNm?-1:a.recipientNm>b.recipientNm?1:0;
           })
-          console.log(arr)
           this.sortCount = 1
           this.sortNmCount = 1
           this.recipientItems = arr
@@ -1518,31 +1522,43 @@ export default {
           })
           this.sortCount = 1
           this.recipientItems = arr
-        }else if(input === 8){  // 상태 오름차순
+        }else if(input === 8){  // 바이오센서 오름차순
+          arr = this.recipientItems.slice().sort(function(a,b){
+            return a.radorSensorYn<b.radorSensorYn?-1:a.radorSensorYn>b.radorSensorYn?1:0;
+          })
+          this.sortCount = 1
+          this.recipientItems = arr
+        }else if(input === 9){  // 상태 오름차순
           arr = this.recipientItems.slice().sort(function ascending(a,b){
             return a.stateNm<b.stateNm?-1:a.stateNm>b.stateNm?1:0;
           })
           this.sortCount = 1
           this.recipientItems = arr
-        }else if(input === 9){  // 주소 오름차순
+        }else if(input === 10){  // 주소 오름차순
           arr = this.recipientItems.slice().sort(function ascending(a,b){
             return a.addr<b.addr?-1:a.addr>b.addr?1:0;
           })
           this.sortCount = 1
           this.recipientItems = arr
-        }else if(input === 10){  // 관리기관 오름차순
+        }else if(input === 11){  // 관리기관 오름차순
           arr = this.recipientItems.slice().sort(function ascending(a,b){
             return a.orgNm<b.orgNm?-1:a.orgNm>b.orgNm?1:0;
           })
           this.sortCount = 1
           this.recipientItems = arr
-        }else if(input === 11){  // 생활관리사 오름차순
+        }else if(input === 12){  // 생활관리사 오름차순
           arr = this.recipientItems.slice().sort(function ascending(a,b){
             return a.managerNm<b.managerNm?-1:a.managerNm>b.managerNm?1:0;
           })
           this.sortCount = 1
           this.recipientItems = arr
-        }else if(input === 12){  // 등록일자 오름차순
+        }else if(input === 13){  // 등록일자 오름차순
+          arr = this.recipientItems.slice().sort(function(a,b){
+            return new Date(a.updDtime) - new Date(b.updDtime)
+          })
+          this.sortCount = 1
+          this.recipientItems = arr
+        }else if(input === 14){  // 등록일자 오름차순
           arr = this.recipientItems.slice().sort(function(a,b){
             return new Date(a.regDtime) - new Date(b.regDtime)
           })
@@ -1593,31 +1609,43 @@ export default {
           })
           this.sortCount = 0
           this.recipientItems = arr
-        }else if(input === 8){  // 상태 내림차순
+        }else if(input === 8){  // 바이오센서 내림차순
+          arr = this.recipientItems.slice().sort(function(a,b){
+            return a.radorSensorYn>b.radorSensorYn?-1:a.radorSensorYn<b.radorSensorYn?1:0;
+          })
+          this.sortCount = 0
+          this.recipientItems = arr
+        }else if(input === 9){  // 상태 내림차순
           arr = this.recipientItems.slice().sort(function ascending(a,b){
             return a.stateNm>b.stateNm?-1:a.stateNm<b.stateNm?1:0;
           })
           this.sortCount = 0
           this.recipientItems = arr
-        }else if(input === 9){  // 주소 내림차순
+        }else if(input === 10){  // 주소 내림차순
           arr = this.recipientItems.slice().sort(function ascending(a,b){
             return a.addr>b.addr?-1:a.addr<b.addr?1:0;
           })
           this.sortCount = 0
           this.recipientItems = arr
-        }else if(input === 10){  // 관리기관 내림차순
+        }else if(input === 11){  // 관리기관 내림차순
           arr = this.recipientItems.slice().sort(function ascending(a,b){
             return a.orgNm>b.orgNm?-1:a.orgNm<b.orgNm?1:0;
           })
           this.sortCount = 0
           this.recipientItems = arr
-        }else if(input === 11){  // 생활관리사 내림차순
+        }else if(input === 12){  // 생활관리사 내림차순
           arr = this.recipientItems.slice().sort(function ascending(a,b){
             return a.managerNm>b.managerNm?-1:a.managerNm<b.managerNm?1:0;
           })
           this.sortCount = 0
           this.recipientItems = arr
-        }else if(input === 12){  // 등록일자 내림차순
+        }else if(input === 13){  // 등록일자 내림차순
+          arr = this.recipientItems.slice().sort(function(a,b){
+            return new Date(b.updDtime) - new Date(a.updDtime)
+          })
+          this.sortCount = 0
+          this.recipientItems = arr
+        }else if(input === 14){  // 등록일자 내림차순
           arr = this.recipientItems.slice().sort(function(a,b){
             return new Date(b.regDtime) - new Date(a.regDtime)
           })
@@ -1625,7 +1653,6 @@ export default {
           this.recipientItems = arr
         }
       }
-      console.log(this.sortCount)
     },
     manageInquiry() {
       this.searchCheck2 = 1

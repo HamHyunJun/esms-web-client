@@ -117,7 +117,6 @@ export default {
         },
         //동작후 갱신 메소드
         sendMenu3Lending(){
-            console.log("lending")
             const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers?typeCd=TPE008`
                 axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
                 .then(res => {
@@ -126,7 +125,6 @@ export default {
                 //       return pd.typeCd === "TPE008"
                 //   })
                 
-                console.log(this.relationPhoneData)
                 this.$emit("lending3",this.lending)
                 }).catch(error => {
                     console.log("fail to load")
@@ -148,9 +146,7 @@ export default {
         },
         //초기 호출 메소드
         async getRelationPhoneData(){
-            console.log("menu3")
         //여기
-            console.log("this.menu3Refresh",this.$props.menu3Refresh)
             if(this.$props.menu3Refresh===1){
                 const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers?typeCd=TPE008`
                 await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
@@ -160,7 +156,6 @@ export default {
                 //       return pd.typeCd === "TPE008"
                 //   })
                 //this.sendMenu3Lending()
-                console.log(this.relationPhoneData)
                 }).catch(error => {
                     console.log("fail to load")
                     this.errorMessage = error.message;
@@ -178,12 +173,9 @@ export default {
                 let selectData = this.relationPhoneData[this.selectIndex]
                 let selectRegSn = selectData.regSn
                 
-                console.log(selectRegSn)
                 const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/${selectRegSn}/delete`
-                console.log(url)
                 axios.delete(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
                 .then(res => {
-                console.log(res.data.data)
                 this.sendMenu3Lending()
                 this.selectIndex = ''
                 this.radioCheck = ''
@@ -198,7 +190,6 @@ export default {
             }
         },
         reset(index){
-            console.log(this.relationPhoneData[index])
             this.selectrelation = this.relationPhoneData[index].relationCd
             this.radioCheck = this.relationPhoneData[index].regSn
             this.relationNm = this.relationPhoneData[index].relationNm
@@ -232,13 +223,11 @@ export default {
             selectData.relationCd = this.changerelationCd
             selectData.relationNm = this.relationNm
             selectData.relationPhone = this.relationPhone
-            console.log(selectData)
             let selectRegSn = selectData.regSn
             const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/${selectRegSn}/update`
             
             axios.post(url,selectData, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
-            console.log(res.data.data)
             
             alert("성공적으로 수정되었습니다")
             this.sendMenu3Lending()

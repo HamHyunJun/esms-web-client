@@ -128,8 +128,6 @@ export default {
         await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
             lastMeasures = res.data.data
-            console.log("lastMeasures")    
-            console.log(lastMeasures)
             //this.reportMeasureData => 선언 처리 수정
             if(!lastMeasures){
               this.reportMeasureData = { TPE005: 0,TPE011: 0,TPE006: 0,TPE008: 0,TPE007: 0,TPE012: 0 } 
@@ -140,9 +138,7 @@ export default {
                     }else if(lastMeasures[i].sensorTypeCd ==="TPE006"){
                         measureValuetmp1 = lastMeasures[i].measureValue.split(',')
                         //this.reportMeasureData.TPE006 = measureValuetmp1[0]
-                        console.log(measureValuetmp1)
                         this.reportMeasureData.TPE006 = measureValuetmp1[measureValuetmp1.length -1]
-                        console.log(this.reportMeasureData.TPE006)
                         if(this.reportMeasureData.TPE006 === '0'){
                         for(let i=measureValuetmp1.length-1; i>=0; i--){
                             if(this.reportMeasureData.TPE006 === '0'){
@@ -152,7 +148,6 @@ export default {
                             }
                         }
                         }
-                        console.log(this.reportMeasureData.TPE006)
                     }else if(lastMeasures[i].sensorTypeCd ==="TPE007"){
                         measureValuetmp2 = lastMeasures[i].measureValue.split(',')
                         //this.reportMeasureData.TPE007 = measureValuetmp2[0]
@@ -183,7 +178,6 @@ export default {
                         measureValuetmp4 = lastMeasures[i].measureValue.split(',')
                         //this.reportMeasureData.TPE005 = measureValuetmp4[0]
                         this.reportMeasureData.TPE005 = measureValuetmp4[measureValuetmp4.length -1]
-                        console.log(measureValuetmp4)
                         if(this.reportMeasureData.TPE005 === '0'){
                         for(let i=measureValuetmp4.length-1; i>=0; i--){
                             if(this.reportMeasureData.TPE005 === '0'){
@@ -196,7 +190,6 @@ export default {
                     }else if(lastMeasures[i].sensorTypeCd ==="TPE011"){
                         measureValuetmp5 = lastMeasures[i].measureValue.split(',')
                         //this.reportMeasureData.TPE011 = measureValuetmp5[0]
-                        console.log(measureValuetmp5)
                         this.reportMeasureData.TPE011 = measureValuetmp5[measureValuetmp5.length -1]
                         if(this.reportMeasureData.TPE011 === '0'){
                         for(let i=measureValuetmp5.length-1; i>=0; i--){
@@ -210,7 +203,6 @@ export default {
                     }else if(lastMeasures[i].sensorTypeCd ==="TPE012"){
                         measureValuetmp6 = lastMeasures[i].measureValue.split(',')
                         //this.reportMeasureData.TPE012 = measureValuetmp6[0]
-                        console.log(measureValuetmp6)
                         this.reportMeasureData.TPE012 = measureValuetmp6[measureValuetmp6.length -1]
                         if(this.reportMeasureData.TPE012 === '0'){
                         for(let i=measureValuetmp6.length-1; i>=0; i--){
@@ -232,15 +224,11 @@ export default {
                     TPE012: !lastMeasures ? 0: lastMeasures.find(lm=>{return lm? lm.sensorTypeCd === "TPE012" : 0}).measureValue,//.split(',').slice(-1)[0],//활동량
                 }*/
             }
-            console.log(lastMeasures[4].measureValue)
-            console.log(this.reportMeasureData)
         }).catch(error => {
             console.log("fail to load")
           this.errorMessage = error.message;
           console.error("There was an error!", error);
         });
-        console.log("last")
-        console.log(lastMeasures)
         
         //setInterval(this.getMeasuresData, 300000)
     },

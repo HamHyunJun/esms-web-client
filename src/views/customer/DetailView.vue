@@ -649,7 +649,6 @@ export default {
       await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             this.bodyData = res.data.data
-            console.log(this.bodyData)
             this.emorgId = this.bodyData.orgId
             this.getEmuserInfo()
             this.getLiuserInfo()

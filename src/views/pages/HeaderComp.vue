@@ -50,8 +50,8 @@
         </li>
       </ul>
       <div class="emerg_area">
-        <button type="button" style="margin-right:10px;" :class="Emeventtoggle===0 ? 'btn': 'btn on' " @click="clickEmergency()"><i></i>응급상황 수신</button> 
-        <button type="button" :class="Eqeventtoggle===0 ? 'btn': 'btn on' " @click="clickEquipmentEvent()"><i></i>장비 이벤트</button>
+        <button type="button"  style="margin-right:10px;" :class="Emeventtoggle===0 ? 'btn': 'btn on'" @click="clickEmergency()"><i></i>응급상황 수신</button> 
+        <button type="button" :class="Eqeventtoggle===0 ? 'btn': 'btn on'" @click="clickEquipmentEvent()"><i></i>장비 이벤트</button>
         <!--<button type="button" style="margin-right:10px;" :class="this.socketData==='ALL' || this.socketData==='ALARM' ? 'btn on': 'btn' " @click="clickEmergency()"><i></i>응급상황 수신</button> 
         <button type="button" :class="this.socketData==='ALL' || this.socketData==='EVENT' ? 'btn on': 'btn' " @click="clickEquipmentEvent()"><i></i>장비 이벤트</button> -->
       </div>
@@ -137,7 +137,7 @@ export default {
       clearTimeout(this.timerId);
 
       this.$router.push({ name: 'Home' });
-    },
+    }, 
     async checkCount(){
       console.log("this Emeventtoggle ==> "+this.Emeventtoggle)
       console.log(moment().format('YYYY-MM-DD HH:mm:ss'))
@@ -156,21 +156,22 @@ export default {
         console.error("There was an error!", error);
       });
       if(sessionStorage.getItem("token") != 'null' && this.$store.state.userId != 'null'){
-        this.timerId=setTimeout(this.checkCount, 5000)
+        //this.timerId=setTimeout(this.checkCount, 5000)
       }else{
         clearTimeout(this.timerId);
       }
     },
     async checkEqCount(){
-      this.s_date = moment().subtract(30, 'minutes').format('YYYY-MM-DD HH:mm:ss')
+      this.s_date = moment().subtract(15, 'seconds').format('YYYY-MM-DD HH:mm:ss')
       this.e_date = moment().format('YYYY-MM-DD HH:mm:ss')
       console.log("this Eqeventtoggle ==> "+this.Eqeventtoggle)
       console.log(this.s_date)
       console.log(this.e_date)
 
-      let uri = this.$store.state.serverApi+`/admin/gwevent/checkcnt`;
+      let uri = this.$store.state.serverApi+`/admin/emergencys/gateway-events?occurStartDate=${this.s_date}&occurEndDate=${this.e_date}`;
       await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
       .then(response => {
+        console.log(response)
         console.log(response.data.totalCount)
        this.newEqevent = response.data.totalCount
        console.log(this.oldEqevent)
@@ -186,7 +187,7 @@ export default {
         console.error("There was an error!", error);
       });
       if(sessionStorage.getItem("token") != 'null' && this.$store.state.userId != 'null'){
-        this.EqtimerId=setTimeout(this.checkEqCount, 5000)
+        //this.EqtimerId=setTimeout(this.checkEqCount, 5000)
       }else{
         clearTimeout(this.EqtimerId);
       }

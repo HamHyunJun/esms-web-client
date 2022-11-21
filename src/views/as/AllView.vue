@@ -341,7 +341,6 @@ export default {
 
     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
@@ -376,7 +375,6 @@ export default {
           });
           
           this.sggItems = [...tmpResult2,...tmpResult]
-          console.log(this.sggItems )
         })
         .catch(error => {
           this.errorMessage = error.message;
@@ -448,7 +446,6 @@ export default {
           .then(response => {
             this.recipientItems = response.data.data
             this.NCount = this.recipientItems.length
-            console.log(uri)
           })
           .catch(error => {
             this.errorMessage = error.message;
@@ -464,7 +461,6 @@ export default {
       }
     },
     onChangeSido(event){
-      console.log("====onChangeSido($event) execution")
       this.getSggData()
       this.orgSido = event.target.value;
     },
@@ -535,8 +531,6 @@ export default {
             await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
                 this.asRequestData = res.data.data
-                console.log("as 요청")
-                console.log(this.asRequestData)
             })
             .catch(error => {
                 console.log("fail to load")

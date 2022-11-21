@@ -474,13 +474,11 @@ export default {
           (page - 1) * this.limit,
           page * this.limit
         )
-        console.log(this.listData)
         this.page = page
         this.pageDataSetting(this.total, this.limit, this.block, page)
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -597,7 +595,6 @@ export default {
           this.errorMessage = error.message;
           console.error("There was an error!", error);
         });
-        console.log(this.upperOrgItems)
     },
     getUpperOrgData(){
       let url =this.$store.state.serverApi + "/admin/organizations/all?pageIndex=1&recordCountPerPage=1000";
@@ -619,7 +616,6 @@ export default {
           }*/
           this.updateOrgId = tmpArr[1].value
           let tmp = this.updateOrgId.split('')
-          console.log(tmp.indexOf('0',0))
           let num = 0
           let found= 0
           let arr = []
@@ -644,29 +640,20 @@ export default {
             if(tmp[i] === '0'){
               found = i+1
               num = found
-              console.log("count = >"+ i)
             }else if(tmp[i] !== '0' ){
               break;
             }
           }
-          console.log(this.updateOrgId)
-          console.log(found)
-          console.log(num)
-          console.log(arr)
           let string = this.updateOrgId.substring(0,num)
-          console.log(string)
           let changenum = this.updateOrgId.substring(num)
-          console.log(changenum)
           num = Number(changenum)+1
           num = String(num)
           this.updateOrgId = string + num
-          console.log(this.updateOrgId)
           
           tmpResult1=tmpArr.filter(cd=>{
             return cd.value2 === 'TPE001'
           })
           this.upperOrgItems = [...tmpResult2,...tmpResult1]
-          console.log(this.upperOrgItems)
         })
         .catch(error => {
           this.errorMessage = error.message;
@@ -771,7 +758,6 @@ export default {
     // 관리기관 등록
     async uploadData(){
       this.$store.state.userId = sessionStorage.getItem("userId")
-      console.log(this.$store.state.userId)
       let addrCd = ''
       let sgg = this.sggCd.substring(0,5)
       if(this.selectedUpdateSidoItems != '' && this.selectedUpdateSggItems == ''){
@@ -802,7 +788,6 @@ export default {
         return cd.value === this.selectedUpdateTypeCd
       })
       
-      console.log(this.orgNm)
 
       let uri =this.$store.state.serverApi + "/admin/organizations/all?pageIndex=1&recordCountPerPage=1000";
       await axios.get(uri, {headers: {"Authorization": sessionStorage.getItem("token")}})
@@ -823,7 +808,6 @@ export default {
           console.error("There was an error!", error);
         });
 
-        console.log(this.orgmItems2)
       // if(this.selectedUpdateOrgItems === ''){
       //   this.orgNm = this.orgmItems2.filter(cd=>{
       //     return cd.value === 'ORG0000001'
@@ -847,8 +831,6 @@ export default {
         })
       
 
-      console.log(this.checkUpdateAdrr)
-      console.log(this.selectedUpdateTypeCd)
       if(this.orgNm2.length !== 0){
         alert("이미 등록된 관리기관 입니다.")
         return false
@@ -967,7 +949,6 @@ export default {
     },
     // 관리기관 수정 시 상세정보 불러오기 및 일부 변수 초기화
     changeOrgFormat(){
-      console.log(this.selectUserData)
       this.selectedChangeSidoItems = ''
       this.selectedChangeSggItems = ''
       this.selectedChangeOrgItems = this.selectUserData.orgNm
@@ -988,7 +969,6 @@ export default {
       await axios.get(uri, {headers: {"Authorization": sessionStorage.getItem("token")}})
         .then(response => {
           this.orgmItems2=[];
-          console.log("upper ok")
           for(let i=0; i<response.data.data.length; i++) {
             this.orgmItems2.push({
               label: response.data.data[i].orgNm,
@@ -1076,7 +1056,6 @@ export default {
         return false;
       }
 
-      console.log(this.orgNm)
 
       let data = {
         sidoName:this.sidoName[0].label,
@@ -1125,8 +1104,6 @@ export default {
     // 관리기관 삭제
     async deleteOrgSuccess(){
       let url = this.$store.state.serverApi+`/admin/organizations/${this.orgId}`
-      console.log(this.orgId)
-      console.log(url)
       await axios.delete(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
            .then(res => {
             alert("기관상태가 미사용으로 변경 되었습니다")
@@ -1136,7 +1113,6 @@ export default {
               this.getTorgData()
              console.log(res.data.data)
             let resData = res.data.data
-            console.log(resData)
             if(resData){
               alert("성공적으로 삭제되었습니다")
               this.writeOrg = false

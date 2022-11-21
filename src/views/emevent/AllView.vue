@@ -197,7 +197,7 @@
                   <td>{{changeRecipientPhoneno(item.recipientPhoneno)}}</td>
                   <td>{{item.managerNm}}</td>
                   <td>{{changeRecipientPhoneno(item.managerMobileNumber)}}</td>
-                  <td>{{item.typeNm}}</td>
+                  <td>{{sensorNmChange(item.typeNm)}}</td>
                   <td>{{item.signalStateNm}}</td>
                   <td>{{!item.testYn? '실제상황':'테스트'}}</td>
                   <td>{{item.occurDtime}}</td>
@@ -281,14 +281,12 @@ export default {
         //   (page - 1) * this.limit,
         //   page * this.limit
         // )
-        console.log(this.listData)
         this.page = page
         this.getRecipientData()
         this.pageDataSetting(this.total, this.limit, this.block, page)
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -415,6 +413,13 @@ export default {
               value: response.data.data[i].cmmnCd
             });
           }  
+          for(let i=0; i<this.typeItems.length; i++){
+            if(this.typeItems[i].label === '응급버튼'){
+              this.typeItems[i].label = '응급호출기'
+            }else if(this.typeItems[i].label === '화재감지'){
+              this.typeItems[i].label = '화재감지기'
+            }
+          }
         })
         .catch(error => {
           this.errorMessage = error.message;
@@ -510,13 +515,20 @@ export default {
       this.sggCd = event.target.value
       this.getOrgmData()
     },
+    sensorNmChange(input){
+        let result = input
+        switch(input){
+            case "응급버튼" : result='응급호출기'; break;
+            case "화재감지" : result='화재감지기'; break;
+        }
+        return result
+     },
     makeAge(birthDay){
       let tmp1 = this.$moment(birthDay).format('YYYY')
       let tmp2 = this.$moment()
       return tmp2.diff(tmp1, 'years');
     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
@@ -547,14 +559,12 @@ export default {
     },
     saveState(){
       let url = this.$store.state.serverApi+`/admin/emergencys/${this.recipientItems[this.saveChangeData].emergSignalId}/cancel`
-      console.log(this.recipientItems[this.saveChangeData].emergSignalId)
       this.updDtime = moment().format('YYYY-MM-DD HH:mm:ss')
       let data ={
         alarmId:this.recipientItems[this.saveChangeData].emergSignalId,
         updDtime:this.updDtime,
         updId:this.$store.state.userId
       }
-      console.log(data)
       axios.patch(url, data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
       .then(res => {
         let resData = res.data.data

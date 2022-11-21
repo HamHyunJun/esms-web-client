@@ -208,7 +208,6 @@ export default {
                 recipientId:response.data.data[i].recipientId,
               })
             }
-           console.log("===res");
           })
           .catch(error => {
             this.errorMessage = error.message;

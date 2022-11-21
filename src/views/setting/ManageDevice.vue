@@ -412,7 +412,6 @@ export default {
       axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(response => {
             this.recipientItems = response.data.data
-            console.log(this.recipientItems.length)
             this.NCount =this.recipientItems.length
             // if(this.searchCheck1 === 1){
             // this.searchCheck1 = 0
@@ -488,13 +487,10 @@ export default {
       let uri = ''
       if(value === 1){
         uri = this.$store.state.serverApi + "/admin/codes?cmmnCdGroup=GATEWAY.INSPCD";
-        console.log(uri)
       }else if(value === 2){
         uri = this.$store.state.serverApi + "/admin/codes?cmmnCdGroup=TABLET.INSPCD";
-        console.log(uri)
       }else{
         uri = this.$store.state.serverApi + "/admin/codes?cmmnCdGroup=SENSOR.INSPCD";
-        console.log(uri)
       }
       axios.get(uri, {headers: {"Authorization": sessionStorage.getItem("token")}})
           .then(response => {

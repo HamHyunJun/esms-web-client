@@ -93,7 +93,6 @@ export default {
     },
     methods:{
       async getRelationPhoneData(){
-          console.log("menu4")
       //여기
       const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers?typeCd=TPE006`
       await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
@@ -102,7 +101,6 @@ export default {
         //   .filter(pd =>{
         //       return pd.typeCd === "TPE006"
         //   })
-          console.log(this.relationPhoneData)
         }).catch(error => {
             console.log("fail to load")
           this.errorMessage = error.message;
@@ -112,7 +110,6 @@ export default {
     },
     //동작후 갱신 메소드
     sendMenu4Lending(){
-        console.log("lending")
         const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers?typeCd=TPE006`
         axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(res => {
@@ -122,7 +119,6 @@ export default {
         //   })
         this.selectIndex = ''
         this.radioCheck = ''
-        console.log(this.relationPhoneData)
         this.$emit("lending4",this.lending)
         }).catch(error => {
             console.log("fail to load")
@@ -139,8 +135,8 @@ export default {
     },
     check(value){
         switch(value){
-          case 1 : console.log("this"); this.checkPopup=0; this.sendParent(); break;
-          case 2 : console.log("this2"); this.checkPopup=1; if(this.selectIndex === null || this.selectIndex === undefined || this.selectIndex === ''){
+          case 1 : this.checkPopup=0; this.sendParent(); break;
+          case 2 : this.checkPopup=1; if(this.selectIndex === null || this.selectIndex === undefined || this.selectIndex === ''){
             alert("수정할 대상자를 선택하여 주세요.")
             return false;
         }; this.sendParent(); break;
@@ -164,12 +160,9 @@ export default {
             }
         let selectData = this.relationPhoneData[this.selectIndex]
         let selectRegSn = selectData.regSn
-        console.log(selectData)
-        console.log(selectRegSn)
         const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/${selectRegSn}/update`
         axios.post(url,selectData, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(res => {
-        console.log(res.data.data)
         alert("성공적으로 수정되었습니다")
         this.sendMenu4Lending()
         }).catch(error => {
@@ -187,9 +180,7 @@ export default {
         if(confirm("정말로 삭제하시겠습니까? ")===true){
             let selectData = this.relationPhoneData[this.selectIndex]
             let selectRegSn = selectData.regSn
-            console.log(selectRegSn)
             const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/${selectRegSn}/delete`
-            console.log(url)
             axios.delete(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
             console.log(res.data.data)

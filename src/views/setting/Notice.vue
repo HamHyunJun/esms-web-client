@@ -269,13 +269,11 @@ export default {
           (page - 1) * this.limit,
           page * this.limit
         )
-        console.log(this.listData)
         this.page = page
         this.pageDataSetting(this.total, this.limit, this.block, page)
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -302,7 +300,6 @@ export default {
       return index
     },
     handleFileChange(e){
-      console.log(e.target.files)
       if(e.target.files[0].type !== 'audio/midi' && e.target.files[0].type !== 'audio/mpeg' && e.target.files[0].type !== 'audio/x-m4a' && e.target.files[0].type !== 'audio/mp3' 
       && e.target.files[0].type !== 'audio/webm' && e.target.files[0].type !== 'audio/ogg' && e.target.files[0].type !== 'audio/wav'){
           alert("음성 파일은 midi/mpeg/mp3/m4a/webm/ogg/wav 파일만 가능합니다.\n음성 파일을 다시 확인하여 주세요")
@@ -423,7 +420,6 @@ export default {
           let tmpResult = tmpArr
           this.orgmItems = [...tmpResult2,...tmpResult]
           this.orgmItems = tmpArr;
-          console.log(this.orgmItems)
         })
         .catch(error => {
           this.errorMessage = error.message;
@@ -431,7 +427,6 @@ export default {
         });
     },
       getnoticeData(){
-        console.log(this.orgmItems)
       let addrCd = ''
       if(this.selectedSidoItems != '' && this.selectedSggItems == ''){
         addrCd = this.sidoCd.substring(0,2)
@@ -450,7 +445,6 @@ export default {
       +"&title="+this.selectedTitle
       +"&startDate="+this.s_date
       +"&endDate="+this.e_date
-      console.log(uri)
       axios.get(uri, {headers: {"Authorization": sessionStorage.getItem("token")}})
           .then(response => {
             this.noticItems = response.data.data
@@ -496,7 +490,6 @@ export default {
       this.e_date=moment().format('YYYY-MM-DD');
     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
@@ -551,9 +544,6 @@ export default {
           return cd.value === this.selectedUpdateOrgItems
         })
       }
-      console.log(this.orgmItems2)
-      console.log(this.orgdata)
-      console.log(this.$store.state.userId)
 
       let objectData = {
         orgId: this.orgdata[0].value,
@@ -564,7 +554,6 @@ export default {
         details: this.selectedUpdateDetails,
         regId: this.$store.state.userId
       }
-      console.log(objectData)
       let form = new FormData()
       form.append('details', this.selectedUpdateDetails)
       form.append('orgId', this.orgdata[0].value)
@@ -575,9 +564,7 @@ export default {
       form.append('exeOrgId', this.orgdata[0].value)
 
 
-      console.log(form)
       uri =this.$store.state.serverApi + "/admin/noticesnew";
-      console.log(uri)
       axios.post(uri,form,{
         headers: {
         'Content-Type': 'multipart/form-data',

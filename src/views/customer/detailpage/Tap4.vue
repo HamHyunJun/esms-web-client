@@ -121,6 +121,68 @@
                 </div> 
             </div>
           </div>
+          <div id="" class="popupLayer" v-if="beforeSNpopup === true">
+        <div class="popup_wrap" style="width:100%">
+          <div class="title_wrap">
+            <div class="title">상태이력</div>
+            <button type="button" class="btn_close" @click="beforeSNpopup = false">닫기</button>
+          </div>
+          <div class="popbtn_wrap" style="margin-bottom:20px;">
+                  <div class="list result" style="margin-left:-30px; width:107%">
+                    <table>
+                      <colgroup>
+                        <!--<col style="width:10%;">-->
+                        <col style="width:13%;">
+                        <col style="width:10%;">
+                        <col style="width:12%;">
+                        <col style="width:10%;">
+                        <col style="width:12%;">
+                        <col style="width:14%;">
+                        <col style="width:14%;">
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <!-- <th scope="col">대상자ID</th> -->
+                          <th scope="col">통신상태</th>
+                          <th scope="col">배터리</th>
+                          <th scope="col">신호세기</th>
+                          <th scope="col">점검대상여부</th>
+                          <th scope="col">Keep-Alive</th>
+                          <th scope="col">상태측정일시</th>
+                          <th scope="col">서버보고일시</th>
+                        </tr>
+                      </thead>
+                    </table>
+                    <div class="tbody">
+                      <table>
+                        <colgroup>
+                          <!--<col style="width:10%;">-->
+                            <col style="width:13%;">
+                            <col style="width:10%;">
+                            <col style="width:12%;">
+                            <col style="width:10%;">
+                            <col style="width:12%;">
+                            <col style="width:14%;">
+                            <col style="width:14%;">
+                        </colgroup>
+                        <tbody >    
+                          <tr v-for="(item,index) in beforeSNItems" v-bind:key="index">
+                            <!--<td>{{item.recipientId}}</td>-->
+                            <td>{{item.comStateCd+"("+item.comStateNm+")"}}</td>
+                            <td>{{item.batteryValue+"("+changeSensorBattery(item.batteryValue)+")"}}</td>
+                            <td>{{item.rssi+"("+changeRssi(item.rssi)+")"}}</td>
+                            <td>{{item.checkYnCd===0?'정상':'점검대상'}}</td>
+                            <td>{{item.keepAliveRcvYn===0?'정상':item.keepAliveRcvYn===1?'비정상':'미수신'}}</td>
+                            <td>{{item.stateMeasureDtime}}</td>
+                            <td>{{item.reportDtime}}</td>
+                          </tr>                                   
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div> 
+            </div>
+          </div>
             <div class="toggle_btn2" style="margin-top : -25px">
                 <button type="button" :class="connectTap===3?'btn on':'btn'" @click="dataTogle(3)" style="font-size: 16px;">태블릿</button>
                 <button type="button" :class="connectTap===2?'btn on':'btn'" @click="dataTogle(2)" style="font-size: 16px;">게이트웨이</button>
@@ -310,8 +372,8 @@
                                 <tr v-for="(item,index) in getCSensorsData" v-bind:key="index" @click="getBSensers(index,0)">
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{index+1}}</td>
                                     <td v-else>{{index+1}}</td>
-                                    <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.sensorTypeNm}}</td>
-                                    <td v-else>{{item.sensorTypeNm}}</td>
+                                    <td v-if="index===emphasisValue" style="font-weight: bolder">{{sensorNmChange(item.sensorTypeNm)}}</td>
+                                    <td v-else>{{sensorNmChange(item.sensorTypeNm)}}</td>
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{locationCode(item.sensorLocCd)}}</td>
                                     <td v-else>{{locationCode(item.sensorLocCd)}}</td>
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.sensorVersion}}</td>
@@ -328,7 +390,7 @@
                 <div class="list" v-if="sensorsTap===2">
                     <table>
                         <colgroup>
-                            <col style="width:5%;">beforeGWItems
+                            <col style="width:5%;">
                             <col style="width:8%;">
                             <col style="width:10%;">
                             <col style="width:10%;">
@@ -385,8 +447,8 @@
                                     </td>
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{index+1}}</td>
                                     <td v-else>{{index+1}}</td>
-                                    <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.sensorTypeNm}}</td>
-                                    <td v-else>{{item.sensorTypeNm}}</td>
+                                    <td v-if="index===emphasisValue" style="font-weight: bolder">{{sensorNmChange(item.sensorTypeNm)}}</td>
+                                    <td v-else>{{sensorNmChange(item.sensorTypeNm)}}</td>
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.sensorVersion}}</td>
                                     <td v-else>{{item.sensorVersion}}</td>
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.previousVersion}}</td>
@@ -574,6 +636,9 @@
                             <button type="button" :class="beforeSensorToggle===1? 'btn on': 'btn'" @click="getBeforeVersionSensors" >직전정보</button>
                         </div>
                     </div>
+                    <div class="btn_area" style="float:right" v-if="connectTap===1 && beforeSensorToggle===1">
+                      <button type="button" style="margin-right:10px" class="btn form2" @click="beforeSensorpopup()">더보기</button>
+                    </div>
                 </div>
                 <div class="list">
                     <table>
@@ -629,7 +694,7 @@
                                     <td>{{this.beforeVersionSensorsData.checkYnCd ===null|| this.beforeVersionSensorsData.checkYnCd ===undefined ? '' : this.beforeVersionSensorsData.checkYnCd===0?'정상':'점검대상'}}</td>
                                     <td>{{!this.beforeVersionSensorsData? '': this.beforeVersionSensorsData.keepAliveRcvYn===0?'정상':this.beforeVersionSensorsData.keepAliveRcvYn===1?'비정상':'미수신'}}</td>
                                     <td>{{!this.beforeVersionSensorsData.stateMeasureDtime? '': this.beforeVersionSensorsData.stateMeasureDtime}}</td>
-                                    <td>{{!this.beforeVersionSensorsData.updDtime? '': this.beforeVersionSensorsData.updDtime}}</td>
+                                    <td>{{!this.beforeVersionSensorsData.reportDtime? '': this.beforeVersionSensorsData.reportDtime}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -670,9 +735,10 @@ import axios from "axios";
       CbatteryValue:null,
       BbatteryValue:null,
       firmwarelist:[], reverseCheckpopup:false, cmdA4postpopup:false,
-      firmwareCData:'', beforeGWpopup:false, beforeGWItems:[], 
+      firmwareCData:'', beforeGWpopup:false, beforeGWItems:[], beforeSNpopup:false, beforeSNItems:[],
       saveChangeData:'', changeIncomeNm:'',changeIncomeNm2:'', changeSensorId:'', changeSensorData:'', radiocheck:'', inputCheck:'',
       emphasisValue:'',
+      indexNum:0,
     }
    },
    created() {
@@ -699,6 +765,7 @@ import axios from "axios";
           .then(res => {
             tmpData = res.data.data
             this.getCSensorsData = tmpData
+            this.indexNum = this.getCSensorsData[0].sensorId
             this.getBSensorsData = tmpData[0]
           })
           .catch(error => {
@@ -706,8 +773,16 @@ import axios from "axios";
             this.errorMessage = error.message;
             console.error("There was an error!", error);
           });
-          this.getCSensorsData = tmpData
-
+          console.log(this.getCSensorsData)
+          for(let i=0; i<this.getCSensorsData.length; i++){
+            if(this.getCSensorsData[i].sensorVersion.length === 6){
+                let result
+                result = this.getCSensorsData[i].sensorVersion.substring(1,6)
+                this.getCSensorsData[i].sensorVersion = result
+                console.log(i)
+                console.log(this.getCSensorsData[i].sensorVersion)
+            }
+          }
           const urlC  = this.$store.state.serverApi + `/admin/recipients/sensors/statehistory?sensorId=${this.getBSensorsData.sensorId}`
           console.log(urlC)
           await axios.get(urlC, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
@@ -759,10 +834,13 @@ import axios from "axios";
     // 센서 클릭 시 '장비상태정보' 변경 함수
     getBSensers(input,time){
         this.emphasisValue = input
+        console.log(input)
         if(!input) input =0;
         if(!time) time =0;
         if(time===0){
             this.getBSensorsData = this.getCSensorsData[input]
+            console.log(this.getBSensorsData)
+            this.indexNum = this.getBSensorsData.sensorId
             if(this.checkCorB === true){
             this.getBeforeVersionSensors();
         }
@@ -784,6 +862,13 @@ import axios from "axios";
          axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             this.getCGatewayData = res.data.data
+            console.log(this.getCGatewayData)
+            if(this.getCGatewayData.firmwareVersion.length === 6){
+                let result
+                result = this.getCGatewayData.firmwareVersion.substring(1,6)
+                console.log(result)
+                this.getCGatewayData.firmwareVersion = result
+            }
             if(this.getCGatewayData.length===0){alert("연결된 게이트웨이가 존재하지 않습니다")}
             this.getCGatewayReal();
           })
@@ -885,8 +970,23 @@ import axios from "axios";
         this.beforeTabletToggle = 0
     },
     //현재버전 센서 호출
-    getNowSensorToggle(){
-        this.getCSensers()
+    async getNowSensorToggle(){
+        console.log(this.indexNum)
+        if(this.indexNum === 0){
+            console.log("this")
+        }
+        const url  = this.$store.state.serverApi + `/admin/recipients/sensors/statehistory?sensorId=${this.indexNum}`
+        await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
+          .then(res => {
+            let tmpData = res.data.data
+            this.getBSensorsData = tmpData[0]
+            console.log(this.getBSensorsData)
+          })
+          .catch(error => {
+            console.log("fail to load")
+            this.errorMessage = error.message;
+            console.error("There was an error!", error);
+          });
         this.beforeSensorToggle= 0
         this.checkCorB = false
     },
@@ -894,16 +994,24 @@ import axios from "axios";
     async getBeforeVersionSensors(){
         this.checkCorB = true
         let beforeSensor = []
+        this.beforeSNItems = []
         this.beforeSensorToggle = 1
         this.tmpIdx = this.getCSensorsData[0];
         this.getCSensorsData2 = ''
 
-        let url  = this.$store.state.serverApi + `/admin/recipients/sensors/statehistory?sensorId=${this.getBSensorsData.sensorId}`
+        let url  = this.$store.state.serverApi + `/admin/recipients/sensors/statehistory?recordCountPerPage=12&sensorId=${this.getBSensorsData.sensorId}`
         await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             beforeSensor = res.data.data
             console.log(beforeSensor)
             this.beforeVersionSensorsData = beforeSensor[1]
+            for(let i=2; i<beforeSensor.length; i++){
+                this.beforeSNItems.push(beforeSensor[i])
+            }
+            this.beforeSNItems = this.beforeSNItems.slice().sort(function(a,b){
+                return new Date(b.reportDtime) - new Date(a.reportDtime)
+            })
+            console.log(this.beforeSNItems)
         })
           .catch(error => {
               console.log("fail to load")
@@ -1047,6 +1155,9 @@ import axios from "axios";
     beforepopup(){
         this.beforeGWpopup = true
     },
+    beforeSensorpopup(){
+        this.beforeSNpopup = true
+    },
     reversepopup(){
         this.reverseCheckpopup = true
     },
@@ -1127,6 +1238,12 @@ import axios from "axios";
             .then(res => {
                 this.firmwarelist = res.data.data
                 this.firmwareCData = this.firmwarelist[0].version
+                if(this.firmwareCData.length === 6){
+                let result
+                result = this.firmwareCData.substring(1,6)
+                console.log(result)
+                this.firmwareCData = result
+            }
                 console.log(this.firmwarelist)
             })
             .catch(error => {
@@ -1224,8 +1341,17 @@ import axios from "axios";
         }
         return input
      },
+     sensorNmChange(input){
+        let result = input
+        switch(input){
+            case "응급버튼" : result='응급호출기'; break;
+            case "활동감지" : result='활동감지기'; break;
+            case "도어감지" : result='출입문감지기'; break;
+            case "화재감지" : result='화재감지기'; break;
+        }
+        return result
+     },
      changecomStateCd(input){
-        console.log(input)
         let result = ''
         switch(input){
             case "TAK001" : result='정상'; break;

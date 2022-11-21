@@ -290,7 +290,6 @@ export default {
             this.logItems = response.data.data
             this.NCount =this.logItems.length
             this.total = this.logItems.length
-            console.log(this.total)
             this.page = 1
             this.pagingMethod(this.page)
         //     if(this.searchCheck1 === 1){
@@ -321,7 +320,6 @@ export default {
             this.comLogItems = response.data.data
             this.ENCount =this.comLogItems.length
             this.total = this.comLogItems.length
-            console.log(this.total)
             this.page = 1
             this.pagingMethod(this.page)
         //     if(this.searchCheck1 === 1){
@@ -358,7 +356,6 @@ export default {
       }
     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;

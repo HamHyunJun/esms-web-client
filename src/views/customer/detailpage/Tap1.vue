@@ -130,8 +130,11 @@
                                     <td>{{num(index+1)}}</td>
                                     <td>{{locationCode(item.sensorLocCd)}}</td>
                                     <td v-if="sensorList === 'act' || sensorList === 'door'">{{item.sensorIndex}}</td>
+                                    <!-- <td>{{item.measureDtime}}</td> //원본
+                                    <td>{{item.regDtime}}</td> -->
                                     <td>{{item.measureDtime}}</td>
-                                    <td>{{item.regDtime}}</td>
+                                    <td v-if="sensorList === 'door'">{{item.measureDtime}}</td>
+                                    <td v-else>{{item.regDtime}}</td>
                                     <td>{{item.measureValue}}</td>
                                 </tr>
                             </tbody>
@@ -201,13 +204,11 @@ import pagination from "../../pages/pagination.vue"
           (page - 1) * this.limit,
           page * this.limit
         )
-        console.log(this.listData)
         this.page = page
         this.pageDataSetting(this.total, this.limit, this.block, page)
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -234,7 +235,6 @@ import pagination from "../../pages/pagination.vue"
       return index
     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.measureStartDate=this.checkStartDate; this.measureEndDate=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.measureStartDate=this.checkStartDate; this.measureEndDate=this.checkEndDate; break;
@@ -280,7 +280,6 @@ import pagination from "../../pages/pagination.vue"
         //   case 13 : this.selectedValue = 'TPE004'; break;
         //   case 14 : this.selectedValue = 'TPE004'; break;
         // }
-        console.log(code)
         switch (code){
           case 1 : this.selectedValue = 'all'; break;
           case 2 : this.selectedValue = 'TPE006'; break;
@@ -342,7 +341,6 @@ import pagination from "../../pages/pagination.vue"
           case 21 : this.labelText="상태"; this.codeText=" "; this.locCode="LOC007"; break; //현관
           case 22 : this.labelText="상태"; this.codeText=" "; this.locCode="LOC008"; break;  //뒷문
       }
-        console.log(this.locCode)
         //TPE011
         //&sensorLocCd=${code2}
 
@@ -368,8 +366,6 @@ import pagination from "../../pages/pagination.vue"
         }else{
             url = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/sensors/measures?sensorTypeCd=${this.selectedValue}&measureStartDate=${this.measureStartDate}&measureEndDate=${this.measureEndDate}`
         }
-        console.log(code)
-        console.log(url)
         //const url  = `/admin/recipients/${this.recipientId}/sensors`
         if(code !== 1 &&code !== 5){
             await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
@@ -457,7 +453,6 @@ import pagination from "../../pages/pagination.vue"
                     for(let i=0; i <lengthTmp.totalCount ;i++ ){
                         tmpData = res.data.data[i]
                         tmp = res.data.data[i].measureValue.split(',')
-                        console.log(url)
                         for(let j=tmp.length-1; j >=0 ;j-- ){
                             this.sensorsData.push({
                                 sensorIndex: tmpData.sensorIndex,
@@ -473,8 +468,6 @@ import pagination from "../../pages/pagination.vue"
                         this.sensorList = 'door'
                     }
                 }
-                console.log("sensorsData is ")
-                console.log(this.sensorsData)
             })
             .catch(error => {
                 console.log("fail to load")
@@ -491,7 +484,6 @@ import pagination from "../../pages/pagination.vue"
                 this.sensorsTmp1Data= []
                 let lengthTmp = []
                 lengthTmp = res.data
-                console.log("this ================")
                 for(let i=0; i <lengthTmp.totalCount ;i++ ){
                     tmpData = res.data.data[i]
                     tmp = res.data.data[i].measureValue.split(',')
@@ -542,7 +534,6 @@ import pagination from "../../pages/pagination.vue"
                     }
                 }
                 this.sensorList = ''
-                console.log(this.sensorsTmp2Data)
             })
             .catch(error => {
                 console.log("fail to load")

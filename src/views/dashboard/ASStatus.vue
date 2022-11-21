@@ -61,7 +61,7 @@
           </tr>
           <br>
           <tr>
-            <th scope="col">출입문센서</th>
+            <th scope="col">출입문감지기</th>
             <th scope="col">{{this.dorqCount}}</th>
             <th scope="col">{{this.dorcCount}}</th>
             <th scope="col">{{this.docpCount}}</th>

@@ -83,7 +83,6 @@ export default {
     },
     methods:{
       async getRelationPhoneData(){
-          console.log("menu5")
       //여기
       const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers?typeCd=TPE001`
       const url2  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers?typeCd=TPE002`
@@ -134,12 +133,10 @@ export default {
 
         //this.relationPhoneData = [...arr1,...arr2,...arr3,...arr4,...arr5]
         this.relationPhoneData = [...arr1,...arr2,...arr4,...arr5]
-        console.log(this.relationPhoneData)
         
     },
     //동작후 갱신 메소드
     async sendMenu5Lending(){
-        console.log("lending")
         this.selectIndex = ''
         this.radioCheck = ''
         const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers?typeCd=TPE001`
@@ -191,7 +188,6 @@ export default {
 
         //this.relationPhoneData = [...arr1,...arr2,...arr3,...arr4,...arr5]
         this.relationPhoneData = [...arr1,...arr2,...arr4,...arr5]
-        console.log(this.relationPhoneData)
         this.$emit("lending5",this.lending)
     },
     sendParent(){
@@ -203,10 +199,6 @@ export default {
         
     },
     reset(index){
-        console.log(index)
-        console.log(this.relationPhoneData[index])
-        console.log(this.selectIndex)
-        console.log(this.relationPhone)
         this.radioCheck = this.relationPhoneData[index].regSn
         this.relationPhone = this.relationPhoneData[index].relationPhone
         if(this.radioCheck === this.relationPhoneData[index].regSn){
@@ -222,8 +214,6 @@ export default {
         let selectData = this.relationPhoneData[this.selectIndex]
         selectData.relationPhone = this.relationPhone
         let selectRegSn = selectData.regSn
-        console.log(selectData)
-        console.log(selectRegSn)
         const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/${selectRegSn}/update`
         axios.post(url,selectData, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(res => {
@@ -246,9 +236,7 @@ export default {
         if(confirm("정말로 삭제하시겠습니까? ")===true){
             let selectData = this.relationPhoneData[this.selectIndex]
             let selectRegSn = selectData.regSn
-            console.log(selectRegSn)
             const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/${selectRegSn}/delete`
-            console.log(url)
             axios.delete(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
             console.log(res.data.data)

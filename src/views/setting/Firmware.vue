@@ -441,11 +441,6 @@ export default {
       this.file_name2_1 = this.file_name2.substr(0, 2)
       this.file_name2_2 = this.file_name2.substr(2)
       this.file_name3 = this.file_name2_1+'.'+this.file_name2_2
-      console.log(this.file_name)
-      console.log(this.file_name2)
-      console.log(this.file_name2_1)
-      console.log(this.file_name2_2)
-      console.log(this.file_name3)
       if(this.file_name3.length < 5){
         alert("펌웨어 파일을 다시 확인하여 주세요")
         this.file_name3 = ''
@@ -621,11 +616,16 @@ export default {
       await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(response => {
             tmpArr = response.data.data
-            console.log(uri)
             for(let i=0; i<tmpArr.length; i++){
               if(tmpArr[i].recipientNm !== null){
                 this.recipientItems.push(tmpArr[i])
               }
+            }
+            for(let i=0; i<this.recipientItems.length; i++){   //v제거
+              let result
+              if(this.recipientItems[i].firmwareVersion.length === 6)
+              result = this.recipientItems[i].firmwareVersion.substring(1,6)
+              this.recipientItems[i].firmwareVersion = result
             }
             this.NCount = this.recipientItems.length
             this.total = this.recipientItems.length
@@ -656,8 +656,8 @@ export default {
             .then(res => {
               const tmpArr = [{label: '전체', value: ''}];
               this.firmwareCData = []
+              
               for(let i=0; i<res.data.data.length; i++) {
-                this.firmwareRecord = res.data.data
                 tmpArr.push({
                   label: res.data.data[i].version,
                   value: res.data.data[i].version,
@@ -667,9 +667,32 @@ export default {
                   value: res.data.data[i].version,
                 });
               } 
-              this.selectedFirmwareVersion2 = this.firmwareCData[0].value
               this.firmwareItmes = tmpArr
               this.firmwarelist = res.data.data
+              this.firmwareRecord = res.data.data
+               //v제거
+              for(let i=0; i<this.firmwareCData.length; i++){
+                if(this.firmwareCData[i].label.length === 6){
+                  let result
+                  result = this.firmwareCData[i].label.substring(1,6)
+                  this.firmwareCData[i].label = result
+                }                
+              }
+              this.selectedFirmwareVersion2 = this.firmwareCData[0].value
+              for(let i=0; i<this.firmwareRecord.length; i++){
+                if(this.firmwareRecord[i].version.length === 6){
+                  let result
+                  result = this.firmwareRecord[i].version.substring(1,6)
+                  this.firmwareRecord[i].version = result
+                }                
+              }
+              for(let i=0; i<this.firmwareItmes.length; i++){
+                if(this.firmwareItmes[i].label.length === 6){
+                  let result
+                  result = this.firmwareItmes[i].label.substring(1,6)
+                  this.firmwareItmes[i].label = result
+                }
+              }
             })
             .catch(error => {
                 console.log("fail to load")
@@ -740,6 +763,14 @@ export default {
          await axios.get(url,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
               this.upgradeRecordItems = res.data.data
+              //v제거
+              for(let i=0; i<this.upgradeRecordItems.length; i++){
+                if(this.upgradeRecordItems[i].firmwareVersion.length === 6){
+                  let result
+                  result = this.upgradeRecordItems[i].firmwareVersion.substring(1,6)
+                  this.upgradeRecordItems[i].firmwareVersion = result
+                }
+              }
             })
             .catch(error => {
                 console.log("fail to load")
@@ -765,6 +796,7 @@ export default {
       while (Date.now() < wakeUpTime) {}
     },
     async upgradeFirmware2(){
+      this.upgradeCheck = 0
       if(this.$store.state.userId !== 'admin'){
       alert("펌웨어 변경은 admin 계정만 가능합니다")
       this.upgradepopup = false      
@@ -815,10 +847,14 @@ export default {
         }
         if(this.upgradeCheck === this.saveChangeData2.length){
             alert("성공적으로 변경을 요청하였습니다")
+            
             this.upgradepopup = false
             this.getRecipientData()
+        }else{
+          alert("변경 요청 중 오류가 발생하였습니다.")
+          this.upgradepopup = false
+          this.getRecipientData()
         }
-        
             /*axios.patch(urlU,data ,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
                 let firmware = res.data.data
@@ -849,7 +885,6 @@ export default {
       this.versionDesc = el
     },
     reset(input){
-      console.log(this.saveChangeData2)
     },
     onChangeSido(event){
       this.getSggData()
@@ -886,12 +921,9 @@ export default {
       //  console.log(arr[0].birthday)
       //  console.log(arr[2].birthday)
       input = input.slice()
-      console.log(input)
       arr = input.slice().sort(function(a,b){
         return new Date(b.updDtime) - new Date(a.updDtime)
       })
-      console.log(arr[0].updDtime)
-      console.log(arr[5].updDtime)
       // for(let i=0; i<input.length; i++){
       //   console.log(arr[i].updDtime)
       // }

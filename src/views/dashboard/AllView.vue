@@ -164,7 +164,7 @@
                     <td class="comple">{{this.ficpCount}}</td>
                   </tr>
                   <tr>
-                    <th scope="row">출입문센서</th>
+                    <th scope="row">출입문감지기</th>
                     <td>{{this.dorqCount}}</td>
                     <td>{{this.dorcCount}}</td>
                     <td>{{this.docaCount}}</td>
@@ -205,7 +205,7 @@
               <p style="float: left; width: 208px;">응급호출기</p>
               <p style="float: left; width: 196px;">활동감지센서</p>
               <p style="float: left; width: 215px;">화재감지기</p>
-              <p style="float: left; width: 195px;">도어센서</p>
+              <p style="float: left; width: 195px;">출입문감지기</p>
               <p style="float: left; width: 100px;">생활안심센서</p>
             </div>
             <div style="float: left; width: 160px; position: relative;">
@@ -756,9 +756,7 @@ export default {
           operCnt: 0,
         }
       }}
-      console.log(tmpArr1)
-      console.log(checkAll2)
-      console.log(tmpArr2)
+
       if(checkAll.length !== 0){
       for(let i=0; i<tmpArr1.length-1; i++){
         tmpArr1[i].installCnt = Number(tmpArr1[i].installCnt)+Number(checkAll[0].installCnt)
@@ -803,9 +801,6 @@ export default {
             this.newTotalEuArr[i] = 0
         }
       }
-      console.log(this.newEuArr)
-      console.log(this.newTotalEuArr)
-      console.log(tmpArr2)
       this.EuData = this.newEuArr
       this.TotalEuData = this.newTotalEuArr
       this.EuchartData.datasets[0].data = this.EuData
@@ -997,8 +992,6 @@ export default {
               });
             } 
             this.EvChartItems=EvtempArr;
-            console.log(urlEventStatus)
-            console.log(this.EvChartItems)
           })
           .catch(error => {
             this.errorMessage = error.message;
@@ -1036,13 +1029,11 @@ export default {
           occurDate: moment(this.s_date).add(i,'days').format('YYYYMMDD'),
         })
       }
-      console.log(this.EvChartItems)
       for(let i=0; i<this.EvChartItems.length; i++){
         if(this.EvChartItems[i].eventCd==="E1013"){
           let tmpidx = tmpArr1.findIndex(idx =>{
             return idx.occurDate == this.EvChartItems[i].occurDate
           })
-          console.log(tmpidx)
           tmpArr1[tmpidx].alarmCnt = this.EvChartItems[i].alarmCnt
           tmpArr1[tmpidx].eventCd = this.EvChartItems[i].eventCd
         }
@@ -1081,7 +1072,6 @@ export default {
       this.newTodayChartArr = this.EvChartItems.filter(cd=>{
         return cd.occurDate === e_date4
       })
-      console.log(this.newTodayChartArr)
       let newFi = []
       let newEm = []
       let newSa = []
@@ -1097,7 +1087,6 @@ export default {
       newSa = this.newTodayChartArr.filter(cd=>{
         return cd.eventCd === 'E1014'
       })
-      console.log(newEm)
       if(newFi.length !== 0){
       this.newTodayFireData.push(newFi[0].alarmCnt)
       }else{
@@ -1113,7 +1102,6 @@ export default {
       }else{
         this.newTodaySafeData[0] = 0
       }
-      console.log(this.newTodayFireData)
 
 
       this.EvFireData = this.newEvFireArr
@@ -1129,7 +1117,6 @@ export default {
       this.TodayEventData.datasets[0].data = this.TodayFireData
       this.TodayEventData.datasets[1].data = this.TodayEmData
       this.TodayEventData.datasets[2].data = this.TodaySafeData
-      console.log(this.TodayEventData.datasets)
       this.TodayEvchartRedraw();
       this.EvchartRedraw();
       
@@ -1931,9 +1918,6 @@ export default {
           tmpArr5_3_1 = tmpArr5.filter(cd=>{
             return cd.statName === 'TAK003'
           })
-          console.log(tmpArr5_1_1)
-          console.log(tmpArr5_2_1)
-          console.log(tmpArr5_3_1)
           if(tmpArr5_1_1.length !== 0){
             tmpArr5_1 = tmpArr5_1_1
           }
@@ -2025,8 +2009,7 @@ export default {
           this.newPwLiArr[1].statCnt = tmpArr6_3[0].statCnt? tmpArr6_3[0].statCnt : 0
           this.newPwLiArr[2].statCnt = tmpArr6_2[0].statCnt? tmpArr6_2[0].statCnt : 0
           
-          console.log(this.PwChartItems)
-          console.log(this.newPwAcArr)
+
       this.PwGwData = this.newPwGwArr
       this.PwEmData = this.newPwEmArr
       this.PwFiData = this.newPwFiArr
@@ -2131,7 +2114,6 @@ export default {
       this.PwchartData6.datasets[0].data = this.finalPwLiData1
       this.PwchartData6.datasets[1].data = this.finalPwLiData2
       this.PwchartData6.datasets[2].data = this.finalPwLiData3
-      console.log(this.PwchartData5)
       this.PwchartRedraw();
     },
     //--------------------------A/S 현황--------------------------
@@ -2580,12 +2562,32 @@ export default {
       }
     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
         }
     },
+  //   goToDetailView(input) {
+  //     console.log(this.$route.path)
+  //     console.log(input)
+  //     if(input === 1){
+  //       this.$router.push({
+  //         path : `/as/Request`
+  //       })
+  //     }else if(input === 2){
+  //       this.$router.push({
+  //         path : `/as/Confirm`
+  //       })
+  //     }else if(input === 3){
+  //       this.$router.push({
+  //         path : `/as/Cancel`
+  //       })
+  //     }else if(input === 4){
+  //       this.$router.push({
+  //         path : `/as/Complete`
+  //       })
+  //     }
+  // },
   }
 }
 </script>
