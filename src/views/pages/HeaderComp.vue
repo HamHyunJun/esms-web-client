@@ -86,6 +86,7 @@ export default {
     socketCount:0,
   }),
   created(){
+    //테스트
     this.s_date=moment().subtract(30, 'minutes').format('YYYY-MM-DD HH:mm:ss');
     this.e_date=moment().format('YYYY-MM-DD HH:mm:ss');
     this.getUserId();
