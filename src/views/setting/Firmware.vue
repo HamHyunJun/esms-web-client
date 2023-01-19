@@ -129,18 +129,18 @@
               </div>
             </div>
             <div id="" class="popupLayer" v-if="upgradeRecordpopup === true">
-              <div class="popup_wrap">
+              <div class="popup_wrap" style="width:800px">
                 <div class="title_wrap">
                   <div class="title">변경 이력</div>
                   <button type="button" class="btn_close" @click="upgradeRecordpopup = false">닫기</button>
                 </div>
                 <div class="popbtn_wrap" style="margin-bottom:20px">
-                  <div class="list result" style="margin-left:-20px; width:107%">
+                  <div class="list result" style="margin-left:-25px; width:107%">
                     <table>
                       <colgroup>
                         <col style="width:15%;">
                         <col style="width:15%;">
-                        <col style="width:20%;">
+                        <col style="width:30%;">
                         <col style="width:20%;">
                         <col style="width:30%;">
                       </colgroup>
@@ -159,7 +159,7 @@
                         <colgroup>
                           <col style="width:15%;">
                           <col style="width:15%;">
-                          <col style="width:20%;">
+                          <col style="width:30%;">
                           <col style="width:20%;">
                           <col style="width:30%;">
                         </colgroup>
@@ -436,11 +436,15 @@ export default {
       this.firmwareFile = e.target.files[0]
       this.file_name = e.target.files[0].name;
       this.file_size = e.target.files[0].size
-      let checkFileNm = this.file_name.indexOf('V')
-      this.file_name2 = this.file_name.substr(checkFileNm, 5)
-      this.file_name2_1 = this.file_name2.substr(0, 2)
-      this.file_name2_2 = this.file_name2.substr(2)
+      let checkFileNm = this.file_name.indexOf('_')
+      this.file_name2 = this.file_name.substr(checkFileNm+1, 4)
+      this.file_name2_1 = this.file_name2.substr(0, 1)
+      this.file_name2_2 = this.file_name2.substr(1)
       this.file_name3 = this.file_name2_1+'.'+this.file_name2_2
+      console.log(checkFileNm)
+      console.log(this.file_name)
+      console.log(this.file_name2)
+      console.log(this.file_name3)
       if(this.file_name3.length < 5){
         alert("펌웨어 파일을 다시 확인하여 주세요")
         this.file_name3 = ''
@@ -737,20 +741,20 @@ export default {
            "Authorization": "Bearer " + sessionStorage.getItem("token")
        }
      })
-       .then(response => {
-         if(response.data.data === true){
-           alert("성공적으로 업로드 되었습니다.")
-           this.uploadpopup = false
-           this.firmwareList()
-         }else{
-          alert("업로드에 실패하였습니다.")
+      .then(response => {
+        if(response.data.data === true){
+          alert("성공적으로 업로드 되었습니다.")
           this.uploadpopup = false
-         }
-       })
-       .catch(error => {
-         this.errorMessage = error.message;
-         console.error("There was an error!", error);
-       });
+          this.firmwareList()
+        }else{
+         alert("업로드에 실패하였습니다.")
+         this.uploadpopup = false
+        }
+      })
+      .catch(error => {
+        this.errorMessage = error.message;
+        console.error("There was an error!", error);
+      });
     },    
     uploadRecord(){
       this.recordpopup = true
@@ -903,9 +907,13 @@ export default {
     changeStateCd(input){
       let result = ''
       switch (input){
-          case "STE001" : result='변경요청중'; break;
-          case "STE002" : result='변경완료'; break;
-          case "STE003" : result='변경실패'; break;
+          case "STE001" : result='요청중'; break;
+          case "STE002" : result='완료'; break;
+          case "STE003" : result='실패(게이트웨이 Flash 이상)'; break;
+          case "STE004" : result='실패(이미지 중복)'; break;
+          case "STE005" : result='실패(배터리 부족)'; break;
+          case "STE006" : result='실패(다운로드 실패)'; break;
+          case "STE007" : result='실패(기타)'; break;
         }
         return result
     },

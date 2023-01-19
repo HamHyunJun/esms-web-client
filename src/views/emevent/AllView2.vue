@@ -242,6 +242,7 @@ export default {
   },
   data() {
     return{
+      state:this.$route.query.state,
       orgNm:'',orgId:'', sido:'', sidoCd:'', sgg:'', sggCd:'', s_date: '', e_date: '',
       sidoItems:[], sggItems:[], orgmItems:[], typeItems:[], number:[], stateItems:[], changeStateItems:[], recipientItems:[],
       orgSido:'', orgSgg:'', orgCode:'',

@@ -90,10 +90,16 @@ const SettingInstallCheck = () => import('@/views/setting/InstallCheck')
 
 //AS
 const AsAllView = () => import('@/views/as/AllView')
-const SettingAsRequest = () => import('@/views/as/Request')
-const SettingAsConfirm = () => import('@/views/as/Confirm')
-const SettingAsCancel = () => import('@/views/as/Cancel')
-const SettingAsComplete = () => import('@/views/as/Complete')
+const AsRequest = () => import('@/views/as/Request')
+const AsConfirm = () => import('@/views/as/Confirm')
+const AsCancel = () => import('@/views/as/Cancel')
+const AsComplete = () => import('@/views/as/Complete')
+
+//Schedule
+const ScheduleCalendar = () => import('@/views/schedule/Calendar')
+
+//Radar
+const RadarRadarSensor = () => import('@/views/radar/RadarSensor')
 
 Vue.use(Router)
 
@@ -202,6 +208,34 @@ function configRoutes () {
               component: Modals
             }
           ]
+        },{
+          path: 'schedule',
+          redirect: '/schedule/calendar',
+          name: 'Schedule',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'calendar',
+              name: 'Calendar',
+              component: ScheduleCalendar
+            }
+          ]
+        },{
+          path: 'radar',
+          redirect: '/radar/radarSensor',
+          name: 'Radar',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'radarSensor',
+              name: 'RadarSensor',
+              component: RadarRadarSensor
+            }
+          ]
         },
         {
           path: 'as',
@@ -219,22 +253,22 @@ function configRoutes () {
             {
               path: 'request',
               name: 'Request',
-              component: SettingAsRequest
+              component: AsRequest
             },
             {
               path: 'confirm',
               name: 'Confirm',
-              component: SettingAsConfirm
+              component: AsConfirm
             },
             {
               path: 'cancel',
               name: 'Cancel',
-              component: SettingAsCancel
+              component: AsCancel
             },
             {
               path: 'complete',
               name: 'Complete',
-              component: SettingAsComplete
+              component: AsComplete
             }
           ]
         },

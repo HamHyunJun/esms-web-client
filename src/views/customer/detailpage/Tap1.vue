@@ -114,8 +114,10 @@
                             </tr>
                         </thead>
                     </table>
-                    
                     <div class="tbody htype-05">
+                        <div v-if="this.pending" style="text-align: center;">
+                        <img src="../../../assets/images/loading.png"  />
+                    </div>
                         <table>
                             <colgroup>
                                 <col style="width:10%;">
@@ -130,11 +132,11 @@
                                     <td>{{num(index+1)}}</td>
                                     <td>{{locationCode(item.sensorLocCd)}}</td>
                                     <td v-if="sensorList === 'act' || sensorList === 'door'">{{item.sensorIndex}}</td>
-                                    <!-- <td>{{item.measureDtime}}</td> //원본
-                                    <td>{{item.regDtime}}</td> -->
                                     <td>{{item.measureDtime}}</td>
-                                    <td v-if="sensorList === 'door'">{{item.measureDtime}}</td>
-                                    <td v-else>{{item.regDtime}}</td>
+                                    <td>{{item.reportDtime}}</td>
+                                    <!-- <td>{{item.measureDtime}}</td>
+                                    <td v-if="sensorList === 'door'">{{item.reportDtime}}</td>
+                                    <td v-else>{{item.reportDtime}}</td> -->
                                     <td>{{item.measureValue}}</td>
                                 </tr>
                             </tbody>
@@ -183,6 +185,7 @@ import pagination from "../../pages/pagination.vue"
         ,{text: '화장실', value: 14},{text: '화장실2', value: 15},{text: '주방', value: 16},{text: '주방2', value: 17},{text: '작은방', value: 18},{text: '작은방2', value: 19} ],
         doorData:[{text: '도어감지기 정보', value: ''},{text: '전체', value:20},{text: '현관', value: 21},{text: '뒷문', value: 22}, ],
         selectedValue : null,
+        pending:false,
         sensorsTmp1Data: [],
         sensorsTmp2Data: [],
         sensorsTmp3Data: [],
@@ -199,6 +202,9 @@ import pagination from "../../pages/pagination.vue"
      }
    },
   methods: {
+    delay(){
+        this.pending = true
+    },
     pagingMethod(page) {
         this.listData = this.sensorsData.slice(
           (page - 1) * this.limit,
@@ -264,6 +270,7 @@ import pagination from "../../pages/pagination.vue"
     },
     async getSensorsData(input,input2,input3,input4){
         let code = input ? input : input2 ? input2 : input3 ? input3 :  input4 
+        this.delay()
         //드롭다운 코드화 및 값 설정
         // switch (code){
         //   case 1 : this.selectedValue = 'all'; break;
@@ -303,7 +310,6 @@ import pagination from "../../pages/pagination.vue"
           case 21 : this.selectedValue = 'TPE004'; break;
           case 22 : this.selectedValue = 'TPE004'; break;
         }
-        
         //드롭다운 코드화 및 라벨 설정
     //     switch (code){
     //       case 2 : this.labelText="온도"; this.codeText=" °C"; break;
@@ -376,7 +382,11 @@ import pagination from "../../pages/pagination.vue"
                 let lengthTmp = []
                 lengthTmp = res.data
                 console.log(lengthTmp)
-
+                if(lengthTmp.totalCount === 0){
+                    this.pending = false
+                    console.log("this1")
+                }
+                
                 if(this.selectedValue==="TPE006"||this.selectedValue==="TPE007"||this.selectedValue==="TPE008"){
                     for(let i=0; i <lengthTmp.totalCount ;i++ ){
                         tmpData = res.data.data[i]
@@ -390,11 +400,13 @@ import pagination from "../../pages/pagination.vue"
                             sensorLocCd: tmpData.sensorLocCd,
                             measureDtime: moment(tmpData.measureDtime).subtract(tmpData.intervalTime*(tmp.length-1), 's').add(tmpData.intervalTime*j, 's').format('YYYY-MM-DD HH:mm:ss'),
                             regDtime : tmpData.regDtime,
+                            reportDtime : tmpData.reportDtime
                         })
                         this.sensorList = ''
                         }
-                        
                     }
+                    this.pending=false
+                    console.log(this.sensorsData[0])
                 }else if(this.selectedValue==="TPE005"||this.selectedValue==="TPE011"){
                     for(let i=0; i <lengthTmp.totalCount ;i++ ){
                         tmpData = res.data.data[i]
@@ -408,9 +420,11 @@ import pagination from "../../pages/pagination.vue"
                                 sensorLocCd: tmpData.sensorLocCd,
                                 measureDtime: moment(tmpData.measureDtime).subtract(tmpData.intervalTime*(tmp.length-1), 's').add(tmpData.intervalTime*j, 's').format('YYYY-MM-DD HH:mm:ss'),
                                 regDtime : tmpData.regDtime,
+                                reportDtime : tmpData.reportDtime
                             })
                         }
                         this.sensorList = ''
+                        this.pending=false
                     }
                 }else if(this.selectedValue==="TPE012"){
                     for(let i=0; i <lengthTmp.totalCount ;i++ ){
@@ -425,11 +439,12 @@ import pagination from "../../pages/pagination.vue"
                                 sensorLocCd: tmpData.sensorLocCd,
                                 measureDtime: moment(tmpData.measureDtime).subtract(tmpData.intervalTime*(tmp.length-1), 's').add(tmpData.intervalTime*j, 's').format('YYYY-MM-DD HH:mm:ss'),
                                 regDtime : tmpData.regDtime,
+                                reportDtime : tmpData.reportDtime
                             })
                         
                         }
                         this.sensorList = ''
-                        
+                        this.pending=false
                     }
                 }else if(this.selectedValue==="TPE002"){
                     for(let i=0; i <lengthTmp.totalCount ;i++ ){
@@ -445,9 +460,11 @@ import pagination from "../../pages/pagination.vue"
                             sensorLocCd: tmpData.sensorLocCd,
                             measureDtime: moment(tmpData.measureDtime).subtract(tmpData.intervalTime*(tmp.length-1), 's').add(tmpData.intervalTime*j, 's').format('YYYY-MM-DD HH:mm:ss'),
                             regDtime : tmpData.regDtime,
+                            reportDtime : tmpData.reportDtime
                         })
                         }
                         this.sensorList = 'act'
+                        this.pending=false
                     }
                 }else if(this.selectedValue==="TPE004"){
                     for(let i=0; i <lengthTmp.totalCount ;i++ ){
@@ -463,9 +480,11 @@ import pagination from "../../pages/pagination.vue"
                                 sensorLocCd: tmpData.sensorLocCd,
                                 measureDtime: moment(tmpData.measureDtime).subtract(tmpData.intervalTime*(tmp.length-1), 's').add(tmpData.intervalTime*j, 's').format('YYYY-MM-DD HH:mm:ss'),
                                 regDtime : tmpData.regDtime,
+                                reportDtime : tmpData.reportDtime
                             })     
                         }
                         this.sensorList = 'door'
+                        this.pending=false
                     }
                 }
             })
@@ -484,6 +503,9 @@ import pagination from "../../pages/pagination.vue"
                 this.sensorsTmp1Data= []
                 let lengthTmp = []
                 lengthTmp = res.data
+                if(lengthTmp.totalCount === 0){
+                    this.pending = false
+                }
                 for(let i=0; i <lengthTmp.totalCount ;i++ ){
                     tmpData = res.data.data[i]
                     tmp = res.data.data[i].measureValue.split(',')
@@ -501,6 +523,7 @@ import pagination from "../../pages/pagination.vue"
                 }
                 console.log(this.sensorsTmp1Data)
                 this.sensorList = ''
+                this.pending=false
             })
             .catch(error => {
                 console.log("fail to load")
@@ -516,7 +539,9 @@ import pagination from "../../pages/pagination.vue"
                 this.sensorsTmp2Data= []
                 let lengthTmp = []
                 lengthTmp = res.data
-                
+                if(lengthTmp.totalCount === 0){
+                    this.pending = false
+                }
                 for(let i=0; i <lengthTmp.totalCount ;i++ ){
                     tmpData = res.data.data[i]
                     tmp = res.data.data[i].measureValue.split(',')
@@ -534,6 +559,7 @@ import pagination from "../../pages/pagination.vue"
                     }
                 }
                 this.sensorList = ''
+                this.pending=false
             })
             .catch(error => {
                 console.log("fail to load")
@@ -549,7 +575,9 @@ import pagination from "../../pages/pagination.vue"
                 this.sensorsTmp3Data= []
                 let lengthTmp = []
                 lengthTmp = res.data
-                
+                if(lengthTmp.totalCount === 0){
+                    this.pending = false
+                }
                 for(let i=0; i <lengthTmp.totalCount ;i++ ){
                     tmpData = res.data.data[i]
                     tmp = res.data.data[i].measureValue.split(',')
@@ -567,7 +595,7 @@ import pagination from "../../pages/pagination.vue"
                     }
                 }
                 this.sensorList = ''
-                console.log(this.sensorsTmp3Data)
+                this.pending=false
             })
             .catch(error => {
                 console.log("fail to load")
@@ -620,13 +648,16 @@ import pagination from "../../pages/pagination.vue"
         this.total = this.sensorsData.length
           this.page = 1
           this.pagingMethod(this.page)
-        if(this.sensorsData.length !== 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
-            alert("성공적으로 조회 되었습니다.")
-            this.searchCheck2 = 0
-        }else if(this.sensorsData.length === 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
-            alert("조회 결과가 존재하지 않습니다.")
-            this.searchCheck2 = 0
-        }
+          console.log(this.searchCheck1)
+          console.log(this.searchCheck2)
+        // if(this.sensorsData.length !== 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
+        //     alert("성공적으로 조회 되었습니다.")
+        //     this.searchCheck2 = 0
+        // if(this.sensorsData.length === 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
+        //     //this.pending=false
+        //     alert("조회 결과가 존재하지 않습니다.")
+        //     this.searchCheck2 = 0
+        // }
     },
     getfilteringData(){
         const url  = `/admin/recipients/${this.recipientId}/sensors/measures?sensorTypeCd=TPE006&measureStartDate=2022-03-30&measureEndDate=2022-04-04`

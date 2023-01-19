@@ -149,7 +149,7 @@
                                     <td>{{changeRecipientPhoneno(item.managerMobileNumber)}}</td>
                                     <td>{{item.eventDesc}}</td>
                                     <td>{{item.occurDtime}}</td>
-                                    <td>{{item.regDtime}}</td>
+                                    <td>{{item.reportDtime}}</td>
                                     
                                 </tr>                                
                             </tbody>

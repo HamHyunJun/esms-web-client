@@ -315,7 +315,7 @@ export default {
     this.getSidoData();
     this.getSggData();
     this.getOrgmData();
-    this.getRecipientData();
+    // this.getRecipientData();
     this.s_date=moment().subtract(6, 'days').format('YYYY-MM-DD');
     this.e_date=moment().format('YYYY-MM-DD');
     this.cBirthday=moment().format('YYYY-MM-DD');
@@ -417,39 +417,39 @@ export default {
           console.error("There was an error!", error);
         });
     },
-    getRecipientData() {
-      let addrCd = ''
-      let occurStartDate = this.s_date
-      let occurEndDate = this.e_date
-      if(this.selectedSidoItems != '' && this.selectedSggItems == ''){
-        addrCd = this.sidoCd.substring(0,2)
-      }else if(this.selectedSggItems != ''){
-        if(this.sggCd.startsWith('0', 4) === true){
-          addrCd = this.sggCd.substring(0,4)
-        }else{
-          addrCd = this.sggCd.substring(0,5)
-        }
-      }else{
-        addrCd = ''
-      }
-      let uri = ''
-        uri = this.$store.state.serverApi
-        +"/admin/emergencys/active-unsensing-events?pageIndex=1&recordCountPerPage=1000"
-        +"&addrCd="+addrCd
-        +"&orgId="+this.selectedOrgItems
-        +"&recipientNm="+this.selectedRecipientNm
-        +"&occurStartDate="+occurStartDate
-        +"&occurEndDate="+occurEndDate;
-      axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
-          .then(response => {
-            this.recipientItems = response.data.data
-            this.NCount = this.recipientItems.length
-          })
-          .catch(error => {
-            this.errorMessage = error.message;
-            console.error("There was an error!", error);
-          });
-    },
+    // getRecipientData() {
+    //   let addrCd = ''
+    //   let occurStartDate = this.s_date
+    //   let occurEndDate = this.e_date
+    //   if(this.selectedSidoItems != '' && this.selectedSggItems == ''){
+    //     addrCd = this.sidoCd.substring(0,2)
+    //   }else if(this.selectedSggItems != ''){
+    //     if(this.sggCd.startsWith('0', 4) === true){
+    //       addrCd = this.sggCd.substring(0,4)
+    //     }else{
+    //       addrCd = this.sggCd.substring(0,5)
+    //     }
+    //   }else{
+    //     addrCd = ''
+    //   }
+    //   let uri = ''
+    //     uri = this.$store.state.serverApi
+    //     +"/admin/emergencys/active-unsensing-events?pageIndex=1&recordCountPerPage=1000"
+    //     +"&addrCd="+addrCd
+    //     +"&orgId="+this.selectedOrgItems
+    //     +"&recipientName="+this.selectedRecipientNm
+    //     +"&occurStartDate="+occurStartDate
+    //     +"&occurEndDate="+occurEndDate;
+    //   axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
+    //       .then(response => {
+    //         this.recipientItems = response.data.data
+    //         this.NCount = this.recipientItems.length
+    //       })
+    //       .catch(error => {
+    //         this.errorMessage = error.message;
+    //         console.error("There was an error!", error);
+    //       });
+    // },
     changeRecipientPhoneno(phone){
       if(phone){
         let changeNumber = phone.replace(/[^0-9]/, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
@@ -491,7 +491,8 @@ export default {
       }*/else{
         this.checkStartDate = this.s_date
         this.checkEndDate = this.e_date
-        this.getRecipientData();
+        this.getAsRequestList()
+        // this.getRecipientData();
         
       }
     },
@@ -519,10 +520,10 @@ export default {
     changeAsStateCode(input){
       let result=''
       switch (input){
-          case "STE005" : result='AS요청'; break;
-          case "STE006" : result='AS접수'; break;
-          case "STE007" : result='AS완료'; break;
-          case "STE008" : result='AS취소'; break;
+          case "STE001" : result='AS요청'; break;
+          case "STE002" : result='AS접수'; break;
+          case "STE003" : result='AS완료'; break;
+          case "STE004" : result='AS취소'; break;
         }
         return result
     },
@@ -535,7 +536,27 @@ export default {
         return result
     },
     async getAsRequestList(){
-        const url  = this.$store.state.serverApi + `/admin/as/list.do?asStateCd=STE006&pageIndex=0&recordCountPerPage=1000`
+      let addrCd = ''
+      if(this.selectedSidoItems != '' && this.selectedSggItems == ''){
+        addrCd = this.sidoCd.substring(0,2)
+      }else if(this.selectedSggItems != ''){
+        if(this.sggCd.startsWith('0', 4) === true){
+          addrCd = this.sggCd.substring(0,4)
+        }else{
+          addrCd = this.sggCd.substring(0,5)
+        }
+      }else{
+        addrCd = ''
+      }
+        const url  = this.$store.state.serverApi 
+        +"/admin/as/list.do?pageIndex=0&recordCountPerPage=1000"
+        +"&addrCd="+addrCd
+        +"&recipientName="+this.selectedRecipientNm
+        +"&equipTypeCd="+this.selectedEquipType
+        +"&orgId="+this.selectedOrgItems       
+        +"&asStateCd="+'STE002'
+        +"&startDate="+this.s_date
+        +"&endDate="+this.e_date;
             await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
                 this.asRequestData = res.data.data

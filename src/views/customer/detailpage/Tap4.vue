@@ -65,10 +65,10 @@
                         <col style="width:13%;">
                         <col style="width:10%;">
                         <col style="width:12%;">
-                        <col style="width:10%;">
+                        <col style="width:8%;">
                         <col style="width:12%;">
-                        <col style="width:12%;">
                         <col style="width:10%;">
+                        <col style="width:14%;">
                         <col style="width:14%;">
                         <col style="width:14%;">
                       </colgroup>
@@ -94,10 +94,10 @@
                             <col style="width:13%;">
                             <col style="width:10%;">
                             <col style="width:12%;">
-                            <col style="width:10%;">
+                            <col style="width:8%;">
                             <col style="width:12%;">
-                            <col style="width:12%;">
                             <col style="width:10%;">
+                            <col style="width:14%;">
                             <col style="width:14%;">
                             <col style="width:14%;">
                         </colgroup>
@@ -110,9 +110,67 @@
                             <td>{{item.batteryValue+'('+changeTaGaBattery(item.batteryValue)+')'}}</td>
                             <td>{{item.keepAliveRcvYn===0?'정상':item.keepAliveRcvYn===1?'비정상':'미수신'}}</td>
                             <td>{{item.rssi+'('+changeRssi(item.rssi)+')'}}</td>
-                            <td>{{item.typeCd==='1'?'주기' : '기타'}}</td>
+                            <td>{{changetypeCd(item.typeCd)}}</td>
                             <td>{{item.stateMeasureDtime}}</td>
                             <td>{{item.reportDtime}}</td>
+                          </tr>                                   
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div> 
+            </div>
+          </div>
+          <div id="" class="popupLayer" v-if="beforeTBpopup === true">
+        <div class="popup_wrap" style="width:100%">
+          <div class="title_wrap">
+            <div class="title">상태이력</div>
+            <button type="button" class="btn_close" @click="beforeTBpopup = false">닫기</button>
+          </div>
+          <div class="popbtn_wrap" style="margin-bottom:20px;">
+                  <div class="list result" style="margin-left:-30px; width:107%">
+                    <table>
+                      <colgroup>
+                        <!--<col style="width:10%;">-->
+                        <col style="width:13%;">
+                        <col style="width:10%;">
+                        <col style="width:12%;">
+                        <col style="width:10%;">
+                        <col style="width:12%;">
+                        <col style="width:12%;">
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <!-- <th scope="col">대상자ID</th> -->
+                          <th scope="col">통신상태</th>
+                          <th scope="col">점검대상여부</th>
+                          <th scope="col">배터리</th>
+                          <th scope="col">게이트웨이연결상태</th>
+                          <th scope="col">상태측정일시</th>
+                          <th scope="col">서버보고일시</th>
+                        </tr>
+                      </thead>
+                    </table>
+                    <div class="tbody">
+                      <table>
+                        <colgroup>
+                          <!--<col style="width:10%;">-->
+                            <col style="width:13%;">
+                            <col style="width:10%;">
+                            <col style="width:12%;">
+                            <col style="width:10%;">
+                            <col style="width:12%;">
+                            <col style="width:12%;">
+                        </colgroup>
+                        <tbody >    
+                          <tr v-for="(item,index) in beforeTBItems" v-bind:key="index">
+                            <!--<td>{{item.recipientId}}</td>-->
+                            <td>{{changeTabletCd(item.comStateCd)+'('+changeTabletCd2(item.comStateCd)+')'}}</td>
+                            <td>{{item.checkYnCd===0? '정상':'점검대상'}}</td>
+                            <td>{{item.batteryValue+'('+changeTaGaBattery(item.batteryValue)+')'}}</td>
+                            <td>{{item.gwLinkYnNm}}</td>
+                            <td>{{item.stateMeasureDtime}}</td>
+                            <td>{{item.regDtime}}</td>
                           </tr>                                   
                         </tbody>
                       </table>
@@ -136,7 +194,8 @@
                         <col style="width:10%;">
                         <col style="width:12%;">
                         <col style="width:10%;">
-                        <col style="width:12%;">
+                        <col style="width:10%;">
+                        <col style="width:8%;">
                         <col style="width:14%;">
                         <col style="width:14%;">
                       </colgroup>
@@ -148,6 +207,7 @@
                           <th scope="col">신호세기</th>
                           <th scope="col">점검대상여부</th>
                           <th scope="col">Keep-Alive</th>
+                          <th scope="col">구분</th>
                           <th scope="col">상태측정일시</th>
                           <th scope="col">서버보고일시</th>
                         </tr>
@@ -161,7 +221,8 @@
                             <col style="width:10%;">
                             <col style="width:12%;">
                             <col style="width:10%;">
-                            <col style="width:12%;">
+                            <col style="width:10%;">
+                            <col style="width:8%;">
                             <col style="width:14%;">
                             <col style="width:14%;">
                         </colgroup>
@@ -173,6 +234,7 @@
                             <td>{{item.rssi+"("+changeRssi(item.rssi)+")"}}</td>
                             <td>{{item.checkYnCd===0?'정상':'점검대상'}}</td>
                             <td>{{item.keepAliveRcvYn===0?'정상':item.keepAliveRcvYn===1?'비정상':'미수신'}}</td>
+                            <td>{{changetypeCdSensor(item.typeCd)}}</td>
                             <td>{{item.stateMeasureDtime}}</td>
                             <td>{{item.reportDtime}}</td>
                           </tr>                                   
@@ -396,7 +458,7 @@
                             <col style="width:10%;">
                             <col style="width:10%;">
                             <col style="width:10%;">
-                            <col style="width:16%;">
+                            <!-- <col style="width:16%;"> -->
                             <col style="width:16%;">
                         </colgroup>
                         <thead class="thead htype-01">
@@ -408,8 +470,8 @@
                                 <th scope="col">설치버전</th>
                                 <th scope="col">최신버전</th>
                                 <th scope="col">관리번호</th>
+                                <!-- <th scope="col">등록일시</th> -->
                                 <th scope="col">등록일시</th>
-                                <th scope="col">수정일시</th>
                             </tr>
                         </thead>
                     </table>
@@ -422,7 +484,7 @@
                                 <col style="width:10%;">
                                 <col style="width:10%;">
                                 <col style="width:10%;">
-                                <col style="width:16%;">
+                                <!-- <col style="width:16%;"> -->
                                 <col style="width:16%;">
                             </colgroup>
                             <tbody v-if="!this.getCSensorsData">
@@ -433,7 +495,7 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td></td>
+                                    <!-- <td></td> -->
                                     <td></td>
                                 </tr>
                             </tbody>
@@ -460,8 +522,8 @@
                                     </td>
                                     <td v-else-if="index===emphasisValue" style="font-weight: bolder">{{!item.incomeNm? '' : item.incomeNm}}</td>
                                     <td v-else>{{!item.incomeNm? '' : item.incomeNm}}</td>
-                                    <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.regDtime}}</td>
-                                    <td v-else>{{item.regDtime}}</td>
+                                    <!-- <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.regDtime}}</td>
+                                    <td v-else>{{item.regDtime}}</td> -->
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.updDtime}}</td>
                                     <td v-else>{{item.updDtime}}</td>
                                 </tr>
@@ -490,14 +552,14 @@
                     <table>
                         <colgroup>
                             <col style="width:10%;">
-                            <col style="width:10%;">
-                            <col style="width:12%;">
-                            <col style="width:10%;">
-                            <col style="width:10%;">
-                            <col style="width:10%;">
-                            <col style="width:8%;">
-                            <col style="width:14%;">
-                            <col style="width:14%;">
+                            <col style="width:9%;">
+                            <col style="width:11%;">
+                            <col style="width:9%;">
+                            <col style="width:9%;">
+                            <col style="width:9%;">
+                            <col style="width:11%;">
+                            <col style="width:13%;">
+                            <col style="width:13%;">
                         </colgroup>
                         <thead class="thead htype-01">
                             <tr>
@@ -517,14 +579,14 @@
                         <table>
                             <colgroup>
                                 <col style="width:10%;">
-                                <col style="width:10%;">
-                                <col style="width:12%;">
-                                <col style="width:10%;">
-                                <col style="width:10%;">
-                                <col style="width:10%;">
-                                <col style="width:8%;">
-                                <col style="width:14%;">
-                                <col style="width:14%;">
+                                <col style="width:9%;">
+                                <col style="width:11%;">
+                                <col style="width:9%;">
+                                <col style="width:9%;">
+                                <col style="width:9%;">
+                                <col style="width:11%;">
+                                <col style="width:13%;">
+                                <col style="width:13%;">
                             </colgroup>
                             <tbody v-if="connectTap===2 && beforeGatewayToggle===0" >
                                 <tr>
@@ -534,7 +596,7 @@
                                     <td>{{!this.getCGatewayData2? '':this.getCGatewayData2.batteryValue+"("+changeTaGaBattery(getCGatewayData2.batteryValue)+")"}}</td>
                                     <td>{{!this.getCGatewayData2? '':this.getCGatewayData2.keepAliveRcvYn===0?'정상':this.getCGatewayData2.keepAliveRcvYn===1?'비정상':'미수신'}}</td>
                                     <td>{{!this.getCGatewayData2? '':this.getCGatewayData2.rssi+"("+changeRssi(this.getCGatewayData2.rssi)+")"}}</td>
-                                    <td>{{!this.getCGatewayData2? '':this.getCGatewayData2.typeCd==='1'?'주기':'기타'}}</td>
+                                    <td>{{!this.getCGatewayData2? '':this.getCGatewayData2.typeCd===null || this.getCGatewayData2.typeCd===undefined ? '' : changetypeCd(this.getCGatewayData2.typeCd)}}</td>
                                     <td>{{!this.getCGatewayData2? '':this.getCGatewayData2.stateMeasureDtime}}</td>
                                     <td>{{!this.getCGatewayData2? '':this.getCGatewayData2.reportDtime}}</td>
                                 </tr>
@@ -567,6 +629,9 @@
                             <button type="button" :class="beforeTabletToggle===0? 'btn on': 'btn'" @click="getNowTabletToggle">최신정보</button>
                             <button type="button" :class="beforeTabletToggle===1? 'btn on': 'btn'" @click="getBeforeVersionTablets">직전정보</button>
                         </div>
+                    </div>
+                    <div class="btn_area" style="float:right" v-if="connectTap===3 && beforeTabletToggle===1">
+                      <button type="button" style="margin-right:10px" class="btn form2" @click="beforeTabletpopup()">더보기</button>
                     </div>
                 </div>
                 <div class="list">
@@ -607,7 +672,7 @@
                                     <td>{{!this.getCTabletsData? '':this.getCTabletsData2.batteryValue+"("+changeTaGaBattery(this.getCTabletsData2.batteryValue)+")"}}</td>
                                     <td>{{!this.getCTabletsData? '':this.getCTabletsData2.gwLinkYnNm}}</td>
                                     <td>{{!this.getCTabletsData? '':this.getCTabletsData2.stateMeasureDtime}}</td>
-                                    <td>{{!this.getCTabletsData? '':this.getCTabletsData2.regDtime}}</td>
+                                    <td>{{!this.getCTabletsData? '':this.getCTabletsData2.reportDtime}}</td>
                                 </tr>
                             </tbody>
                             <tbody v-if="this.beforeVersionTabletsData && connectTap===3 && beforeTabletToggle===1">
@@ -617,7 +682,7 @@
                                     <td>{{!this.getCTabletsData? '':this.beforeVersionTabletsData.batteryValue+"("+changeTaGaBattery(this.beforeVersionTabletsData.batteryValue)+")"}}</td>
                                     <td>{{!this.getCTabletsData? '':this.beforeVersionTabletsData.gwLinkYnNm}}</td>
                                     <td>{{!this.getCTabletsData? '':this.beforeVersionTabletsData.stateMeasureDtime}}</td>
-                                    <td>{{!this.getCTabletsData? '':this.beforeVersionTabletsData.regDtime}}</td>
+                                    <td>{{!this.getCTabletsData? '':this.beforeVersionTabletsData.reportDtime}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -643,13 +708,14 @@
                 <div class="list">
                     <table>
                         <colgroup>
-                            <col style="width:14%;">
-                            <col style="width:14%;">
-                            <col style="width:14%;">
-                            <col style="width:14%;">
-                            <col style="width:14%;">
-                            <col style="width:14%;">
-                            <col style="width:auto;">
+                            <col style="width:11%;">
+                            <col style="width:11%;">
+                            <col style="width:11%;">
+                            <col style="width:11%;">
+                            <col style="width:11%;">
+                            <col style="width:11%;">
+                            <col style="width:13%;">
+                            <col style="width:13%;">
                         </colgroup>
                         <thead class="thead htype-01">
                             <tr>
@@ -658,6 +724,7 @@
                                 <th scope="col">{{connectTap===3?'사용여부':"신호세기"}}</th>
                                 <th scope="col">점검대상여부</th>
                                 <th scope="col">Keep-Alive</th>
+                                <th scope="col">구분</th>
                                 <th scope="col">상태측정일시</th>
                                 <th scope="col">서버보고일시</th>
                             </tr>
@@ -666,13 +733,14 @@
                     <div class="tbody ">
                         <table>
                             <colgroup>
-                                <col style="width:14%;">
-                                <col style="width:14%;">
-                                <col style="width:14%;">
-                                <col style="width:14%;">
-                                <col style="width:14%;">
-                                <col style="width:14%;">
-                                <col style="width:auto;">
+                                <col style="width:11%;">
+                                <col style="width:11%;">
+                                <col style="width:11%;">
+                                <col style="width:11%;">
+                                <col style="width:11%;">
+                                <col style="width:11%;">
+                                <col style="width:13%;">
+                                <col style="width:13%;">
                             </colgroup>
                             <tbody v-if="this.getBSensorsData && connectTap===1 && beforeSensorToggle===0">
                                 <tr>
@@ -681,8 +749,9 @@
                                     <td>{{!this.getBSensorsData? '': this.getBSensorsData.rssi===null? '' : this.getBSensorsData.rssi+"("+changeRssi(this.getBSensorsData.rssi)+")"}}</td>
                                     <td>{{this.getBSensorsData.checkYnCd ===null|| this.getBSensorsData.checkYnCd ===undefined ? '' : this.getBSensorsData.checkYnCd===0?'정상':'점검대상'}}</td>
                                     <td>{{!this.getBSensorsData? '':this.getBSensorsData.keepAliveRcvYn===0?'정상':this.getBSensorsData.keepAliveRcvYn===1?'비정상':'미수신'}}</td>
+                                    <td>{{!this.getBSensorsData? '':this.getBSensorsData.typeCd===null || this.getBSensorsData.typeCd===undefined ? '':changetypeCdSensor(this.getBSensorsData.typeCd)}}</td>
                                     <td>{{!this.getBSensorsData.stateMeasureDtime? '':this.getBSensorsData.stateMeasureDtime}}</td>
-                                    <td>{{!this.getBSensorsData.updDtime? '':this.getBSensorsData.updDtime}}</td>
+                                    <td>{{!this.getBSensorsData.reportDtime? '':this.getBSensorsData.reportDtime}}</td>
                                 </tr>
                             </tbody>
                             <tbody v-if="this.beforeVersionSensorsData && connectTap===1 && beforeSensorToggle===1">
@@ -693,6 +762,7 @@
                                     <td>{{!this.beforeVersionSensorsData? '': this.beforeVersionSensorsData.rssi===null? '': this.beforeVersionSensorsData.rssi+"("+changeRssi(this.beforeVersionSensorsData.rssi)+")"}}</td>
                                     <td>{{this.beforeVersionSensorsData.checkYnCd ===null|| this.beforeVersionSensorsData.checkYnCd ===undefined ? '' : this.beforeVersionSensorsData.checkYnCd===0?'정상':'점검대상'}}</td>
                                     <td>{{!this.beforeVersionSensorsData? '': this.beforeVersionSensorsData.keepAliveRcvYn===0?'정상':this.beforeVersionSensorsData.keepAliveRcvYn===1?'비정상':'미수신'}}</td>
+                                    <td>{{!this.beforeVersionSensorsData? '': this.beforeVersionSensorsData.typeCd===null || this.beforeVersionSensorsData.typeCd===undefined ? '':changetypeCdSensor(this.beforeVersionSensorsData.typeCd)}}</td>
                                     <td>{{!this.beforeVersionSensorsData.stateMeasureDtime? '': this.beforeVersionSensorsData.stateMeasureDtime}}</td>
                                     <td>{{!this.beforeVersionSensorsData.reportDtime? '': this.beforeVersionSensorsData.reportDtime}}</td>
                                 </tr>
@@ -736,6 +806,7 @@ import axios from "axios";
       BbatteryValue:null,
       firmwarelist:[], reverseCheckpopup:false, cmdA4postpopup:false,
       firmwareCData:'', beforeGWpopup:false, beforeGWItems:[], beforeSNpopup:false, beforeSNItems:[],
+      beforeTBItems:[], beforeTBpopup:false,
       saveChangeData:'', changeIncomeNm:'',changeIncomeNm2:'', changeSensorId:'', changeSensorData:'', radiocheck:'', inputCheck:'',
       emphasisValue:'',
       indexNum:0,
@@ -767,6 +838,7 @@ import axios from "axios";
             this.getCSensorsData = tmpData
             this.indexNum = this.getCSensorsData[0].sensorId
             this.getBSensorsData = tmpData[0]
+            
           })
           .catch(error => {
               console.log("fail to load")
@@ -813,6 +885,7 @@ import axios from "axios";
           if(this.getBSensorsData.comStateCd){
                 this.getSensorTakeData();
             }
+            this.getNowSensorToggle()
     },
     // 센서 통신상태 이름 변경 함수
     async getSensorTakeData(){
@@ -852,6 +925,7 @@ import axios from "axios";
         }
         if(this.getBSensorsData.comStateCd){
             this.getSensorTakeData();
+            this.getNowSensorToggle()
         }
         
     },
@@ -920,6 +994,7 @@ import axios from "axios";
           .then(res => {
             this.getCTabletsData = res.data.data
             if(this.getCTabletsData.length===0){alert("연결된 태블릿이 존재하지 않습니다")}
+            console.log(this.getCTabletsData)
             this.getCTablet()
           })
           .catch(error => {
@@ -975,6 +1050,7 @@ import axios from "axios";
         if(this.indexNum === 0){
             console.log("this")
         }
+        console.log(this.indexNum)
         const url  = this.$store.state.serverApi + `/admin/recipients/sensors/statehistory?sensorId=${this.indexNum}`
         await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
@@ -998,7 +1074,7 @@ import axios from "axios";
         this.beforeSensorToggle = 1
         this.tmpIdx = this.getCSensorsData[0];
         this.getCSensorsData2 = ''
-
+        console.log(this.getBSensorsData.sensorId)
         let url  = this.$store.state.serverApi + `/admin/recipients/sensors/statehistory?recordCountPerPage=12&sensorId=${this.getBSensorsData.sensorId}`
         await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
@@ -1023,12 +1099,21 @@ import axios from "axios";
     async getBeforeVersionTablets(){
         this.beforeTabletToggle = 1
         let beforetablet=[]
+        this.beforeTBItems = []
         //this.tmpIdx = this.getCSensorsData[0].sensorId;
-        const url  = this.$store.state.serverApi + `/admin/recipients/tablet/statehistory?tabletId=${this.getCTabletsData.tabletId}`
+        const url  = this.$store.state.serverApi + `/admin/recipients/tablet/statehistory?recordCountPerPage=12&tabletId=${this.getCTabletsData.tabletId}`
             await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
                 this.beforetablet = res.data.data
+                console.log(this.beforetablet)
                 this.beforeVersionTabletsData = this.beforetablet[1]
+                for(let i=2; i<this.beforetablet.length; i++){
+                    this.beforeTBItems.push(this.beforetablet[i])
+                }
+            this.beforeTBItems = this.beforeTBItems.slice().sort(function(a,b){
+                return new Date(b.regDtime) - new Date(a.regDtime)
+            })
+            console.log(this.beforeTBItems)
             })
             .catch(error => {
                 console.log("fail to load")
@@ -1157,6 +1242,9 @@ import axios from "axios";
     },
     beforeSensorpopup(){
         this.beforeSNpopup = true
+    },
+    beforeTabletpopup(){
+        this.beforeTBpopup = true
     },
     reversepopup(){
         this.reverseCheckpopup = true
@@ -1357,6 +1445,27 @@ import axios from "axios";
             case "TAK001" : result='정상'; break;
             case "TAK002" : result='비정상'; break;
             case "TAK003" : result='미수신'; break;
+        }
+        return result
+     },
+     changetypeCd(input){
+        let result
+        switch(input){
+            case '1' : result='주기'; break;
+            case '2' : result='사용자 등록'; break;
+            case '3' : result='역점검'; break;
+            case '4' : result='모니터 연결/분리'; break;
+            case '5' : result='기타'; break;
+        }
+        return result
+     },
+     changetypeCdSensor(input){
+        let result
+        switch(input){
+            case '1' : result='주기'; break;
+            case '2' : result='사용자 등록'; break;
+            case '3' : result='역점검'; break;
+            case '4' : result='기타'; break;
         }
         return result
      },

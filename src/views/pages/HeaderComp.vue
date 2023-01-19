@@ -48,6 +48,13 @@
             <li :class="getDetailPath==='/as/Cancel'? 'on':''"><a href="#"><router-link to ="/as/Cancel">A/S 취소</router-link></a></li>
           </ul>
         </li>
+        <li :class="getPath==='/schedule'? 'drop on':'drop'">
+          <a href="#"><router-link to="/schedule/Calendar" ><i class="ico-6"></i>일정관리</router-link></a>
+          <ul class="sub_menu">
+            <li :class="getDetailPath==='/schedule/Calendar'? 'on':''"><a href="#"><router-link to ="/schedule/Calendar">달력</router-link></a></li>
+          </ul>
+        </li>
+        <li :class="getPath==='/radar'? 'on':''"><a href="#" ><router-link to="/radar/radarSensor" ><i class="ico-7"></i>레이더센서</router-link></a></li>
       </ul>
       <div class="emerg_area">
         <button type="button"  style="margin-right:10px;" :class="Emeventtoggle===0 ? 'btn': 'btn on'" @click="clickEmergency()"><i></i>응급상황 수신</button> 
@@ -198,7 +205,13 @@ export default {
         this.$router.push({
         path : `/emevent/allView2`
       })
-      } 
+      }
+      // if(this.$route.path !==`/emevent/allView`){
+      //   this.$router.push({
+      //   path : `/emevent/allView`,
+      //   query:{state:'STE001'}
+      // })
+      // } 
     },
     clickEquipmentEvent(){
       if(this.$route.path !==`/emevent/EquipmentEvent2`){
@@ -206,6 +219,12 @@ export default {
         path : `/emevent/EquipmentEvent2`
       })
       } 
+      // if(this.$route.path !==`/emevent/EquipmentEvent`){
+      //   this.$router.push({
+      //   path : `/emevent/equipmentEvent`,
+      //   query:{date: moment().subtract(15, 'seconds').format('YYYY-MM-DD HH:mm:ss')}
+      // })
+      // } 
     },
   },
   computed: {
@@ -258,18 +277,24 @@ export default {
 #gnb > ul > li > a i.ico-3{background-image: url(../../assets/images/menu_03.png);}
 #gnb > ul > li > a i.ico-4{background-image: url(../../assets/images/menu_04.png);}
 #gnb > ul > li > a i.ico-5{background-image: url(../../assets/images/menu_05.png);}
+#gnb > ul > li > a i.ico-6{background-image: url(../../assets/images/menu_06.png);}
+#gnb > ul > li > a i.ico-7{background-image: url(../../assets/images/menu_07.png);}
 #gnb > ul > li:hover > a{color: #11B787;}
 #gnb > ul > li:hover > a i.ico-1{background-image: url(../../assets/images/menu_01_on.png);}
 #gnb > ul > li:hover > a i.ico-2{background-image: url(../../assets/images/menu_02_on.png);}
 #gnb > ul > li:hover > a i.ico-3{background-image: url(../../assets/images/menu_03_on.png);}
 #gnb > ul > li:hover > a i.ico-4{background-image: url(../../assets/images/menu_04_on.png);}
 #gnb > ul > li:hover > a i.ico-5{background-image: url(../../assets/images/menu_05_on.png);}
+#gnb > ul > li:hover > a i.ico-6{background-image: url(../../assets/images/menu_06_on.png);}
+#gnb > ul > li:hover > a i.ico-7{background-image: url(../../assets/images/menu_07_on.png);}
 #gnb > ul > li.on > a{color: #11B787;}
 #gnb > ul > li.on > a i.ico-1{background-image: url(../../assets/images/menu_01_on.png);}
 #gnb > ul > li.on > a i.ico-2{background-image: url(../../assets/images/menu_02_on.png);}
 #gnb > ul > li.on > a i.ico-3{background-image: url(../../assets/images/menu_03_on.png);}
 #gnb > ul > li.on > a i.ico-4{background-image: url(../../assets/images/menu_04_on.png);}
 #gnb > ul > li.on > a i.ico-5{background-image: url(../../assets/images/menu_05_on.png);}
+#gnb > ul > li.on > a i.ico-6{background-image: url(../../assets/images/menu_06_on.png);}
+#gnb > ul > li.on > a i.ico-7{background-image: url(../../assets/images/menu_07_on.png);}
 #gnb > ul > li.drop{padding: 0 18px 0 0;background-image: url(../../assets/images/ico_menu_drop.png);background-repeat: no-repeat;background-position: right center;position: relative;}
 #gnb > ul > li.drop:hover{background-image: url(../../assets/images/ico_menu_drop_on.png);}
 #gnb > ul > li.drop.on{background-image: url(../../assets/images/ico_menu_drop_on.png);}

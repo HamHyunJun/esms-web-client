@@ -62,6 +62,9 @@
                         </thead>
                     </table>
                     <div class="tbody htype-01">
+                      <div v-if="this.pending" style="text-align: center;">
+                        <img src="../../../assets/images/loading.png"  />
+                      </div>
                       <table>
                         <colgroup>
                           <col style="width:10%;">
@@ -116,6 +119,7 @@ export default {
       checkEndDate:moment().format('YYYY-MM-DD'),
       searchCheck1 : 1, searchCheck2 : 0,
       errorpopup1: false, errorpopup2: false,
+      pending:false,
 
       listData: [],
       total: '',
@@ -125,6 +129,9 @@ export default {
      }
    },
   methods: {
+    delay(){
+        this.pending = true
+    },
     pagingMethod(page) {
         this.listData = this.call_historys.slice(
           (page - 1) * this.limit,
@@ -183,6 +190,7 @@ export default {
       
     },
     async getCall_historysData(){
+      this.delay()
         const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/call-historys?pageIndex=1&recordCountPerPage=1000&callStartDate=${this.callStartDate}&callEndDate=${this.callEndDate}`
         console.log("call_historys is ")
         await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
@@ -196,13 +204,14 @@ export default {
             if(this.searchCheck1 === 1){
             this.searchCheck1 = 0
         }
-        if(this.call_historys.length !== 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
-            alert("성공적으로 조회 되었습니다.")
-            this.searchCheck2 = 0
-        }else if(this.call_historys.length === 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
-            alert("조회 결과가 존재하지 않습니다.")
-            this.searchCheck2 = 0
-        }
+        this.pending = false
+        // if(this.call_historys.length !== 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
+        //     alert("성공적으로 조회 되었습니다.")
+        //     this.searchCheck2 = 0
+        // }else if(this.call_historys.length === 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
+        //     alert("조회 결과가 존재하지 않습니다.")
+        //     this.searchCheck2 = 0
+        // }
           })
           .catch(error => {
               console.log("fail to load")

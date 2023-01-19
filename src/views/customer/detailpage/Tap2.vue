@@ -67,6 +67,9 @@
                         </thead>
                     </table>
                     <div class="tbody htype-01">
+                      <div v-if="this.pending" style="text-align: center;">
+                        <img src="../../../assets/images/loading.png"  />
+                      </div>
                         <table>
                             <colgroup>
                                 <col style="width:8%;">
@@ -86,18 +89,18 @@
                                     <td>{{item.macAddr}}</td>
                                     <td>{{item.signalStateNm}}</td>
                                     <td>{{!item.testYn ? '실제상황':'테스트'}}</td> 
-                                    <!-- <td>{{item.occurDtime}}</td> //원본
+                                    <td>{{item.occurDtime}}</td>
                                     <td>{{item.rcvDtime}}</td>
                                     <td v-if="item.signalStateCd !== 'STE001'">{{item.closeDtime}}</td>
                                     <td v-else></td>
                                     <td v-if="item.signalStateCd !== 'STE001'">{{item.updDtime}}</td>
+                                    <td v-else></td>
+                                    <!-- <td>{{item.occurDtime}}</td>
+                                    <td>{{item.occurDtime}}</td>
+                                    <td v-if="item.signalStateCd !== 'STE001'">{{item.closeDtime}}</td>
+                                    <td v-else></td>
+                                    <td v-if="item.signalStateCd !== 'STE001'">{{item.closeDtime}}</td>
                                     <td v-else></td> -->
-                                    <td>{{item.occurDtime}}</td>
-                                    <td>{{item.occurDtime}}</td>
-                                    <td v-if="item.signalStateCd !== 'STE001'">{{item.closeDtime}}</td>
-                                    <td v-else></td>
-                                    <td v-if="item.signalStateCd !== 'STE001'">{{item.closeDtime}}</td>
-                                    <td v-else></td>
                                 </tr>   
                                 
                             </tbody>
@@ -136,6 +139,7 @@ import pagination from "../../pages/pagination.vue"
       errorpopup1: false, errorpopup2: false,
       checkStartDate:moment().subtract(6,'days').format('YYYY-MM-DD'),
       checkEndDate:moment().format('YYYY-MM-DD'),
+      pending:false,
 
       listData: [],
       total: '',
@@ -145,6 +149,9 @@ import pagination from "../../pages/pagination.vue"
      }
    },
   methods: {
+    delay(){
+        this.pending = true
+    },
     pagingMethod(page) {
         this.listData = this.emergencys.slice(
           (page - 1) * this.limit,
@@ -203,6 +210,7 @@ import pagination from "../../pages/pagination.vue"
         
     },
     async getEmergencysData(){
+      this.delay()
         const url  = this.$store.state.serverApi + `/admin/emergencys?recipientId=${this.recipientId}&pageIndex=1&recordCountPerPage=1000&occurStartDate=${this.occurStartDate}&occurEndDate=${this.occurEndDate}`
         
         console.log("emergencys is ")
@@ -216,13 +224,14 @@ import pagination from "../../pages/pagination.vue"
             if(this.searchCheck1 === 1){
                 this.searchCheck1 = 0
             }
-            if(this.emergencys.length !== 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
-                alert("성공적으로 조회 되었습니다.")
-                this.searchCheck2 = 0
-            }else if(this.emergencys.length === 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
-                alert("조회 결과가 존재하지 않습니다.")
-                this.searchCheck2 = 0
-            }
+            this.pending = false
+            // if(this.emergencys.length !== 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
+            //     alert("성공적으로 조회 되었습니다.")
+            //     this.searchCheck2 = 0
+            // }else if(this.emergencys.length === 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
+            //     alert("조회 결과가 존재하지 않습니다.")
+            //     this.searchCheck2 = 0
+            // }
           })
           .catch(error => {
               console.log("fail to load")

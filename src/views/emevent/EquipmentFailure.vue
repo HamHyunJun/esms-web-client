@@ -184,7 +184,7 @@
                   <td v-if="equipList2 === 'sensor'">{{sensorNmChange(item.equipTypeName)}}</td> <!--센서타입-->
                   <td>{{item.checkTypeName}}</td> <!--점검구분-->
                   <td>{{item.stateMeasureDtime}}</td> <!--상태측정일시-->
-                  <td>{{item.updDtime}}</td> <!--서버보고일시-->
+                  <td>{{item.reportDtime}}</td> <!--서버보고일시-->
                 </tr>
               </tbody>
             </table>

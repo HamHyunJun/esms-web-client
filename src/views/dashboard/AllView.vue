@@ -2192,27 +2192,27 @@ export default {
 
             // 요청
             gwrqCArrToString = rqData.filter(cd=>{
-            return cd.typeCd ==="TPE000"
+            return cd.equipTypeCd ==="EQP001"
             })
             emrqCArrToString = rqData.filter(cd=>{
-            return cd.typeCd ==="TPE001"
+            return cd.equipTypeCd ==="EQP003"
             })
             acrqCArrToString = rqData.filter(cd=>{
-            return cd.typeCd ==="TPE002"
+            return cd.equipTypeCd ==="EQP004"
             })
             firqCArrToString = rqData.filter(cd=>{
-            return cd.typeCd ==="TPE003"
+            return cd.equipTypeCd ==="EQP005"
             })
             dorqCArrToString = rqData.filter(cd=>{
-            return cd.typeCd ==="TPE004"
+            return cd.equipTypeCd ==="EQP006"
             })
             lirqCArrToString = rqData.filter(cd=>{
-            return cd.typeCd ==="TPE005"
+            return cd.equipTypeCd ==="EQP007"
             })
 
             if(gwrqCArrToString.length != ''){
             fgwrqCArrToString = gwrqCArrToString.filter(cd=>{
-              return cd.stateCd === "STE005"
+              return cd.stateCd === "STE001"
             })
             if(fgwrqCArrToString.length != ''){
             this.gwrqCount = fgwrqCArrToString[0].typeCnt
@@ -2223,7 +2223,7 @@ export default {
             }
             if(emrqCArrToString.length != ''){
             femrqCArrToString = emrqCArrToString.filter(cd=>{
-              return cd.stateCd === "STE005"
+              return cd.stateCd === "STE001"
             })
             if(femrqCArrToString.length != ''){
             this.emrqCount = femrqCArrToString[0].typeCnt
@@ -2234,7 +2234,7 @@ export default {
             }
             if(acrqCArrToString.length != ''){
             facrqCArrToString = acrqCArrToString.filter(cd=>{
-              return cd.stateCd === "STE005"
+              return cd.stateCd === "STE001"
             })
             if(facrqCArrToString.length != ''){
             this.acrqCount = facrqCArrToString[0].typeCnt
@@ -2245,7 +2245,7 @@ export default {
             }
             if(firqCArrToString.length != ''){
             ffirqCArrToString = firqCArrToString.filter(cd=>{
-              return cd.stateCd === "STE005"
+              return cd.stateCd === "STE001"
             })
             if(ffirqCArrToString.length != ''){
             this.firqCount = ffirqCArrToString[0].typeCnt
@@ -2256,7 +2256,7 @@ export default {
             }
             if(dorqCArrToString.length != ''){
             fdorqCArrToString = dorqCArrToString.filter(cd=>{
-              return cd.stateCd === "STE005"
+              return cd.stateCd === "STE001"
             })
             if(fdorqCArrToString.length != ''){
             this.dorqCount = fdorqCArrToString[0].typeCnt
@@ -2267,7 +2267,7 @@ export default {
             }
             if(lirqCArrToString.length != ''){
             flirqCArrToString = lirqCArrToString.filter(cd=>{
-              return cd.stateCd === "STE005"
+              return cd.stateCd === "STE001"
             })
             if(flirqCArrToString.length != ''){
             this.lirqCount = flirqCArrToString[0].typeCnt
@@ -2279,27 +2279,27 @@ export default {
 
             // 접수
             gwrcCArrToString = rcData.filter(cd=>{
-            return cd.typeCd ==="TPE000"
+            return cd.equipTypeCd ==="EQP001"
             })
             emrcCArrToString = rcData.filter(cd=>{
-            return cd.typeCd ==="TPE001"
+            return cd.equipTypeCd ==="EQP003"
             })
             acrcCArrToString = rcData.filter(cd=>{
-            return cd.typeCd ==="TPE002"
+            return cd.equipTypeCd ==="EQP004"
             })
             fircCArrToString = rcData.filter(cd=>{
-            return cd.typeCd ==="TPE003"
+            return cd.equipTypeCd ==="EQP005"
             })
             dorcCArrToString = rcData.filter(cd=>{
-            return cd.typeCd ==="TPE004"
+            return cd.equipTypeCd ==="EQP006"
             })
             lircCArrToString = rcData.filter(cd=>{
-            return cd.typeCd ==="TPE005"
+            return cd.equipTypeCd ==="EQP007"
             })
 
             if(gwrcCArrToString != ''){
             fgwrcCArrToString = gwrcCArrToString.filter(cd=>{
-              return cd.stateCd === "STE006"
+              return cd.stateCd === "STE002"
             })
             if(fgwrcCArrToString != ''){
             this.gwrcCount = fgwrcCArrToString[0].typeCnt
@@ -2310,7 +2310,7 @@ export default {
             }
             if(emrcCArrToString != ''){
             femrcCArrToString = emrcCArrToString.filter(cd=>{
-              return cd.stateCd === "STE006"
+              return cd.stateCd === "STE002"
             })
             if(femrcCArrToString != ''){
             this.emrcCount = femrcCArrToString[0].typeCnt
@@ -2321,7 +2321,7 @@ export default {
             }
             if(acrcCArrToString != ''){
             facrcCArrToString = acrcCArrToString.filter(cd=>{
-              return cd.stateCd === "STE006"
+              return cd.stateCd === "STE002"
             })
             if(facrcCArrToString != ''){
             this.acrcCount = facrcCArrToString[0].typeCnt
@@ -2332,7 +2332,7 @@ export default {
             }
             if(fircCArrToString != ''){
             ffircCArrToString = fircCArrToString.filter(cd=>{
-              return cd.stateCd === "STE006"
+              return cd.stateCd === "STE002"
             })
             if(ffircCArrToString != ''){
             this.fircCount = ffircCArrToString[0].typeCnt
@@ -2343,7 +2343,7 @@ export default {
             }
             if(dorcCArrToString != ''){
             fdorcCArrToString = dorcCArrToString.filter(cd=>{
-              return cd.stateCd === "STE006"
+              return cd.stateCd === "STE002"
             })
             if(fdorcCArrToString != ''){
             this.dorcCount = fdorcCArrToString[0].typeCnt
@@ -2354,7 +2354,7 @@ export default {
             }
             if(lircCArrToString != ''){
             flircCArrToString = lircCArrToString.filter(cd=>{
-              return cd.stateCd === "STE006"
+              return cd.stateCd === "STE002"
             })
             if(flircCArrToString != ''){
             this.lircCount = flircCArrToString[0].typeCnt
@@ -2366,27 +2366,27 @@ export default {
 
             // 취소
             gwcaCArrToString = caData.filter(cd=>{
-            return cd.typeCd ==="TPE000"
+            return cd.equipTypeCd ==="EQP001"
             })
             emcaCArrToString = caData.filter(cd=>{
-            return cd.typeCd ==="TPE001"
+            return cd.equipTypeCd ==="EQP003"
             })
             accaCArrToString = caData.filter(cd=>{
-            return cd.typeCd ==="TPE002"
+            return cd.equipTypeCd ==="EQP004"
             })
             ficaCArrToString = caData.filter(cd=>{
-            return cd.typeCd ==="TPE003"
+            return cd.equipTypeCd ==="EQP005"
             })
             docaCArrToString = caData.filter(cd=>{
-            return cd.typeCd ==="TPE004"
+            return cd.equipTypeCd ==="EQP006"
             })
             licaCArrToString = caData.filter(cd=>{
-            return cd.typeCd ==="TPE005"
+            return cd.equipTypeCd ==="EQP007"
             })
             
             if(gwcaCArrToString != ''){
             fgwcaCArrToString = gwcaCArrToString.filter(cd=>{
-              return cd.stateCd === "STE008"
+              return cd.stateCd === "STE004"
             })
             if(fgwcaCArrToString != ''){
             this.gwcaCount =fgwcaCArrToString[0].typeCnt
@@ -2397,7 +2397,7 @@ export default {
             }
             if(emcaCArrToString != ''){
             femcaCArrToString = emcaCArrToString.filter(cd=>{
-              return cd.stateCd === "STE008"
+              return cd.stateCd === "STE004"
             })
             if(femcaCArrToString != ''){
             this.emcaCount =femcaCArrToString[0].typeCnt
@@ -2408,7 +2408,7 @@ export default {
             }
             if(accaCArrToString != ''){
             faccaCArrToString = accaCArrToString.filter(cd=>{
-              return cd.stateCd === "STE008"
+              return cd.stateCd === "STE004"
             })
             if(faccaCArrToString != ''){
             this.accaCount =faccaCArrToString[0].typeCnt
@@ -2419,7 +2419,7 @@ export default {
             }
             if(ficaCArrToString != ''){
             fficaCArrToString = ficaCArrToString.filter(cd=>{
-              return cd.stateCd === "STE008"
+              return cd.stateCd === "STE004"
             })
             if(fficaCArrToString != ''){
             this.ficaCount =fficaCArrToString[0].typeCnt
@@ -2430,7 +2430,7 @@ export default {
             }
             if(docaCArrToString != ''){
             fdocaCArrToString = docaCArrToString.filter(cd=>{
-              return cd.stateCd === "STE008"
+              return cd.stateCd === "STE004"
             })
             if(fdocaCArrToString != ''){
             this.docaCount =fdocaCArrToString[0].typeCnt
@@ -2442,7 +2442,7 @@ export default {
             
             if(licaCArrToString != ''){
             flicaCArrToString = licaCArrToString.filter(cd=>{
-              return cd.stateCd === "STE008"
+              return cd.stateCd === "STE004"
             })
             if(flicaCArrToString != ''){
             this.licaCount =flicaCArrToString[0].typeCnt
@@ -2454,27 +2454,27 @@ export default {
 
             // 완료
             gwcpCArrToString = cpData.filter(cd=>{
-            return cd.typeCd ==="TPE000"
+            return cd.equipTypeCd ==="EQP001"
             })
             emcpCArrToString = cpData.filter(cd=>{
-            return cd.typeCd ==="TPE001"
+            return cd.equipTypeCd ==="EQP003"
             })
             accpCArrToString = cpData.filter(cd=>{
-            return cd.typeCd ==="TPE002"
+            return cd.equipTypeCd ==="EQP004"
             })
             ficpCArrToString = cpData.filter(cd=>{
-            return cd.typeCd ==="TPE003"
+            return cd.equipTypeCd ==="EQP005"
             })
             docpCArrToString = cpData.filter(cd=>{
-            return cd.typeCd ==="TPE004"
+            return cd.equipTypeCd ==="EQP006"
             })
             licpCArrToString = cpData.filter(cd=>{
-            return cd.typeCd ==="TPE005"
+            return cd.equipTypeCd ==="EQP007"
             })
 
             if(gwcpCArrToString != ''){
             fgwcpCArrToString = gwcpCArrToString.filter(cd=>{
-              return cd.stateCd === "STE007"
+              return cd.stateCd === "STE003"
             })
             if(fgwcpCArrToString != ''){
             this.gwcpCount =fgwcpCArrToString[0].typeCnt
@@ -2485,7 +2485,7 @@ export default {
             }
             if(emcpCArrToString != ''){
             femcpCArrToString = emcpCArrToString.filter(cd=>{
-              return cd.stateCd === "STE007"
+              return cd.stateCd === "STE003"
             })
             if(femcpCArrToString != ''){
             this.emcpCount =femcpCArrToString[0].typeCnt
@@ -2496,7 +2496,7 @@ export default {
             }
             if(accpCArrToString != ''){
             faccpCArrToString = accpCArrToString.filter(cd=>{
-              return cd.stateCd === "STE007"
+              return cd.stateCd === "STE003"
             })
             if(faccpCArrToString != ''){
             this.accpCount =faccpCArrToString[0].typeCnt
@@ -2507,7 +2507,7 @@ export default {
             }
             if(ficpCArrToString != ''){
             fficpCArrToString = ficpCArrToString.filter(cd=>{
-              return cd.stateCd === "STE007"
+              return cd.stateCd === "STE003"
             })
             if(fficpCArrToString != ''){
             this.ficpCount =fficpCArrToString[0].typeCnt
@@ -2518,7 +2518,7 @@ export default {
             }
             if(docpCArrToString != ''){
             fdocpCArrToString = docpCArrToString.filter(cd=>{
-              return cd.stateCd === "STE007"
+              return cd.stateCd === "STE003"
             })
             if(fdocpCArrToString != ''){
             this.docpCount =fdocpCArrToString[0].typeCnt
@@ -2529,7 +2529,7 @@ export default {
             }
             if(licpCArrToString != ''){
             flicpCArrToString = licpCArrToString.filter(cd=>{
-              return cd.stateCd === "STE007"
+              return cd.stateCd === "STE003"
             })
             if(flicpCArrToString != ''){
             this.licpCount =flicpCArrToString[0].typeCnt

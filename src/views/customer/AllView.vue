@@ -794,6 +794,7 @@ export default {
               value2: response.data.data[i].sidoCd
             });
           } 
+          console.log(tempArr)
           let tmpResult = tempArr.filter(cd=>{
             return cd.value2 === this.sidoCd
           });

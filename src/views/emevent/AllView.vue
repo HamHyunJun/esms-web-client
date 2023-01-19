@@ -252,6 +252,7 @@ export default {
       searchCheck1 : 1, searchCheck2 : 0,
       checkStartDate:moment().subtract(6,'days').format('YYYY-MM-DD'),
       checkEndDate:moment().format('YYYY-MM-DD'),
+      routeQueryCount:0,
 
       listData: [],
       total: '',
@@ -464,6 +465,10 @@ export default {
       }else{
         addrCd = ''
       }
+      // if(this.$route.query.state !== undefined && this.routeQueryCount === 0){
+      //   this.selectedStateItems = this.$route.query.state
+      //   this.routeQueryCount = 1
+      // }
       let uri = this.$store.state.serverApi+"/admin/emergencys?pageIndex="+this.page+"&recordCountPerPage=30"+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;
       if(this.selectedSidoItems != '' || this.selectedRecipientNm != '' || this.selectedTypeItems != '' || this.selectedStateItems != ''){
         uri = this.$store.state.serverApi

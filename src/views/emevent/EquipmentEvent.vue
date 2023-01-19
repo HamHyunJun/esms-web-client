@@ -159,7 +159,7 @@
                                     <td>{{item.macAddr}}</td>
                                     <td>{{codeChange(item.eventCd)}}</td>
                                     <td>{{item.occurDtime}}</td>
-                                    <td>{{item.occurDtime}}</td>
+                                    <td>{{item.reportDtime}}</td>
                                     
                                 </tr>                                
                             </tbody>
@@ -209,6 +209,7 @@ export default {
         selectedEventItems:'',
         checkStartDate:moment().subtract(6,'days').format('YYYY-MM-DD'),
         checkEndDate:moment().format('YYYY-MM-DD'),
+        routeQueryDate:0,
 
         listData: [],
         total: '',
@@ -362,6 +363,11 @@ export default {
         }
       }else{
         addrCd = ''
+      // }
+      // if(this.$route.query.date !== undefined && this.routeQueryDate === 0){
+      //   occurStartDate = this.$route.query.date
+      //   this.routeQueryDate = 1
+
       }
       let uri = ''
       uri = this.$store.state.serverApi+"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;

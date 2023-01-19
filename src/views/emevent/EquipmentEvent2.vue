@@ -159,7 +159,7 @@
                                     <td>{{item.macAddr}}</td>
                                     <td>{{codeChange(item.eventCd)}}</td>
                                     <td>{{item.occurDtime}}</td>
-                                    <td>{{item.occurDtime}}</td>
+                                    <td>{{item.reportDtime}}</td>
                                     
                                 </tr>                                
                             </tbody>
