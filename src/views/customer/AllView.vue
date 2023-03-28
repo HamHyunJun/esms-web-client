@@ -794,7 +794,6 @@ export default {
               value2: response.data.data[i].sidoCd
             });
           } 
-          console.log(tempArr)
           let tmpResult = tempArr.filter(cd=>{
             return cd.value2 === this.sidoCd
           });
@@ -1006,9 +1005,9 @@ export default {
         addrCd = ''
       }
     if(this.selectedOrgItems == '' && this.filterName == ''&& this.selectedSidoItems == ''&& this.selectedSggItems == '' && this.selectedUserType =='' && this.selectedUserState =='' && this.selectedUserSex =='' && this.selectedRadorSensorYn == ''){
-      uri = this.$store.state.serverApi + "/admin/recipients?pageIndex="+this.page+"&recordCountPerPage=30"
+      uri = this.$store.state.serverApi + "/admin/recipients?pageIndex="+this.page+"&recordCountPerPage=30"+"&userId="+this.$store.state.userId
     } else {
-      uri = this.$store.state.serverApi + "/admin/recipients?pageIndex="+this.page+"&recordCountPerPage=30";
+      uri = this.$store.state.serverApi + "/admin/recipients?pageIndex="+this.page+"&recordCountPerPage=30"+"&userId="+this.$store.state.userId;
       uri += "&addrCd="+addrCd;
       if(this.selectedUserType != '') uri += "&typeCd="+this.selectedUserType;
       if(this.selectedUserState != '') uri += "&stateCd="+this.selectedUserState;

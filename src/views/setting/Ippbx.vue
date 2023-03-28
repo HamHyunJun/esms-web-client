@@ -335,7 +335,6 @@ export default {
           .then(response => {
             this.recipientItems = response.data.data
             this.NCount = this.recipientItems.length
-            console.log(this.recipientItems)
           })
           .catch(error => {
             this.errorMessage = error.message;
@@ -428,7 +427,6 @@ export default {
                 this.getRecipientData()
                 this.saveChangeData = ''
                 this.radioCheck = ''
-                console.log(resData)
             }
             // this.getCSensorsData = res.data.data
           })

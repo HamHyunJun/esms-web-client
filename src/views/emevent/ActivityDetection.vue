@@ -216,7 +216,6 @@ export default {
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -349,12 +348,12 @@ export default {
       let uri = ''
       uri = this.$store.state.serverApi
       +"/admin/emergencys/active-unsensing-events?pageIndex="+this.page+"&recordCountPerPage=30"
+      +"&userId="+this.$store.state.userId
       +"&addrCd="+addrCd
       +"&orgId="+this.selectedOrgItems
       +"&recipientNm="+this.selectedRecipientNm
       +"&occurStartDate="+occurStartDate
       +"&occurEndDate="+occurEndDate;
-      console.log(uri)
       axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(response => {
           this.recipientItems = response.data.data
@@ -404,7 +403,6 @@ export default {
       return tmp2.diff(tmp1, 'years');
     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;

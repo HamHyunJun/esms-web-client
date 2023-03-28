@@ -381,10 +381,8 @@ import pagination from "../../pages/pagination.vue"
                 this.sensorsData = []
                 let lengthTmp = []
                 lengthTmp = res.data
-                console.log(lengthTmp)
                 if(lengthTmp.totalCount === 0){
                     this.pending = false
-                    console.log("this1")
                 }
                 
                 if(this.selectedValue==="TPE006"||this.selectedValue==="TPE007"||this.selectedValue==="TPE008"){
@@ -406,7 +404,6 @@ import pagination from "../../pages/pagination.vue"
                         }
                     }
                     this.pending=false
-                    console.log(this.sensorsData[0])
                 }else if(this.selectedValue==="TPE005"||this.selectedValue==="TPE011"){
                     for(let i=0; i <lengthTmp.totalCount ;i++ ){
                         tmpData = res.data.data[i]
@@ -429,6 +426,7 @@ import pagination from "../../pages/pagination.vue"
                 }else if(this.selectedValue==="TPE012"){
                     for(let i=0; i <lengthTmp.totalCount ;i++ ){
                         tmpData = res.data.data[i]
+                        console.log(tmpData)
                         tmp = res.data.data[i].measureValue.split(',')
                         for(let j=tmp.length-1; j >=0 ;j-- ){
                             this.sensorsData.push({
@@ -521,7 +519,6 @@ import pagination from "../../pages/pagination.vue"
                         })
                     }
                 }
-                console.log(this.sensorsTmp1Data)
                 this.sensorList = ''
                 this.pending=false
             })
@@ -617,8 +614,6 @@ import pagination from "../../pages/pagination.vue"
             
             let setObj = new Set(tmpArr2)
             let setArr = [...setObj]
-            console.log("setArr")
-            console.log(setArr)
             setArr.forEach(item=>{
                 for(let i = 0 ; i<this.sensorsTmp1Data.length ; i++ ){
                     if(item.measureDtime ===this.sensorsTmp1Data[i].measureDtime){
@@ -640,7 +635,7 @@ import pagination from "../../pages/pagination.vue"
             
             
             tmpArr2.from(new Set(tmpArr))
-            console.log(tmpArr2)
+
         }
         if(this.searchCheck1 === 1){
             this.searchCheck1 = 0
@@ -648,8 +643,6 @@ import pagination from "../../pages/pagination.vue"
         this.total = this.sensorsData.length
           this.page = 1
           this.pagingMethod(this.page)
-          console.log(this.searchCheck1)
-          console.log(this.searchCheck2)
         // if(this.sensorsData.length !== 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
         //     alert("성공적으로 조회 되었습니다.")
         //     this.searchCheck2 = 0
@@ -665,8 +658,6 @@ import pagination from "../../pages/pagination.vue"
         axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             this.sensorsData = res.data.data
-            
-            console.log(this.sensorsData)
           })
           .catch(error => {
               console.log("fail to load")

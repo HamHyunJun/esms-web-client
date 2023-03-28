@@ -434,8 +434,8 @@
                                 <tr v-for="(item,index) in getCSensorsData" v-bind:key="index" @click="getBSensers(index,0)">
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{index+1}}</td>
                                     <td v-else>{{index+1}}</td>
-                                    <td v-if="index===emphasisValue" style="font-weight: bolder">{{sensorNmChange(item.sensorTypeNm)}}</td>
-                                    <td v-else>{{sensorNmChange(item.sensorTypeNm)}}</td>
+                                    <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.sensorTypeNm === 'RADAR' ? radarNmChange(item.macAddr) : item.sensorTypeNm}}</td>
+                                    <td v-else>{{item.sensorTypeNm === 'RADAR' ? radarNmChange(item.macAddr) : item.sensorTypeNm}}</td>
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{locationCode(item.sensorLocCd)}}</td>
                                     <td v-else>{{locationCode(item.sensorLocCd)}}</td>
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.sensorVersion}}</td>
@@ -509,8 +509,8 @@
                                     </td>
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{index+1}}</td>
                                     <td v-else>{{index+1}}</td>
-                                    <td v-if="index===emphasisValue" style="font-weight: bolder">{{sensorNmChange(item.sensorTypeNm)}}</td>
-                                    <td v-else>{{sensorNmChange(item.sensorTypeNm)}}</td>
+                                    <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.sensorTypeNm === 'RADAR' ? radarNmChange(item.macAddr) : item.sensorTypeNm}}</td>
+                                    <td v-else>{{item.sensorTypeNm === 'RADAR' ? radarNmChange(item.macAddr) : item.sensorTypeNm}}</td>
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.sensorVersion}}</td>
                                     <td v-else>{{item.sensorVersion}}</td>
                                     <td v-if="index===emphasisValue" style="font-weight: bolder">{{item.previousVersion}}</td>
@@ -609,7 +609,7 @@
                                     <td>{{!this.beforeVersionGatewayData? '':this.beforeVersionGatewayData.batteryValue+"("+changeTaGaBattery(this.beforeVersionGatewayData.batteryValue)+")"}}</td>
                                     <td>{{!this.beforeVersionGatewayData? '':this.beforeVersionGatewayData.keepAliveRcvYn===0?'정상':this.beforeVersionGatewayData.keepAliveRcvYn===1?'비정상':'미수신'}}</td>
                                     <td>{{!this.beforeVersionGatewayData? '':this.beforeVersionGatewayData.rssi+"("+changeRssi(this.beforeVersionGatewayData.rssi)+")"}}</td>
-                                    <td>{{!this.beforeVersionGatewayData? '':this.beforeVersionGatewayData.typeCd==='1'?'주기':'기타'}}</td>
+                                    <td>{{!this.beforeVersionGatewayData? '':changetypeCd(this.beforeVersionGatewayData.typeCd)}}</td>
                                     <td>{{!this.beforeVersionGatewayData? '':this.beforeVersionGatewayData.stateMeasureDtime}}</td>
                                     <td>{{!this.beforeVersionGatewayData? '':this.beforeVersionGatewayData.reportDtime}}</td>
                                 </tr>
@@ -845,18 +845,14 @@ import axios from "axios";
             this.errorMessage = error.message;
             console.error("There was an error!", error);
           });
-          console.log(this.getCSensorsData)
           for(let i=0; i<this.getCSensorsData.length; i++){
             if(this.getCSensorsData[i].sensorVersion.length === 6){
                 let result
                 result = this.getCSensorsData[i].sensorVersion.substring(1,6)
                 this.getCSensorsData[i].sensorVersion = result
-                console.log(i)
-                console.log(this.getCSensorsData[i].sensorVersion)
             }
           }
           const urlC  = this.$store.state.serverApi + `/admin/recipients/sensors/statehistory?sensorId=${this.getBSensorsData.sensorId}`
-          console.log(urlC)
           await axios.get(urlC, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             tmpData = res.data.data
@@ -864,7 +860,6 @@ import axios from "axios";
             arr = tmpData.slice().sort(function(a,b){
                 return new Date(b.stateMeasureDtime) - new Date(a.stateMeasureDtime)
             })
-            console.log(arr)
             if(tmpData[0].reportDtime === tmpData[1].reportDtime){
                 this.getCSensorsData2 = tmpData.slice().sort(function(a,b){
                 return new Date(b.stateMeasureDtime) - new Date(a.stateMeasureDtime)
@@ -872,8 +867,6 @@ import axios from "axios";
             }else{
                 this.getCSensorsData2 = tmpData
             }
-            console.log(tmpData)
-            // console.log(this.getCSensorsData2)
           })
           .catch(error => {
               console.log("fail to load")
@@ -907,12 +900,10 @@ import axios from "axios";
     // 센서 클릭 시 '장비상태정보' 변경 함수
     getBSensers(input,time){
         this.emphasisValue = input
-        console.log(input)
         if(!input) input =0;
         if(!time) time =0;
         if(time===0){
             this.getBSensorsData = this.getCSensorsData[input]
-            console.log(this.getBSensorsData)
             this.indexNum = this.getBSensorsData.sensorId
             if(this.checkCorB === true){
             this.getBeforeVersionSensors();
@@ -936,11 +927,9 @@ import axios from "axios";
          axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             this.getCGatewayData = res.data.data
-            console.log(this.getCGatewayData)
             if(this.getCGatewayData.firmwareVersion.length === 6){
                 let result
                 result = this.getCGatewayData.firmwareVersion.substring(1,6)
-                console.log(result)
                 this.getCGatewayData.firmwareVersion = result
             }
             if(this.getCGatewayData.length===0){alert("연결된 게이트웨이가 존재하지 않습니다")}
@@ -960,7 +949,6 @@ import axios from "axios";
             .then(res => {
                 gateway = res.data.data
                 this.getCGatewayData2 = gateway[0]
-                console.log(gateway)
             })
             .catch(error => {
                 console.log("fail to load")
@@ -994,7 +982,6 @@ import axios from "axios";
           .then(res => {
             this.getCTabletsData = res.data.data
             if(this.getCTabletsData.length===0){alert("연결된 태블릿이 존재하지 않습니다")}
-            console.log(this.getCTabletsData)
             this.getCTablet()
           })
           .catch(error => {
@@ -1006,7 +993,6 @@ import axios from "axios";
     },
     async getCTablet(){
         let tablet=''
-        console.log(this.getCTabletsData.tabletId)
         const url  = this.$store.state.serverApi + `/admin/recipients/tablet/statehistory?tabletId=${this.getCTabletsData.tabletId}`
             await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
@@ -1046,17 +1032,11 @@ import axios from "axios";
     },
     //현재버전 센서 호출
     async getNowSensorToggle(){
-        console.log(this.indexNum)
-        if(this.indexNum === 0){
-            console.log("this")
-        }
-        console.log(this.indexNum)
         const url  = this.$store.state.serverApi + `/admin/recipients/sensors/statehistory?sensorId=${this.indexNum}`
         await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             let tmpData = res.data.data
             this.getBSensorsData = tmpData[0]
-            console.log(this.getBSensorsData)
           })
           .catch(error => {
             console.log("fail to load")
@@ -1074,12 +1054,10 @@ import axios from "axios";
         this.beforeSensorToggle = 1
         this.tmpIdx = this.getCSensorsData[0];
         this.getCSensorsData2 = ''
-        console.log(this.getBSensorsData.sensorId)
         let url  = this.$store.state.serverApi + `/admin/recipients/sensors/statehistory?recordCountPerPage=12&sensorId=${this.getBSensorsData.sensorId}`
         await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             beforeSensor = res.data.data
-            console.log(beforeSensor)
             this.beforeVersionSensorsData = beforeSensor[1]
             for(let i=2; i<beforeSensor.length; i++){
                 this.beforeSNItems.push(beforeSensor[i])
@@ -1087,7 +1065,6 @@ import axios from "axios";
             this.beforeSNItems = this.beforeSNItems.slice().sort(function(a,b){
                 return new Date(b.reportDtime) - new Date(a.reportDtime)
             })
-            console.log(this.beforeSNItems)
         })
           .catch(error => {
               console.log("fail to load")
@@ -1105,7 +1082,6 @@ import axios from "axios";
             await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
                 this.beforetablet = res.data.data
-                console.log(this.beforetablet)
                 this.beforeVersionTabletsData = this.beforetablet[1]
                 for(let i=2; i<this.beforetablet.length; i++){
                     this.beforeTBItems.push(this.beforetablet[i])
@@ -1113,7 +1089,6 @@ import axios from "axios";
             this.beforeTBItems = this.beforeTBItems.slice().sort(function(a,b){
                 return new Date(b.regDtime) - new Date(a.regDtime)
             })
-            console.log(this.beforeTBItems)
             })
             .catch(error => {
                 console.log("fail to load")
@@ -1135,6 +1110,7 @@ import axios from "axios";
             await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
                 beforegateway = res.data.data
+                console.log(beforegateway)
                 this.beforeVersionGatewayData = beforegateway[1]
                 for(let i=2; i<beforegateway.length; i++){
                     this.beforeGWItems.push(beforegateway[i])
@@ -1148,7 +1124,6 @@ import axios from "axios";
                 this.errorMessage = error.message;
                 console.error("There was an error!", error);
             });
-            console.log(this.beforeGWItems)
             this.beforeGatewayTake = this.gatewayTakeItems.filter(cd=>{
             return cd.cmmnCd === this.beforeVersionGatewayData.comStateCd
         })
@@ -1321,7 +1296,7 @@ import axios from "axios";
     //      });
     // },
     firmwareList(){
-        let url  = this.$store.state.serverApi + `/admin/gateways/firmwarelist`
+        let url  = this.$store.state.serverApi + `/admin/gateways/firmwarelist?userId=admin`
          axios.get(url,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
                 this.firmwarelist = res.data.data
@@ -1329,10 +1304,8 @@ import axios from "axios";
                 if(this.firmwareCData.length === 6){
                 let result
                 result = this.firmwareCData.substring(1,6)
-                console.log(result)
                 this.firmwareCData = result
             }
-                console.log(this.firmwarelist)
             })
             .catch(error => {
                 console.log("fail to load")
@@ -1432,10 +1405,15 @@ import axios from "axios";
      sensorNmChange(input){
         let result = input
         switch(input){
-            case "응급버튼" : result='응급호출기'; break;
-            case "활동감지" : result='활동감지기'; break;
-            case "도어감지" : result='출입문감지기'; break;
-            case "화재감지" : result='화재감지기'; break;
+            case "RADAR" : result='60GHz Radar'; break;
+        }
+        return result
+     },
+     radarNmChange(input){
+        let result = ''
+        switch(input){
+            case '847127fffe4cfcc9' : result='60GHz Radar'; break;
+            case '847127fffe4cfcbf' : result='24GHz Radar'; break;
         }
         return result
      },
@@ -1568,8 +1546,6 @@ import axios from "axios";
         check2 = this.getCSensorsData.filter(cd=>{
             return cd.incomeNm === null || cd.incomeNm === '' || cd.incomeNm === undefined
         })
-        console.log(check)
-        console.log(check2)
         for(let i =0; i<check2.length; i++){
             if(check2[i].sensorId === this.changeIncomeNm){
                 check3 = 1
@@ -1586,12 +1562,10 @@ import axios from "axios";
 
 
         this.changeSensorData.incomeNm = this.changeIncomeNm
-        console.log(this.changeSensorData)
         let url = this.$store.state.serverApi+`/admin/sensors/${this.changeSensorData.sensorId}`
         await axios.post(url,this.changeSensorData, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
               let resData = res.data.data
-              console.log(res)
               if(resData){
                 alert("성공적으로 변경되었습니다.")
                 this.saveChangeData = ''

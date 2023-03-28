@@ -548,16 +548,17 @@ export default {
       }else{
         addrCd = ''
       }
+
         const url  = this.$store.state.serverApi
         +"/admin/as/list.do?pageIndex=0&recordCountPerPage=1000"
-        +"&addrCd="+addrCd
+        +"&userId="+this.$store.state.userId
+        +"&sggCd="+addrCd
         +"&recipientName="+this.selectedRecipientNm
         +"&equipTypeCd="+this.selectedEquipType
         +"&orgId="+this.selectedOrgItems
         +"&asStateCd=STE004"
         +"&startDate="+this.s_date
         +"&endDate="+this.e_date
-        console.log(url)
             await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
                 this.asRequestData = res.data.data

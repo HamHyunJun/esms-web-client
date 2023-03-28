@@ -296,10 +296,6 @@ export default {
               })
             }
           }
-          console.log("arr1")
-          console.log(tmpArr1)
-          console.log("arr2")
-          console.log(tmpArr2)
 
           
 
@@ -373,7 +369,6 @@ export default {
           this.newDoArr[2] = makeArr4
           this.newAcArr[2] = makeArr5
           this.newLiArr[2] = makeArr6
-          console.log(this.newEmArr)
 
           
 

@@ -256,10 +256,9 @@ export default {
       this.getSidoData();
       this.getSggData();
       this.getOrgmData();
-      this.getnoticeData();
       this.s_date=moment().subtract(6, 'days').format('YYYY-MM-DD');
       this.e_date=moment().format('YYYY-MM-DD');
-      
+      this.getnoticeData();
 
 //      this.getnoticeData();
     },
@@ -441,6 +440,7 @@ export default {
       }
       let uri = this.$store.state.serverApi 
       +"/admin/notices?pageIndex=1&recordCountPerPage=1000"
+      +"&userId="+this.$store.state.userId
       +"&addrCd="+addrCd
       +"&title="+this.selectedTitle
       +"&startDate="+this.s_date
@@ -554,6 +554,7 @@ export default {
         details: this.selectedUpdateDetails,
         regId: this.$store.state.userId
       }
+      console.log(objectData)
       let form = new FormData()
       form.append('details', this.selectedUpdateDetails)
       form.append('orgId', this.orgdata[0].value)
@@ -562,7 +563,7 @@ export default {
       form.append('regId', this.$store.state.userId)
       form.append('filename', this.voiceFile)
       form.append('exeOrgId', this.orgdata[0].value)
-
+      console.log(form)
 
       uri =this.$store.state.serverApi + "/admin/noticesnew";
       axios.post(uri,form,{
@@ -575,7 +576,6 @@ export default {
           let resData = res.data.data
           if(resData){
               alert("저장이 완료되었습니다.")
-              console.log(resData)
               this.writeNotice = false
               this.getnoticeData()
           }

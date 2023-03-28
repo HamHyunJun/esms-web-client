@@ -469,10 +469,11 @@ export default {
       //   this.selectedStateItems = this.$route.query.state
       //   this.routeQueryCount = 1
       // }
-      let uri = this.$store.state.serverApi+"/admin/emergencys?pageIndex="+this.page+"&recordCountPerPage=30"+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;
+      let uri = this.$store.state.serverApi+"/admin/emergencys?pageIndex="+this.page+"&recordCountPerPage=30"+"&userId="+this.$store.state.userId+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;
       if(this.selectedSidoItems != '' || this.selectedRecipientNm != '' || this.selectedTypeItems != '' || this.selectedStateItems != ''){
         uri = this.$store.state.serverApi
         +"/admin/emergencys?pageIndex="+this.page+"&recordCountPerPage=30"
+        +"&userId="+this.$store.state.userId
         +"&addrCd="+addrCd
         +"&orgId="+this.selectedOrgItems
         +"&typeCd="+this.selectedTypeItems
@@ -573,7 +574,6 @@ export default {
       axios.patch(url, data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
       .then(res => {
         let resData = res.data.data
-        console.log(resData)
         if(resData){
           alert("응급알람이 취소되었습니다.")
           this.errorpopup3 = false

@@ -95,7 +95,6 @@ export default {
       this.chartOptions = options
       this.createChartDateTime()
       this.chartRedraw();
-      console.log(data)
     },
     getDataFromLookUp(){
       eventBus.$on("CtLookUp", (CtChartItems, s_date) => 
@@ -128,7 +127,6 @@ export default {
               tmpArr1[i].operCnt = "1"
             }
           }
-          console.log(tmpArr1)
           for(let i=0; i<7; i++){
             this.newEuArr[i] = (tmpArr1[i].operCnt/tmpArr1[i].installCnt*100)
             if(this.newEuArr[i] == "0"){
@@ -138,7 +136,6 @@ export default {
             this.newChartDDLabelArr.push(tmpArr1[i].statDate.substring(6, 8))
             this.newChartLabelArr.push(this.newChartMMLabelArr[i] +"-"+ this.newChartDDLabelArr[i])
           }
-          console.log(this.newEuArr)
           this.remakeData();
         }
       });

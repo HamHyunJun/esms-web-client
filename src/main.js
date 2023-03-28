@@ -16,7 +16,7 @@ const socket = io('http://210.122.45.47:3000', {
   transports: ["websocket"]
 });
 Vue.prototype.$socket = socket;
-console.log(socket)
+//console.log(socket)
 
 //import CoreuiVue from '@coreui/vue'
 

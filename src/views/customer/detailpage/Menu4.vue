@@ -145,6 +145,9 @@ export default {
     sendParent(){
         this.popCheck=true
         this.msg = '생활관리사'
+        console.log(this.msg)
+        console.log(this.relationPhoneData)
+        console.log(this.popCheck)
         this.$emit("openPopMsg",this.msg) 
         this.$emit("sendData4",this.relationPhoneData)
         this.$emit("openPop",this.popCheck)
@@ -183,7 +186,6 @@ export default {
             const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/${selectRegSn}/delete`
             axios.delete(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
-            console.log(res.data.data)
             this.selectIndex = ''
             this.radioCheck = ''
             this.sendMenu4Lending()

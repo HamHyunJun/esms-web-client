@@ -369,10 +369,11 @@ export default {
         addrCd = ''
       }
       let uri = ''
-      uri = this.$store.state.serverApi+"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"+"&occurStartDate="+this.occurStartDate+"&occurEndDate="+this.occurEndDate;
+      uri = this.$store.state.serverApi+"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"+"&userId="+this.$store.state.userId+"&occurStartDate="+this.occurStartDate+"&occurEndDate="+this.occurEndDate;
       if(this.selectedSidoItems !== '' || this.selectedRecipientNm !== '' || this.selectedOrgItems !== '' || this.selectedEventItems !== ''){
       uri = this.$store.state.serverApi
       +"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"
+      +"&userId="+this.$store.state.userId
       +"&addrCd="+addrCd
       +"&orgId="+this.selectedOrgItems
       +"&eventCd="+this.selectedEventItems

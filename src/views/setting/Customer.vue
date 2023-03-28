@@ -84,25 +84,44 @@
             </div> 
             <div class="input_wrap">
               <div class="input_area">
+                <p class="input_tit">사용자 구분 *</p>
+                <select v-model="selectedUpdateUserType" @change="onChangeUserType($event)">
+                  <option v-for="(userType, index) in userTypeItems" :value="userType.value" v-bind:key="index">{{userType.label}}</option>
+                </select>
+              </div>
+              <div class="input_area">
+                <p class="input_tit">재직 상태 *</p>
+                <select v-model="selectedUpdateEmployStateCd">
+                  <option v-for="(employ, index) in employStateItems" :value="employ.value" v-bind:key="index">{{employ.label}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="input_wrap">
+              <div v-if="this.selectedUserTypeCd === 'TPE001'" class="input_area">
+                <p class="input_tit">시/도 </p>
+                <select v-model="selectedUpdateSidoItems" @change="onChangeSgg($event)" disabled>
+                  <option v-for="(sido, index) in sidoItems" :value="sido.value" v-bind:key="index">{{sido.label}}</option>
+                </select>
+              </div>
+              <div v-else class="input_area">
                 <p class="input_tit">시/도 *</p>
                 <select v-model="selectedUpdateSidoItems" @change="onChangeSgg($event)">
                   <option v-for="(sido, index) in sidoItems" :value="sido.value" v-bind:key="index">{{sido.label}}</option>
                 </select>
               </div>
-              <div class="input_area">
+              <div v-if="this.selectedUserTypeCd === 'TPE001' || this.selectedUserTypeCd === 'TPE002'" class="input_area">
+                <p class="input_tit">시/군/구 </p>
+                <select v-model="selectedUpdateSggItems" @change="onChangeOrg($event)" disabled>
+                  <option v-for="(sgg, index) in sggItems" :value="sgg.value" v-bind:key="index">{{sgg.label}}</option>
+                </select>
+              </div>
+              <div v-else class="input_area">
                 <p class="input_tit">시/군/구 *</p>
                 <select v-model="selectedUpdateSggItems" @change="onChangeOrg($event)">
                   <option v-for="(sgg, index) in sggItems" :value="sgg.value" v-bind:key="index">{{sgg.label}}</option>
                 </select>
               </div>
-            </div>
-            <div class="input_wrap">
-              <div class="input_area">
-                <p class="input_tit">관리기관 *</p>
-                <select v-model="selectedUpdateOrgItems">
-                  <option v-for="(orgm, index) in orgmItems" :value="orgm.value" v-bind:key="index">{{orgm.label}}</option>
-                </select>
-              </div>
+              
               <!-- <div class="input_area">
                 <p class="input_tit">관리지역</p>
                 <select v-model="selectedUpdateChargeRegion">
@@ -113,18 +132,20 @@
                        
             <!-- <div class="input_wrap col3"> -->
               <div class="input_wrap">
-                <div class="input_area">
-                  <p class="input_tit">사용자 구분 *</p>
-                  <select v-model="selectedUpdateUserType">
-                    <option v-for="(userType, index) in userTypeItems" :value="userType.value" v-bind:key="index">{{userType.label}}</option>
+                <div v-if="this.selectedUserTypeCd === 'TPE001' || this.selectedUserTypeCd === 'TPE002' 
+                || this.selectedUserTypeCd === 'TPE003' || this.selectedUserTypeCd === 'TPE004'" class="input_area">
+                  <p class="input_tit">관리기관 </p>
+                  <select v-model="selectedUpdateOrgItems" disabled>
+                    <option v-for="(orgm, index) in orgmItems" :value="orgm.value" v-bind:key="index">{{orgm.label}}</option>
                   </select>
                 </div>
-                <div class="input_area">
-                  <p class="input_tit">재직 상태 *</p>
-                  <select v-model="selectedUpdateEmployStateCd">
-                    <option v-for="(employ, index) in employStateItems" :value="employ.value" v-bind:key="index">{{employ.label}}</option>
+                <div v-else class="input_area">
+                  <p class="input_tit">관리기관 *</p>
+                  <select v-model="selectedUpdateOrgItems">
+                    <option v-for="(orgm, index) in orgmItems" :value="orgm.value" v-bind:key="index">{{orgm.label}}</option>
                   </select>
                 </div>
+                
               </div>
               <!-- <div class="input_wrap col3"> -->
                 <div class="input_wrap">
@@ -154,7 +175,7 @@
               </div>
               <div class="popbtn_area">
                 <button type="button" class="btn form2" @click="uploadData()">등록</button>
-                <button type="button" class="btn" @click="writeCus = false">취소</button>
+                <button type="button" class="btn" @click="uploadCancel()">취소</button>
               </div>
             </div>
           </div>
@@ -384,12 +405,38 @@
                         </div>
                         <div class="input_wrap">
                             <div class="input_area">
+                                <p class="input_tit">사용자 구분 *</p>
+                                <select v-model="selectedChangeUserType" @change="onChangeUserType2($event)">
+                                  <option v-for="(userType, index) in userTypeItems" :value="userType.value" v-bind:key="index">{{userType.label}}</option>
+                                </select>
+                            </div>
+                            <div class="input_area">
+                                <p class="input_tit">재직 상태 *</p>
+                                <select v-model="selectedChangeEmployStateCd">
+                                  <option v-for="(employ, index) in employStateItems" :value="employ.value" v-bind:key="index">{{employ.label}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input_wrap">
+                            <div class="input_area" v-if="this.changeUserTypeCd === 'TPE001'">
+                                <p class="input_tit">시/도 </p>
+                                <select v-model="selectedChangeSidoItems" @change="onChangeSgg($event)" disabled>
+                                  <option v-for="(sido, index) in sidoItems" :value="sido.value" v-bind:key="index">{{sido.label}}</option>
+                                </select>
+                            </div>
+                            <div v-else class="input_area">
                                 <p class="input_tit">시/도 *</p>
                                 <select v-model="selectedChangeSidoItems" @change="onChangeSgg($event)">
                                   <option v-for="(sido, index) in sidoItems" :value="sido.value" v-bind:key="index">{{sido.label}}</option>
                                 </select>
                             </div>
-                            <div class="input_area">
+                            <div v-if="this.changeUserTypeCd === 'TPE001' || this.changeUserTypeCd === 'TPE002'" class="input_area">
+                                <p class="input_tit">시/군/구 </p>
+                                <select v-model="selectedChangeSggItems" @change="onChangeOrg($event)" disabled>
+                                  <option v-for="(sgg, index) in sggItems" :value="sgg.value" v-bind:key="index">{{sgg.label}}</option>
+                                </select>
+                            </div>
+                            <div v-else class="input_area">
                                 <p class="input_tit">시/군/구 *</p>
                                 <select v-model="selectedChangeSggItems" @change="onChangeOrg($event)">
                                   <option v-for="(sgg, index) in sggItems" :value="sgg.value" v-bind:key="index">{{sgg.label}}</option>
@@ -397,7 +444,14 @@
                             </div>
                         </div>
                         <div class="input_wrap">
-                            <div class="input_area">
+                            <div v-if="this.changeUserTypeCd === 'TPE001' || this.changeUserTypeCd === 'TPE002'
+                            || this.changeUserTypeCd === 'TPE003' || this.changeUserTypeCd === 'TPE004'" class="input_area">
+                                <p class="input_tit">관리기관 </p>
+                                <select v-model="selectedChangeOrgItems" disabled>
+                                  <option v-for="(orgm, index) in orgmItems" :value="orgm.value" v-bind:key="index">{{orgm.label}}</option>
+                                </select>
+                            </div>
+                            <div v-else class="input_area">
                                 <p class="input_tit">관리기관 *</p>
                                 <select v-model="selectedChangeOrgItems">
                                   <option v-for="(orgm, index) in orgmItems" :value="orgm.value" v-bind:key="index">{{orgm.label}}</option>
@@ -411,20 +465,7 @@
                             </div> -->
                         </div>
                         <!-- <div class="input_wrap col3"> -->
-                          <div class="input_wrap">
-                            <div class="input_area">
-                                <p class="input_tit">사용자 구분 *</p>
-                                <select v-model="selectedChangeUserType">
-                                  <option v-for="(userType, index) in userTypeItems" :value="userType.value" v-bind:key="index">{{userType.label}}</option>
-                                </select>
-                            </div>
-                            <div class="input_area">
-                                <p class="input_tit">재직 상태 *</p>
-                                <select v-model="selectedChangeEmployStateCd">
-                                  <option v-for="(employ, index) in employStateItems" :value="employ.value" v-bind:key="index">{{employ.label}}</option>
-                                </select>
-                            </div>
-                        </div>
+                          
                         <!-- <div class="input_wrap col3"> -->
                           <div class="input_wrap">
                             <div class="input_area">
@@ -627,7 +668,7 @@ export default {
         pagination
     },
     watch:{
-      selectedUpdateAddr:"onChangeSgg",
+      // selectedUpdateAddr:"onChangeSgg",
       selectedChangeAddr:"onChangeSgg",
       selectedUpdateSggItems:"onChangeOrg",
       selectedChangeSggItems:"onChangeOrg"
@@ -677,6 +718,8 @@ export default {
 
         UpdateAddr:[], UpdateAddr1:'', UpdateAddr2:'', UpdateAddr3:'',
         ChangeAddr:[], ChangeAddr1:'', ChangeAddr2:'', ChangeAddr3:'',
+
+        selectedUserTypeCd :'', changeUserTypeCd:'',
 
         listData: [],
         total: '',
@@ -780,10 +823,26 @@ export default {
           let tmpResult = tempArr.filter(cd=>{
             return cd.value2 === this.sidoCd
           });
+          let tmpResult3 = []
+          if(this.writeCus === true || this.changeCus === true){
+            if(this.selectedUserTypeCd === 'TPE003' || this.selectedUserTypeCd === 'TPE004' || this.changeUserTypeCd === 'TPE003' || this.changeUserTypeCd === 'TPE004'){
+              console.log("this")
+              for(let i = 41; i<51; i++){
+                for(let j = 0; j < tempArr.length; j++){
+                  if(tempArr[j].value2 === i + '00000000'){
+                    tmpResult3 = tempArr.filter(cd => {
+                      return cd.label.length < 5
+                    })
+                    tmpResult = tmpResult3
+                  }
+                }
+              } 
+            }
+          }
           
           this.sggItems = [...tmpResult2,...tmpResult]
           this.chargeRegionItems = [...tmpResult2,...tmpResult]
-          this.autoUpdateSgg()
+          //this.autoUpdateSgg()
         })
         .catch(error => {
           this.errorMessage = error.message;
@@ -844,7 +903,11 @@ export default {
       }else{
         addrCd = ''
       }
-      let uri = this.$store.state.serverApi + "/admin/users?pageIndex=1&recordCountPerPage=1000"+"&orgId="+this.selectedOrgItems+"&sggCd="+addrCd+"&userNm="+this.selectedUserNm;
+      let uri = this.$store.state.serverApi + "/admin/users?pageIndex=1&recordCountPerPage=1000"
+      +"&userId="+this.$store.state.userId
+      +"&orgId="+this.selectedOrgItems
+      +"&sggCd="+addrCd
+      +"&userNm="+this.selectedUserNm;
       axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(response => {
             this.userItems = response.data.data
@@ -891,6 +954,7 @@ export default {
       
     },
     onChangeSgg(event){
+      console.log(event)
       let address = []
       if(typeof event === 'object'){
         this.sidoCd = event.target.value
@@ -934,8 +998,24 @@ export default {
       }
       this.getOrgmData()
     },
+    onChangeUserType(event){
+      this.selectedUserTypeCd = event.target.value
+      this.selectedUpdateSidoItems = ''
+      this.selectedUpdateSggItems = ''
+      this.selectedUpdateOrgItems = ''
+    },
+    onChangeUserType2(event){
+      this.changeUserTypeCd = event.target.value
+      this.selectedChangeSidoItems = ''
+      this.selectedChangeSggItems = ''
+      this.selectedChangeOrgItems = ''
+    },
     // 등록 시 등록 변수 초기화
     createData(){
+      this.sggItems=[];
+      this.sggItems.push({label: '전체', value: ''});
+      this.orgmItems=[];
+      this.orgmItems.push({label: '전체', value: ''});
       this.selectedUpdateUserNm = ''
       this.selectedUpdateBirthday = ''
       this.selectedUpdateMobileNumber = ''
@@ -959,6 +1039,7 @@ export default {
       this.selectedUpdateEmployStateCd = ''
       this.checkUserId = 'None'
       this.checkemaildata = 'None'
+      this.selectedUserTypeCd = ''
       this.writeCus = true
     },
     // 사용자 등록 내용 부분
@@ -1004,26 +1085,30 @@ export default {
       }else if(this.selectedUpdateMobileNumber === ''){
         alert("휴대폰번호 항목을 작성하여 주세요")
         return false
-      }else if(this.selectedUpdateSidoItems === '' && this.selectedUpdateUserType !== 'TPE001'){
-        alert("시/도 항목을 작성하여 주세요")
-        return false
-      }else if(this.selectedUpdateSggItems === '' && this.selectedUpdateUserType !== 'TPE001'){
-        alert("시/군/구 항목을 작성하여 주세요")
-        return false
-      }else if(this.selectedUpdateOrgItems === '' && this.selectedUpdateUserType !== 'TPE001'){
-        alert("관기기관 항목을 작성하여 주세요")
-        return false
-      }else if(this.selectedUpdateZipcode === ''){
-        alert("우편번호 항목을 작성하여 주세요")
-        return false
-      }else if(this.selectedUpdateAddr === ''){
-        alert("주소 항목을 작성하여 주세요")
-        return false
       }else if(this.selectedUpdateUserType === ''){
         alert("사용자 구분 항목을 작성하여 주세요")
         return false
       }else if(this.selectedUpdateEmployStateCd === ''){
         alert("재직 상태 항목을 작성하여 주세요")
+        return false
+      }else if(this.selectedUpdateSidoItems === '' && this.selectedUserTypeCd !== 'TPE001'){
+        alert("시/도 항목을 작성하여 주세요")
+        return false
+      }else if(this.selectedUpdateSggItems === ''){
+        if(this.selectedUserTypeCd !== 'TPE001' && this.selectedUserTypeCd !== 'TPE002'){
+          alert("시/군/구 항목을 작성하여 주세요")
+          return false
+        }
+      }else if(this.selectedUpdateOrgItems === ''){
+        if(this.selectedUserTypeCd !== 'TPE001' && this.selectedUserTypeCd !== 'TPE002' && this.selectedUserTypeCd !== 'TPE003' && this.selectedUserTypeCd !== 'TPE004'){
+          alert("관리기관 항목을 작성하여 주세요")
+          return false
+        }
+      }else if(this.selectedUpdateZipcode === ''){
+        alert("우편번호 항목을 작성하여 주세요")
+        return false
+      }else if(this.selectedUpdateAddr === ''){
+        alert("주소 항목을 작성하여 주세요")
         return false
       }
       if(this.checkUserId === 'None'){
@@ -1054,7 +1139,17 @@ export default {
       }
       //if(this.selectedUpdateBirthday)
       this.$store.state.userId = sessionStorage.getItem("userId")
-      
+
+      if(this.selectedUpdateUserType === 'TPE002'){
+        this.selectedUpdateSggItems = this.selectedUpdateSidoItems
+      }else if(this.selectedUpdateUserType === 'TPE003' || this.selectedUpdateUserType === 'TPE004'){
+        for(let i = 41; i<51; i++){
+          if(this.selectedUpdateSidoItems === i+'00000000'){
+            console.log(String(this.selectedUpdateSidoItems))
+          }
+        }
+      }
+      console.log(this.selectedUpdateSggItems)
       let data = {
         addr:this.selectedUpdateAddr,
         addrCd:this.selectedUpdateSggItems,
@@ -1080,7 +1175,6 @@ export default {
         await axios.post(url,data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
               let resData = res.data.data
-              console.log(resData)
               if(resData){
                 alert("성공적으로 등록되었습니다.")
                 this.writeCus = false
@@ -1097,8 +1191,12 @@ export default {
     },
     // 사용자 상세 정보
     async detailCuspopup(index){
-      this.detailArr=this.userItems[index]
-      this.selectUserData = this.userItems[index]
+      console.log(this.listData)
+      this.detailArr=this.listData[index]
+      console.log(index)
+      console.log(this.detailArr)
+      console.log(this.selectUserData)
+      this.selectUserData = this.listData[index]
       let url =this.$store.state.serverApi + "/admin/address/sgg";
       await axios.get(url, {headers: {"Authorization": sessionStorage.getItem("token")}})
         .then(response => {
@@ -1188,7 +1286,6 @@ export default {
       await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             this.checkUserItems2 = res.data.data
-            console.log(this.checkUserItems2)
           })
           .catch(error => {
             console.log("fail to load")
@@ -1243,7 +1340,6 @@ export default {
       await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             this.checkEmailItems2 = res.data.data
-            console.log(this.checkEmailItems2)
           })
           .catch(error => {
             console.log("fail to load")
@@ -1286,7 +1382,8 @@ export default {
       this.selectedChangeEmployStateCd = this.selectUserData.employStateCd
       this.selectedChangeDeptNm = this.selectUserData.deptNm
       this.selectedChangePhoneNumber = this.selectUserData.phoneNumber
-      this.selectedChangeUseYn = this.selectUserData.useYn
+      this.selectedChangeUseYn = this.selectUserData.useYn      
+      this.changeUserTypeCd = ''
       this.changeCus = true
     },
     // 사용자 정보 수정 확인
@@ -1318,33 +1415,35 @@ export default {
       }else if(this.selectedChangeMobileNumber === ''){
         alert("휴대폰번호 항목을 작성하여 주세요")
         return false
-      }else if(this.selectedChangeSidoItems === '' && this.selectedChangeUserType !== 'TPE001'){
-        alert("시/도 항목을 작성하여 주세요")
-        return false
-      }else if(this.selectedChangeSggItems === '' && this.selectedChangeUserType !== 'TPE001'){
-        alert("시/군/구 항목을 작성하여 주세요")
-        return false
-      }else if(this.selectedChangeOrgItems === '' && this.selectedChangeUserType !== 'TPE001'){
-        alert("관기기관 항목을 작성하여 주세요")
-        return false
-      }else if(this.selectedChangeZipcode === ''){
-        alert("우편번호 항목을 작성하여 주세요")
-        return false
-      }else if(this.selectedChangeAddr === ''){
-        alert("주소 항목을 작성하여 주세요")
-        return false
       }else if(this.selectedChangeUserType === ''){
         alert("사용자 구분 항목을 작성하여 주세요")
         return false
       }else if(this.selectedChangeEmployStateCd === ''){
         alert("재직 상태 항목을 작성하여 주세요")
         return false
+      }else if(this.selectedChangeSidoItems === '' && this.changeUserTypeCd !== 'TPE001'){
+        alert("시/도 항목을 작성하여 주세요")
+        return false
+      }else if(this.selectedChangeSggItems === ''){
+        if(this.changeUserTypeCd !== 'TPE001' && this.changeUserTypeCd !== 'TPE002'){
+          alert("시/군/구 항목을 작성하여 주세요")
+          return false
+        }
+      }else if(this.selectedChangeOrgItems === ''){
+        if(this.changeUserTypeCd !== 'TPE001' && this.changeUserTypeCd !== 'TPE002' && this.changeUserTypeCd !== 'TPE003' && this.changeUserTypeCd !== 'TPE004'){
+          alert("관리기관 항목을 작성하여 주세요")
+          return false
+        }
+      }else if(this.selectedChangeZipcode === ''){
+        alert("우편번호 항목을 작성하여 주세요")
+        return false
+      }else if(this.selectedChangeAddr === ''){
+        alert("주소 항목을 작성하여 주세요")
+        return false
       }else if(this.selectedChangeUseYn === ''){
         alert("사용자 상태 항목을 작성하여 주세요")
         return false
       }
-      
-
       if(this.selectedChangeMobileNumber.length < 3){
         alert("전화번호는 세자리 이상을 입력해 주세요")
         return false;
@@ -1381,7 +1480,6 @@ export default {
         axios.post(url,data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
               let resData = res.data.data
-              console.log(resData)
               if(resData){
                 alert("성공적으로 변경되었습니다")
                 this.changeCus = false
@@ -1417,6 +1515,16 @@ export default {
     deleteCusFail(){
       alert("취소되었습니다")
       this.deleteCus = false
+    },
+    uploadCancel(){
+      this.selectedSidoItems = ''
+      this.selectedSggItems = ''
+      this.selectedOrgItems = ''
+      this.sggItems=[];
+      this.sggItems.push({label: '전체', value: ''});
+      this.orgmItems=[];
+      this.orgmItems.push({label: '전체', value: ''});
+      this.writeCus = false
     },
     // 휴대폰 - 입력
     changeRecipientPhoneno(phone){
@@ -1552,55 +1660,57 @@ export default {
         this.selectedChangeAddr = data.roadAddress;
 
         this.selectedUpdateSidoItems = ''
+        this.selectedUpdateSggItems = ''
         this.selectedChangeSidoItems = ''
+        this.selectedChangeSggItems = ''
 
-        this.UpdateAddr = this.selectedUpdateAddr.split(' ')
-        this.UpdateAddr1 = this.UpdateAddr[0]
-        this.UpdateAddr2 = this.UpdateAddr[1]
-        this.UpdateAddr3 = this.UpdateAddr[2]
-        this.ChangeAddr = this.selectedChangeAddr.split(' ')
-        this.ChangeAddr1 = this.ChangeAddr[0]
-        this.ChangeAddr2 = this.ChangeAddr[1]
-        this.ChangeAddr3 = this.ChangeAddr[2]
-        if(this.UpdateAddr1 === '서울' || this.ChangeAddr1 === '서울'){
-          this.UpdateAddr1 += '특별시'
-          this.ChangeAddr1 += '특별시'
-        }else if(this.UpdateAddr1 === '부산' || this.UpdateAddr1 === '대구' || this.UpdateAddr1 === '인천' || this.UpdateAddr1 === '광주' || this.UpdateAddr1 === '대전' || this.UpdateAddr1 === '울산'
-         || this.ChangeAddr1 === '부산' || this.ChangeAddr1 === '대구' || this.ChangeAddr1 === '인천' || this.ChangeAddr1 === '광주' || this.ChangeAddr1 === '대전' || this.ChangeAddr1 === '울산'){
-          this.UpdateAddr1 += '광역시'
-          this.ChangeAddr1 += '광역시'
-        }else if(this.UpdateAddr1 === '경기' || this.UpdateAddr1 === '강원' || this.ChangeAddr1 === '경기' || this.ChangeAddr1 === '강원'){
-          this.UpdateAddr1 += '도'
-          this.ChangeAddr1 += '도'
-        }else if(this.UpdateAddr1 === '충북' || this.ChangeAddr1 === '충북'){
-          this.UpdateAddr1 = '충청북도'
-          this.ChangeAddr1 = '충청북도'
-        }else if(this.UpdateAddr1 === '충남' || this.ChangeAddr1 === '충남'){
-          this.UpdateAddr1 = '충청남도'
-          this.ChangeAddr1 = '충청남도'
-        }else if(this.UpdateAddr1 === '전북' || this.ChangeAddr1 === '전북'){
-          this.UpdateAddr1 = '전라북도'
-          this.ChangeAddr1 = '전라북도'
-        }else if(this.UpdateAddr1 === '전남' || this.ChangeAddr1 === '전남'){
-          this.UpdateAddr1 = '전라남도'
-          this.ChangeAddr1 = '전라남도'
-        }else if(this.UpdateAddr1 === '경북' || this.ChangeAddr1 === '경북'){
-          this.UpdateAddr1 = '경상북도'
-          this.ChangeAddr1 = '경상북도'
-        }else if(this.UpdateAddr1 === '경남' || this.ChangeAddr1 === '경남'){
-          this.UpdateAddr1 = '경상남도'
-          this.ChangeAddr1 = '경상남도'
-        }  
-        let UpdateAutoSido = []
-        let ChangeAutoSido = []
-        UpdateAutoSido = this.sidoItems.filter(cd=>{
-          return cd.label === this.UpdateAddr1
-        })
-        ChangeAutoSido = this.sidoItems.filter(cd=>{
-          return cd.label === this.ChangeAddr1
-        })
-        this.selectedUpdateSidoItems = UpdateAutoSido[0].value
-        this.selectedChangeSidoItems = ChangeAutoSido[0].value
+        // this.UpdateAddr = this.selectedUpdateAddr.split(' ')
+        // this.UpdateAddr1 = this.UpdateAddr[0]
+        // this.UpdateAddr2 = this.UpdateAddr[1]
+        // this.UpdateAddr3 = this.UpdateAddr[2]
+        // this.ChangeAddr = this.selectedChangeAddr.split(' ')
+        // this.ChangeAddr1 = this.ChangeAddr[0]
+        // this.ChangeAddr2 = this.ChangeAddr[1]
+        // this.ChangeAddr3 = this.ChangeAddr[2]
+        // if(this.UpdateAddr1 === '서울' || this.ChangeAddr1 === '서울'){
+        //   this.UpdateAddr1 += '특별시'
+        //   this.ChangeAddr1 += '특별시'
+        // }else if(this.UpdateAddr1 === '부산' || this.UpdateAddr1 === '대구' || this.UpdateAddr1 === '인천' || this.UpdateAddr1 === '광주' || this.UpdateAddr1 === '대전' || this.UpdateAddr1 === '울산'
+        //  || this.ChangeAddr1 === '부산' || this.ChangeAddr1 === '대구' || this.ChangeAddr1 === '인천' || this.ChangeAddr1 === '광주' || this.ChangeAddr1 === '대전' || this.ChangeAddr1 === '울산'){
+        //   this.UpdateAddr1 += '광역시'
+        //   this.ChangeAddr1 += '광역시'
+        // }else if(this.UpdateAddr1 === '경기' || this.UpdateAddr1 === '강원' || this.ChangeAddr1 === '경기' || this.ChangeAddr1 === '강원'){
+        //   this.UpdateAddr1 += '도'
+        //   this.ChangeAddr1 += '도'
+        // }else if(this.UpdateAddr1 === '충북' || this.ChangeAddr1 === '충북'){
+        //   this.UpdateAddr1 = '충청북도'
+        //   this.ChangeAddr1 = '충청북도'
+        // }else if(this.UpdateAddr1 === '충남' || this.ChangeAddr1 === '충남'){
+        //   this.UpdateAddr1 = '충청남도'
+        //   this.ChangeAddr1 = '충청남도'
+        // }else if(this.UpdateAddr1 === '전북' || this.ChangeAddr1 === '전북'){
+        //   this.UpdateAddr1 = '전라북도'
+        //   this.ChangeAddr1 = '전라북도'
+        // }else if(this.UpdateAddr1 === '전남' || this.ChangeAddr1 === '전남'){
+        //   this.UpdateAddr1 = '전라남도'
+        //   this.ChangeAddr1 = '전라남도'
+        // }else if(this.UpdateAddr1 === '경북' || this.ChangeAddr1 === '경북'){
+        //   this.UpdateAddr1 = '경상북도'
+        //   this.ChangeAddr1 = '경상북도'
+        // }else if(this.UpdateAddr1 === '경남' || this.ChangeAddr1 === '경남'){
+        //   this.UpdateAddr1 = '경상남도'
+        //   this.ChangeAddr1 = '경상남도'
+        // }  
+        // let UpdateAutoSido = []
+        // let ChangeAutoSido = []
+        // UpdateAutoSido = this.sidoItems.filter(cd=>{
+        //   return cd.label === this.UpdateAddr1
+        // })
+        // ChangeAutoSido = this.sidoItems.filter(cd=>{
+        //   return cd.label === this.ChangeAddr1
+        // })
+        // this.selectedUpdateSidoItems = UpdateAutoSido[0].value
+        // this.selectedChangeSidoItems = ChangeAutoSido[0].value
 //        this.selectedAddr = data.jibunAddress;
         
         // 참고항목 문자열이 있을 경우 해당 필드에 넣는다.

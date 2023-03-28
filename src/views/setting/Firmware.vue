@@ -441,10 +441,6 @@ export default {
       this.file_name2_1 = this.file_name2.substr(0, 1)
       this.file_name2_2 = this.file_name2.substr(1)
       this.file_name3 = this.file_name2_1+'.'+this.file_name2_2
-      console.log(checkFileNm)
-      console.log(this.file_name)
-      console.log(this.file_name2)
-      console.log(this.file_name3)
       if(this.file_name3.length < 5){
         alert("펌웨어 파일을 다시 확인하여 주세요")
         this.file_name3 = ''
@@ -655,7 +651,7 @@ export default {
           
     },
     async firmwareList(){
-        let url  = this.$store.state.serverApi + `/admin/gateways/firmwarelist`
+        let url  = this.$store.state.serverApi + `/admin/gateways/firmwarelist?userId=admin`
          await axios.get(url,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
               const tmpArr = [{label: '전체', value: ''}];
@@ -825,9 +821,7 @@ export default {
         for(let i=0; i<this.saveChangeData2.length; i++){
           if(this.upgradeCheck % 100 === 0 && this.upgradeCheck !== 1 && this.upgradeCheck !== 0){
             this.sleep(3000)
-            console.log("sleep")
           }
-          console.log("keep going...")
           let url  = this.$store.state.serverApi + `/admin/gateways/${this.saveChangeData2[i].gwId}/firmware-version`
           let data = {
             firmwareVersion:this.selectedFirmwareVersion2,
@@ -835,7 +829,6 @@ export default {
             regId: this.$store.state.userId,
             regNo: regNo[0].regNo
         }
-        console.log(data)
         await axios.patch(url,data ,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
                 firmware = res.data.data

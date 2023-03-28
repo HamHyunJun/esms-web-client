@@ -217,7 +217,6 @@ export default {
         const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/${selectRegSn}/update`
         axios.post(url,selectData, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(res => {
-        console.log(res.data.data)
         alert("성공적으로 수정되었습니다")
         this.selectIndex = ''
         this.radioCheck = ''
@@ -239,7 +238,6 @@ export default {
             const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/${selectRegSn}/delete`
             axios.delete(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
-            console.log(res.data.data)
             this.selectIndex = ''
             this.radioCheck = ''
             this.sendMenu4Lending()

@@ -550,7 +550,8 @@ export default {
       }
         const url  = this.$store.state.serverApi 
         +"/admin/as/list.do?pageIndex=0&recordCountPerPage=1000"
-        +"&addrCd="+addrCd
+        +"&userId="+this.$store.state.userId
+        +"&sggCd="+addrCd
         +"&recipientName="+this.selectedRecipientNm
         +"&equipTypeCd="+this.selectedEquipType
         +"&orgId="+this.selectedOrgItems       

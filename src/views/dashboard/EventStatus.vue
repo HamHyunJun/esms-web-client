@@ -69,7 +69,6 @@ export default {
               eventCd: null,
               occurDate: moment(s_date).add(i,'days').format('YYYYMMDD'),
             })
-            console.log(tmpArr2)
           }
           
           //"E1013"

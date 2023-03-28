@@ -90,10 +90,10 @@
                                     <td>{{item.signalStateNm}}</td>
                                     <td>{{!item.testYn ? '실제상황':'테스트'}}</td> 
                                     <td>{{item.occurDtime}}</td>
-                                    <td>{{item.rcvDtime}}</td>
+                                    <td>{{item.startReportDtime}}</td>
                                     <td v-if="item.signalStateCd !== 'STE001'">{{item.closeDtime}}</td>
                                     <td v-else></td>
-                                    <td v-if="item.signalStateCd !== 'STE001'">{{item.updDtime}}</td>
+                                    <td v-if="item.signalStateCd !== 'STE001'">{{item.endReportDtime}}</td>
                                     <td v-else></td>
                                     <!-- <td>{{item.occurDtime}}</td>
                                     <td>{{item.occurDtime}}</td>
@@ -157,13 +157,11 @@ import pagination from "../../pages/pagination.vue"
           (page - 1) * this.limit,
           page * this.limit
         )
-        console.log(this.listData)
         this.page = page
         this.pageDataSetting(this.total, this.limit, this.block, page)
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -190,7 +188,6 @@ import pagination from "../../pages/pagination.vue"
       return index
     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.occurStartDate=this.checkStartDate; this.occurEndDate=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.occurStartDate=this.checkStartDate; this.occurEndDate=this.checkEndDate; break;
@@ -213,14 +210,12 @@ import pagination from "../../pages/pagination.vue"
       this.delay()
         const url  = this.$store.state.serverApi + `/admin/emergencys?recipientId=${this.recipientId}&pageIndex=1&recordCountPerPage=1000&occurStartDate=${this.occurStartDate}&occurEndDate=${this.occurEndDate}`
         
-        console.log("emergencys is ")
         await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             this.emergencys = res.data.data
             this.total = this.emergencys.length
             this.page = 1
             this.pagingMethod(this.page)
-            console.log(this.emergencys)
             if(this.searchCheck1 === 1){
                 this.searchCheck1 = 0
             }

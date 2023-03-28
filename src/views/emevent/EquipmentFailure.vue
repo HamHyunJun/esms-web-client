@@ -477,6 +477,7 @@ export default {
         if(code === 1 ){
           uri = this.$store.state.serverApi 
           +"/admin/equipment/gateway-checklist?pageIndex=1&recordCountPerPage=1000"
+          +"&userId="+this.$store.state.userId
           +"&addrCd="+addrCode
           +"&orgId="+this.selectedOrgItems
           +"&recipientNm="+this.selectedRecipientNm
@@ -487,6 +488,7 @@ export default {
         }else if(code === 2){
           uri = this.$store.state.serverApi 
           +"/admin/equipment/tablet-checklist?pageIndex=1&recordCountPerPage=1000"
+          +"&userId="+this.$store.state.userId
           +"&addrCd="+addrCode
           +"&orgId="+this.selectedOrgItems
           +"&recipientNm="+this.selectedRecipientNm
@@ -497,6 +499,7 @@ export default {
         }else{
           uri = this.$store.state.serverApi 
           +"/admin/equipment/sensor-checklist?pageIndex=1&recordCountPerPage=1000"
+          +"&userId="+this.$store.state.userId
           +"&addrCd="+addrCode
           +"&orgId="+this.selectedOrgItems
           +"&recipientNm="+this.selectedRecipientNm

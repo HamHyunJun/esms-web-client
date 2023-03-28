@@ -137,13 +137,11 @@ export default {
           (page - 1) * this.limit,
           page * this.limit
         )
-        console.log(this.listData)
         this.page = page
         this.pageDataSetting(this.total, this.limit, this.block, page)
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = Math.ceil(total / limit)
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -170,7 +168,6 @@ export default {
       return index
     },
     errorpopupClose(input){
-        console.log(input)
         switch(input){
             case 1 : this.errorpopup1 = false; this.callStartDate=this.checkStartDate; this.callEndDate=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.callStartDate=this.checkStartDate; this.callEndDate=this.checkEndDate; break;
@@ -192,12 +189,9 @@ export default {
     async getCall_historysData(){
       this.delay()
         const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/call-historys?pageIndex=1&recordCountPerPage=1000&callStartDate=${this.callStartDate}&callEndDate=${this.callEndDate}`
-        console.log("call_historys is ")
         await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             this.call_historys = res.data.data
-            console.log("aa")
-            console.log(this.call_historys)
             this.total = this.call_historys.length
             this.page = 1
             this.pagingMethod(this.page)

@@ -675,7 +675,6 @@ export default {
             value: response.data.data[i].cmmnCd,
           });
         } 
-        console.log(response)
         let tmpResult = tmpArr
         // this.orgTypeItems = [...tmpResult2,...tmpResult]
         this.orgTypeItems=tmpArr;
@@ -699,7 +698,7 @@ export default {
       }else{
         sgg = ''
       }
-      let uri = this.$store.state.serverApi + "/admin/organizations?pageIndex=1&recordCountPerPage=1000"+"&orgId="+this.selectedOrgItems+"&orgNm="+this.selectedOrgNm+"&sggCd="+sgg;
+      let uri = this.$store.state.serverApi + "/admin/organizations?pageIndex=1&recordCountPerPage=1000"+"&userId="+this.$store.state.userId+"&orgId="+this.selectedOrgItems+"&orgNm="+this.selectedOrgNm+"&sggCd="+sgg;
       axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(response => {
             this.TorgItems = response.data.data
@@ -728,12 +727,14 @@ export default {
     },
     onChangeSgg(event){
       this.sidoCd = event.target.value
+      console.log(this.sidoCd)
       this.getSggData()
       this.sggCd = ''
       this.getOrgmData()
     },
     onChangeOrg(event) {
       this.sggCd = event.target.value
+      console.log(this.sggCd)
       this.getOrgmData()
     },
     manageInquiry() {
@@ -886,13 +887,11 @@ export default {
         addrDetail:this.selectedUpdateDetailAddr,
         regId:this.$store.state.userId,
       }
-      console.log(data)
 
       let url = this.$store.state.serverApi+`/admin/organizations`
       axios.post(url,data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
          .then(res => {
            let resData = res.data.data
-           console.log(resData)
            if(resData){
              alert("성공적으로 등록되었습니다.")
              this.writeOrg = false
@@ -1072,13 +1071,11 @@ export default {
         addrDetail:this.selectedChangeDetailAddr,
         useYn:this.selectedChangeUseYn
       }
-      console.log(data)
 
       let url = this.$store.state.serverApi+`/admin/organizations/${this.orgId}`
       axios.post(url,data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             let resData = res.data.data
-            console.log(resData)
             if(resData){
               alert("성공적으로 변경되었습니다")
               this.getTorgData()
@@ -1111,7 +1108,6 @@ export default {
               this.deleteOrg = false
               this.detailOrg = false
               this.getTorgData()
-             console.log(res.data.data)
             let resData = res.data.data
             if(resData){
               alert("성공적으로 삭제되었습니다")

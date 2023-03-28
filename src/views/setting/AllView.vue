@@ -462,6 +462,7 @@ export default {
       if(code === 1){
         uri = this.$store.state.serverApi 
         +"/admin/equipment/gateway-searchlist?recordCountPerPage=1000"+"&orgId="+this.selectedOrgItems
+        +"&userId="+this.$store.state.userId
         +"&recipientNm="+this.selectedRecipientNm
         +"&addrCd="+addrCode
         +"&macAddr="+this.selectedMacAddress
@@ -469,6 +470,7 @@ export default {
       }else if(code === 2){
         uri = this.$store.state.serverApi 
         +"/admin/equipment/tablet-searchlist?recordCountPerPage=1000"+"&orgId="+this.selectedOrgItems
+        +"&userId="+this.$store.state.userId
         +"&recipientNm="+this.selectedRecipientNm
         +"&addrCd="+addrCode
         +"&macAddr="+this.selectedMacAddress
@@ -476,6 +478,7 @@ export default {
       }else if(code === 3){
         uri = this.$store.state.serverApi 
         +"/admin/equipment/sensor-searchlist?recordCountPerPage=1000"+"&orgId="+this.selectedOrgItems
+        +"&userId="+this.$store.state.userId
         +"&recipientNm="+this.selectedRecipientNm
         +"&addrCd="+addrCode
         +"&macAddr="+this.selectedMacAddress

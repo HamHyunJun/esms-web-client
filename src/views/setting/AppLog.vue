@@ -535,7 +535,6 @@ export default {
     await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(response => {
           this.recipientItems = response.data.data
-          console.log(this.recipientItems)
           this.recipientOrginItems = response.data.data
           this.NCount = response.data.totalCount
           this.total = this.NCount
@@ -556,7 +555,6 @@ export default {
     await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(response => {
           let tmpArr = response.data.data
-          console.log(tmpArr)
           if(tmpArr){
             alert("성공적으로 요청되었습니다")
             this.saveChangeData = ''

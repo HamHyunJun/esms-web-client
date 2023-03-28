@@ -52,15 +52,23 @@
                 </li> 
                 <li>
                     <i class="ico04"></i>
-                    <div class="txt">
+                    <div class="txt" v-if="gwPowerChange(this.gwPower.powerLinkYn)==='연결'">
                         <strong>{{gwPowerChange(this.gwPower.powerLinkYn)}}</strong>
+                        <p>전원연결</p>
+                    </div>
+                    <div class="txt" v-else>
+                        <strong style="color:red;" class="blinking">{{gwPowerChange(this.gwPower.powerLinkYn)}}</strong>
                         <p>전원연결</p>
                     </div>
                 </li> 
                 <li>
                     <i class="ico05"></i>
-                    <div class="txt">
-                        <strong>{{!this.reportMeasureData.TPE012? "미감지": "감지"}}</strong>
+                    <div class="txt" v-if="this.reportMeasureData.TPE012">
+                        <strong>감지</strong>
+                        <p>활동감지</p>
+                    </div>
+                    <div class="txt" v-else>
+                        <strong style="color:red" class="blinking">미감지</strong>
                         <p>활동감지</p>
                     </div>
                 </li> 
@@ -237,3 +245,25 @@ export default {
 
 
 </script>
+<style>
+.blinking{
+  -webkit-animation: blink 0.5s ease-in-out infinite alternate;
+  -moz-animation: blink 0.5s ease-in-out infinite alternate;
+  animation: blink 0.5s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes blink{
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+@-moz-keyframes blink{
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+@keyframes blink{
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+</style>

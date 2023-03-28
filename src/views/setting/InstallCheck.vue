@@ -697,7 +697,6 @@ export default {
       },
       pageDataSetting(total, limit, block, page) {
         const totalPage = 1
-        console.log(totalPage)
         let currentPage = page
         const first =
           currentPage > 1 ? parseInt(currentPage, 10) - parseInt(1, 10) : null
@@ -1027,9 +1026,6 @@ export default {
   getMask(birthday){
       let res = ''
       birthday = birthday.replace(/[^0-9]/g, '')
-      console.log(birthday.substring(0,4))
-      console.log(birthday.substring(5,7))
-      console.log(birthday.substring(8,10))
       if(birthday.length <5){
         res = birthday
       }else{
@@ -1074,7 +1070,6 @@ export default {
         return;
     }
     let changeDatatmp = this.recipientItems[this.saveChangeData]
-    console.log(changeDatatmp)
     this.selectChangeRecipient = changeDatatmp.recipientNm
     this.selectChangeBirthday = changeDatatmp.birthday
     this.selectChangeSex = changeDatatmp.sex
@@ -1234,7 +1229,6 @@ export default {
         alert("전화번호는 세자리 이상을 입력해 주세요")
         return false;
       }
-      console.log(this.selectedUpdateBirthday.length)
       if(this.selectedUpdateBirthday.substring(0,4) < '1000' || this.selectedUpdateBirthday.substring(0,4) > this.e_date.substring(0,4) ||
       this.selectedUpdateBirthday.substring(5,7) > '12' || this.selectedUpdateBirthday.substring(5,7) === '00' ||
       this.selectedUpdateBirthday.substring(8,10) > '31' || this.selectedUpdateBirthday.substring(8,10) === '00' || this.selectedUpdateBirthday.length < 10){
@@ -1263,7 +1257,6 @@ export default {
         zipCode: this.selectedUpdateZipCode,//완
         regId: this.$store.state.userId//완
       }      
-      console.log(data)
        const url  = this.$store.state.serverApi + `/admin/recipients`
          ///sensors/{sensorId}/gw-send-cycle
          await axios.post(url,data,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
@@ -1365,7 +1358,6 @@ export default {
         zipCode: this.selectChangeZipCode,//완
         regId: this.$store.state.userId//완
       }
-      console.log(data)
        const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}`       
          // /sensors/{sensorId}/gw-send-cycle
          axios.post(url,data,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})

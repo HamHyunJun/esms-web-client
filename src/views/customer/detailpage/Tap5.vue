@@ -144,7 +144,7 @@
                                         </div>
                                     </td>
                                     <td v-else></td>
-                                    <td>{{sensorNmChange(item.sensorTypeNm)}}</td>
+                                    <td>{{item.sensorTypeNm==='RADAR' ? radarNmChange(item.macAddr) : item.sensorTypeNm}}</td>
                                     <!-- {{getCSensorsData[sensorsDetect]}} 이렇게 뽑아서 쓰면 된단말 -->
                                     <td> {{locationCode(item.sensorLocCd)}}</td>
                                     <td>{{item.macAddr}}</td>
@@ -243,7 +243,7 @@
                                             <label :for="`radio2_${index}`" class="chk"><i class="ico_chk"></i></label>
                                         </div>
                                     </td>
-                                    <td>{{sensorNmChange(item.sensorTypeNm)}}</td>
+                                    <td>{{item.sensorTypeNm}}</td>
                                     <td>{{locationCode(item.sensorLocCd)}}</td>
                                     <td>{{item.macAddr}}</td>
                                     <td >
@@ -316,6 +316,14 @@ import axios from "axios";
         
         
     },
+    radarNmChange(input){
+        let result = ''
+        switch(input){
+            case '847127fffe4cfcc9' : result='60GHz Radar'; break;
+            case '847127fffe4cfcbf' : result='24GHz Radar'; break;
+        }
+        return result
+     },
     sensorNmChange(input){
         let result = input
         switch(input){
@@ -365,12 +373,9 @@ import axios from "axios";
     getRecipientInfo() {
         //let uri = this.$store.state.serverApi + "/recipients/" + sessionStorage.getItem("recipid");
         let uri = this.$store.state.serverApi + "/admin/recipients/" + this.recipientId
-        console.log(uri)
         axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
                 this.resBodyData = res.data.data
-                console.log("resbodyData is ");
-                console.log(this.resBodyData)
                 if(this.resBodyData.activeUnsensingCycle){
                     this.setactiveUnsensingCycle = this.resBodyData.activeUnsensingCycle
                 }else{
@@ -384,26 +389,19 @@ import axios from "axios";
         },
     //getsenser value
     async getCSensers(){
-        console.log(this.getCSensorsData)
     const url  = this.$store.state.serverApi + `/admin/sensors?recipientId=${this.recipientId}&recordCountPerPage=30`
     await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(res => {
         let tmpData = res.data.data
-        console.log(tmpData)
         // tmpData.forEach(element =>{
         //     element.stateGwSendCycle = Math.ceil(element.stateGwSendCycle/3600)
         //     element.stateSvrSendCycle = Math.ceil(element.stateSvrSendCycle/3600)
         // })
         this.getCSensorsData = tmpData
-        console.log(this.getCSensorsData)
         this.sensorData = tmpData.filter(cd=>{
             return cd.sensorTypeCd === 'TPE001' || cd.sensorTypeCd === 'TPE002' || cd.sensorTypeCd === 'TPE003' || cd.sensorTypeCd === 'TPE004' 
         })
-        console.log(this.sensorData)
         this.gwSendCycle = this.getCSensorsData.gwSendCycle
-        console.log("sensors ")
-        console.log(this.getCSensorsData)
-
         })
         .catch(error => {
             console.log("fail to load")
@@ -435,8 +433,6 @@ import axios from "axios";
     },
     //활동 미감지
     sendActiveUnsensingCycle(){
-        console.log(this.recipientId)
-        console.log(this.newActiveUnsensingCycle)
         let newActiveUnsensingCycle = this.resBodyData
         newActiveUnsensingCycle.activeUnsensingCycle = this.setactiveUnsensingCycle//*60
         const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/active-unsensing-cycle`
@@ -444,7 +440,6 @@ import axios from "axios";
         axios.patch(url,newActiveUnsensingCycle,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             let resData = res.data.data
-            console.log(resData)
             // this.getCSensorsData = res.data.data
             // console.log("sensors ")
             // console.log(this.getCSensorsData)
@@ -460,7 +455,6 @@ import axios from "axios";
     },
     //게이트웨이 상태전송
     sendCGateway(){
-        console.log(this.getCGatewayData)
         let sensorsId = this.getCGatewayData.gwId
         let newGatewayData = this.getCGatewayData
         newGatewayData.stateSendCycle = this.setGatewayStateSendCycle
@@ -469,7 +463,6 @@ import axios from "axios";
         axios.patch(url,newGatewayData,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             let resData = res.data.data
-            console.log(resData)
             if(resData){
                 alert("성공적으로 저장되었습니다.")
             }
@@ -485,7 +478,6 @@ import axios from "axios";
    },
    check(index){
     // this.sensorsDetect = this.getCSensorsData[index].
-    console.log(this.getCSensorsData[index])
     //센서 감지 주기 model 값
     this.sensorDetectCycle = this.getCSensorsData[index].sensorDetectCycle
     this.gwSendCycle = this.getCSensorsData[index].gwSendCycle
@@ -519,14 +511,10 @@ import axios from "axios";
             return false;
         }
         //svrSendCycle, gwSendCycle
-        console.log(this.getCSensorsData[this.sensorsDetect])
         let sensorsDetectData = this.getCSensorsData[this.sensorsDetect]
         let sensorsId= this.getCSensorsData[this.sensorsDetect].sensorId
         //sensorsDetectData.svrSendCycle = 
         //console.log(this.sensorDetectCycle)
-        console.log(this.gwSendCycle)
-        console.log(this.gwAppSendCycle)
-        console.log(this.svrSendCycle)
 
         
         
@@ -547,8 +535,6 @@ import axios from "axios";
         this.gwSendCycle !=3180 && this.gwSendCycle !=3240 && this.gwSendCycle !=3300 && this.gwSendCycle !=3360 &&
         this.gwSendCycle !=3420 && this.gwSendCycle !=3480 && this.gwSendCycle !=3540 && this.gwSendCycle !=3600 ){
             alert('G/W 전송주기는 3600까지 60의 배수 중 선택 값을 입력해 주세요')
-            console.log("sensorsStateData.stateGwSendCycle")
-            console.log(sensorsDetectData.gwSendCycle)
             this.gwSendCycle = this.gwsendCheck
             return false;
         }
@@ -558,8 +544,6 @@ import axios from "axios";
             this.svrSendCycle = this.svrsendCheck
             return false;
         }
-        console.log(this.gwSendCycle)
-        console.log(this.sensorDetectCycle)
         if(this.gwSendCycle%this.sensorDetectCycle != 0){
             alert('G/W 전송주기는 감지주기의 배수여야 합니다.')
             return false
@@ -600,7 +584,6 @@ import axios from "axios";
         //   });
         //  }
          if(this.appsendCheck != sensorsDetectData.gwAppSendCycle){
-            console.log("this 222 ok")
         await axios.patch(urlA,sensorsDetectData,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             let resData = res.data.data
@@ -620,7 +603,6 @@ import axios from "axios";
           });
          }
         if(this.svrsendCheck != sensorsDetectData.svrSendCycle){
-            console.log("this 333 ok")
         await axios.patch(urlS,sensorsDetectData,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             let resData = res.data.data
@@ -640,7 +622,6 @@ import axios from "axios";
           });
          }
         if(this.gwsendCheck != sensorsDetectData.gwSendCycle){
-            console.log("this 444 ok")
         await axios.patch(urlG,sensorsDetectData,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             let resData = res.data.data
@@ -714,23 +695,17 @@ import axios from "axios";
     //센서 상태값 전송주기
     async saveSensorsStateData(){
         //stateGwSendCycle, stateSvrSendCycle
-        console.log(this.sensorsState)
 
         if(this.sensorsState===null || this.sensorsState===undefined){
             alert('변경하시고자 하는 센서 종류를 선택해주세요')
             return false;
         }
-        console.log(this.getCSensorsData[this.sensorsState])
         let sensorsStateData = this.getCSensorsData[this.sensorsState]
         sensorsStateData.stateGwSendCycle = this.stateGwSendCycle
         sensorsStateData.stateSvrSendCycle = this.stateSvrSendCycle
-        console.log(sensorsStateData)
-        console.log(this.stategwsendCheck)
 
         if(this.stateGwSendCycle !=60 && this.stateGwSendCycle !=120 && this.stateGwSendCycle !=180 && this.stateGwSendCycle !=240){
             alert('60,120,180,240 중 값을 입력해 주세요')
-            console.log("sensorsStateData.stateGwSendCycle")
-            console.log(sensorsStateData.stateGwSendCycle)
             this.stateGwSendCycle = this.stategwsendCheck
             return false;
         }
@@ -749,11 +724,9 @@ import axios from "axios";
         //this.getCSensorsData
 
         if(this.statesvrsendCheck != sensorsStateData.stateSvrSendCycle){
-            console.log("서버 전송주기 확인")
         await axios.patch(urlS,sensorsData,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             let resData = res.data.data
-            console.log(resData)
             this.statesvrsendCheck = resData
             // this.getCSensorsData = res.data.data
             // console.log("sensors ")
@@ -768,11 +741,9 @@ import axios from "axios";
         }
         
         if(this.stategwsendCheck != sensorsStateData.stateGwSendCycle){
-            console.log("게이트웨이 전송주기 확인")
         await axios.patch(urlG,sensorsData,{headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             let resData = res.data.data
-            console.log(resData)
             this.stateresCheck2 = resData
             // this.getCSensorsData = res.data.data
             // console.log("sensors ")
@@ -785,8 +756,6 @@ import axios from "axios";
             console.error("There was an error!", error);
           });
         }
-        console.log(this.stateresCheck1)
-        console.log(this.stateresCheck2)
         if(this.statesvrsendCheck === true && !this.stateresCheck2){
             alert("성공적으로 저장되었습니다.")
             this.sensorsState = ''

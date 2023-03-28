@@ -145,7 +145,6 @@ export default {
           });
           
           this.sggItems = [...tmpResult2,...tmpResult]
-          console.log(this.sggItems )
         })
         .catch(error => {
           this.errorMessage = error.message;

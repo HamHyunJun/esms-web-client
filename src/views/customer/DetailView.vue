@@ -72,7 +72,7 @@
       </div>
       
       <div class="box_wrap">
-          <div class="box_l">
+          <div class="box_l" style="width:750px">
               <div class="box_style box_col">
                   <div class="info_wrap_1">
                       <div class="tab">
@@ -81,6 +81,7 @@
                               <li :class="menutoggle===3?'active':''"><a href="#" @click="menu(3)">말벗</a></li>
                               <li :class="menutoggle===2?'active':''"><a href="#" @click="menu(2)">응급요원</a></li>
                               <li :class="menutoggle===4?'active':''"><a href="#" @click="menu(4)">생활관리사</a></li>
+                              <li :class="menutoggle===6?'active':''"><a href="#" @click="menu(6)">보호자</a></li>
                               <li :class="menutoggle===5?'active':''"><a href="#" @click="menu(5)">응급번호</a></li>
                           </ul>
                           <div class="tabcontent">
@@ -121,6 +122,15 @@
                                    @openPopMsg="openModalMsg"
                                    @sendMenu5Lending="menu5Lending"
                                    ></menu5>
+                            <menu6 ref="menu6"
+                                   :recipientId="this.recipientId" 
+                                   v-if="this.menutoggle===6"
+                                   :menu6Refresh="this.menu5Refresh"
+                                   @sendData6="getFromMenuData" 
+                                   @openPop="openModal6"
+                                   @openPopMsg="openModalMsg"
+                                   @sendMenu6Lending="menu6Lending"
+                                   ></menu6>
 
                                 
                           </div>
@@ -129,7 +139,7 @@
               </div>
               
               <div class="box_style box_col map map_box">
-                  <div id="map"></div>
+                  <div id="map" style="width:750px"></div>
               </div>
           </div>
           <div class="box_style box_r">
@@ -251,7 +261,7 @@
                 </div>
                 <div class="input_area" v-else>
                   <p class="input_tit">응급요원ID</p>
-                  <input type="text" v-model="managerId" disabled>
+                  <input type="text" v-model="userId" disabled>
                 </div>
                 <div class="input_area" v-if="this.emdisable===false">
                     <p class="input_tit">휴대폰번호</p>
@@ -289,7 +299,7 @@
                 </div>
                 <div class="input_area" v-else>
                   <p class="input_tit">응급요원ID</p>
-                  <input type="text" v-model="managerId" disabled>
+                  <input type="text" v-model="userId" disabled>
                 </div>
                 <div class="input_area" v-if="this.emdisable===false">
                     <p class="input_tit">휴대폰번호</p>
@@ -328,7 +338,7 @@
                 </div>
                 <div class="input_area" v-else>
                   <p class="input_tit">생활관리사ID</p>
-                  <input type="text" v-model="managerId" disabled>
+                  <input type="text" v-model="userId" disabled>
                 </div>
                 <div class="input_area" v-if="this.lidisable===false">
                     <p class="input_tit">휴대폰번호</p>
@@ -366,7 +376,7 @@
                 </div>
                 <div class="input_area" v-else>
                   <p class="input_tit">생활관리사ID</p>
-                  <input type="text" v-model="managerId" disabled>
+                  <input type="text" v-model="userId" disabled>
                 </div>
                 <div class="input_area" v-if="this.lidisable===false">
                     <p class="input_tit">휴대폰번호</p>
@@ -413,6 +423,43 @@
           <div class="popbtn_area">
             <button type="button" class="btn form2" @click="insertEmergency()">추가</button>
             <button type="button" class="btn" @click="closeModal">취소</button>  
+          </div>
+      </div>
+    </div>
+    <div id="" class="popupLayer" v-if="popCheck6">
+      <!-- 보호자 추가 -->
+      <div class="popup_wrap">
+          <div class="title_wrap">
+              <div class="title">{{this.msg}} 추가</div>
+              <button type="button" class="btn_close" @click="closeModal">닫기</button>
+          </div>
+          <div class="popup_cnt">
+            <div class="input_wrap col3">
+                <div class="input_area">
+                  <p class="input_tit">이름</p>
+                  <input type="text" v-model="managerName">
+                </div>
+                <!-- <div class="input_area">
+                    <p class="input_tit">생년월일</p>
+                    <input type="text" value="">
+                </div> -->
+                <div class="input_area">
+                    <p class="input_tit">휴대폰번호</p>
+                    <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  v-model="managerPhone" minlength="3" maxlength="11">
+                </div>
+                <div class="input_area">
+                    <p class="input_tit">관계</p>
+                    <select name="managerRelationCd" id="managerRelationCd" v-model="managerRelationCd" > <!--v-model="managerRelationNm"-->
+                      <option v-for="(items, index ) in relationArr" v-bind:value="items.value" v-bind:key="index"> 
+                          {{ items.text }}
+                      </option>
+                    </select> 
+                </div>
+            </div>
+          </div>
+          <div class="popbtn_area">
+            <button type="button" class="btn form2" @click="insertManager()">추가</button>
+            <button type="button" class="btn" @click="closeModal">취소</button>
           </div>
       </div>
     </div>
@@ -533,14 +580,15 @@ import menu2 from "./detailpage/Menu2.vue";
 import menu3 from "./detailpage/Menu3.vue";
 import menu4 from "./detailpage/Menu4.vue";
 import menu5 from "./detailpage/Menu5.vue";
+import menu6 from "./detailpage/Menu6.vue";
 export default {
   name: "DetailView",
   data () {
     return {
       pending:true,
       d_phone: '', d_sex: '', d_endcycle: '', d_part: '', d_status: '', d_zipCode: '', d_address: '', personinfo: '',
-      recipientId: '',taptoggle:1, bodyData : null,  menutoggle: 1,popCheck3:false,popCheck2:false,popCheck2_2:false,popCheck4:false,popCheck4_2:false,popCheck5:null,insertData:null,msg: null,
-      managerName: null, managerId:null, managerPhone: null,managerRelationNm: null,managerRelationCd:null,emerManagerRelationCd:"TPE001", menu3Refresh:1,menu2Refresh:1,menu4Refresh:1,menu5Refresh:1,
+      recipientId: '',taptoggle:1, bodyData : null,  menutoggle: 1,popCheck3:false,popCheck2:false,popCheck2_2:false,popCheck4:false,popCheck4_2:false,popCheck5:null,popCheck6:false,popCheck6_2:false,insertData:null,msg: null,
+      managerName: null, userId:null, managerPhone: null,managerRelationNm: null,managerRelationCd:null,emerManagerRelationCd:"TPE001", menu3Refresh:1,menu2Refresh:1,menu4Refresh:1,menu5Refresh:1,menu6Refresh:1,
       relationArr : [{value:'', text: '선택'},{value:'RL001', text: '남편'},{value:'RL002', text: '와이프'},{value:'RL003', text: '아들'},{value:'RL004', text: '딸'},{value:'RL005', text: '사위'},{value:'RL006', text: '며느리'},{value:'RL007', text: '손자'},{value:'RL008', text: '손녀'},{value:'RL009' , text:'기타'},],
       //emerRelationArr: [{value:'TPE001', text: '119번호'},{value:'TPE002', text: '센터번호'},{value:'TPE003', text: '중앙모니터링센터'},{value:'TPE004', text: 'IP-PBX화재'},{value:'TPE005', text: 'IP-PBX응급'}],
       emerRelationArr: [{value:'TPE001', text: '119번호'},{value:'TPE002', text: '센터번호'},{value:'TPE004', text: 'IP-PBX화재'},{value:'TPE005', text: 'IP-PBX응급'}],
@@ -574,6 +622,7 @@ export default {
     menu3,
     menu4,
     menu5,
+    menu6,
   },
   methods: {
     getFromMenuData(data) {
@@ -583,16 +632,17 @@ export default {
         if(this.menutoggle===2){  // 응급요원 등록
           this.popCheck2 = true
         }else if(this.menutoggle===4){  // 생활관리사 등록
+        console.log("this")
           this.popCheck4 = true
         }
         
       }else{
         if(this.menutoggle===2){  // 응급요원 수정
-          if(data[0].managerId === '' || data[0].managerId === null || data[0].managerId === undefined){
+          if(data[0].userId === '' || data[0].userId === null || data[0].userId === undefined){
             this.emdisable = false
             this.managerName = data[0].relationNm
             this.managerPhone = data[0].relationPhone
-            this.managerId = data[0].managerId
+            this.userId = data[0].userId
           }else{
             this.emdisable = true
             changeEmNm = this.emData.filter(cd=>{
@@ -601,16 +651,16 @@ export default {
             this.selectedEm = changeEmNm[0].value
             this.managerName = data[0].relationNm
             this.managerPhone = data[0].relationPhone
-            this.managerId = data[0].managerId
+            this.userId = data[0].userId
           }
           this.changeRegSn = data[0].regSn
           this.popCheck2_2 = true
         }else if(this.menutoggle===4){  // 생활관리사 수정
-          if(data[0].managerId === '' || data[0].managerId === null || data[0].managerId === undefined){
+          if(data[0].userId === '' || data[0].userId === null || data[0].userId === undefined){
             this.lidisable = false
             this.managerName = data[0].relationNm
             this.managerPhone = data[0].relationPhone
-            this.managerId = data[0].managerId
+            this.userId = data[0].userId
           }else{
             this.lidisable = true
             changeLiNm = this.liData.filter(cd=>{
@@ -619,24 +669,27 @@ export default {
             this.selectedLi = changeLiNm[0].value
             this.managerName = data[0].relationNm
             this.managerPhone = data[0].relationPhone
-            this.managerId = data[0].managerId
+            this.userId = data[0].userId
           }
           this.changeRegSn = data[0].regSn
           this.popCheck4_2 = true
         }
       }
       if(this.menutoggle===5){this.menu5Data = data;} 
+      if(this.menutoggle===6){this.menu6Data = data;}
       } ,
+    openModal6(data) {this.popCheck6 = data},
     openModal5(data) {this.popCheck5 = data},
     openModal4(data) {/*console.log("modal4open");this.popCheck4 = data*/},
     openModal3(data) {this.popCheck3 = data},
     openModal2(data){},
     openModalMsg(data) { this.msg = data},
+    menu6Lending(data) {this.menu6Refresh = data},
     menu5Lending(data) {this.menu5Refresh = data},
     menu4Lending(data) {this.menu4Refresh = data},
     menu3Lending(data) {this.menu3Refresh = data},
     menu2Lending(data) {this.menu2Refresh = data},
-    closeModal() {this.managerId=null; this.managerPhone = null; this.managerName = null; this.popCheck3 = false;this.popCheck2 = false;this.popCheck2_2 = false; this.popCheck4 = false; this.popCheck4_2= false; this.popCheck5 = false;  this.selectedEm=''; this.selectedLi='';
+    closeModal() {this.userId=null; this.managerPhone = null; this.managerName = null; this.popCheck3 = false;this.popCheck2 = false;this.popCheck2_2 = false; this.popCheck4 = false; this.popCheck4_2= false; this.popCheck5 = false; this.popCheck6=false; this.popCheck6_2=false;  this.selectedEm=''; this.selectedLi='';
     this.emdisable=false; this.lidisable=false; this.managerRelationCd = null; this.managerRelationCd=''},
 
     // 대상자 정보
@@ -661,7 +714,7 @@ export default {
     // 응급요원 정보
     async getEmuserInfo(){
       this.selectedEm = ''
-      let uri = this.$store.state.serverApi + "/admin/users?orgId=" + this.emorgId + "&userTypeCd=TPE005"
+      let uri = this.$store.state.serverApi + "/admin/users?orgId=" + this.emorgId + "&userTypeCd=TPE004"
       await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
           const emArr = [{label: '선택', value: '', value2:''}];
@@ -685,18 +738,18 @@ export default {
       if(selectedIndex === 0){
         this.emdisable = false
         this.managerName = ''
-        this.managerId = ''
+        this.userId = ''
         this.managerPhone = ''
       }else{
         this.emdisable = true
         this.managerName = this.emData[selectedIndex].label
-        this.managerId = this.emData[selectedIndex].value
+        this.userId = this.emData[selectedIndex].value
         this.managerPhone = this.emData[selectedIndex].value2
       }
     },
     async getLiuserInfo(){
       this.selectedLi = ''
-      let uri = this.$store.state.serverApi + "/admin/users?orgId=" + this.emorgId + "&userTypeCd=TPE004"
+      let uri = this.$store.state.serverApi + "/admin/users?orgId=" + this.emorgId + "&userTypeCd=TPE005"
       await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
           const liArr = [{label: '선택', value: '', value2:''}];
@@ -720,12 +773,12 @@ export default {
       if(selectedIndex === 0){
         this.lidisable = false
         this.managerName = ''
-        this.managerId = ''
+        this.userId = ''
         this.managerPhone = ''
       }else{
         this.lidisable = true
         this.managerName = this.liData[selectedIndex].label
-        this.managerId = this.liData[selectedIndex].value
+        this.userId = this.liData[selectedIndex].value
         this.managerPhone = this.liData[selectedIndex].value2
       }
       
@@ -747,6 +800,7 @@ export default {
           case 3 : this.menutoggle=3 ;break;
           case 4 : this.menutoggle=4 ;break;
           case 5 : this.menutoggle=5 ;break;
+          case 6 : this.menutoggle=6 ;break;
       }
     },
     
@@ -857,10 +911,9 @@ export default {
         relationPhone: this.managerPhone,
         //relationCd: this.managerRelationCd, 
         //relationCdNm: this.managerRelationNm,
-        managerId: this.managerId,
+        userId: this.userId,
         typeCd: "TPE007"
       }
-
       axios.post(uri,data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             this.insertData = res.data.data
@@ -868,7 +921,7 @@ export default {
             this.popCheck2 = false
             
             alert("성공적으로 등록되었습니다.")
-            this.managerPhone = null; this.managerName = null; this.managerId = null; this.selectedEm = ''; this.emdisable=false;
+            this.managerPhone = null; this.managerName = null; this.userId = null; this.selectedEm = ''; this.emdisable=false;
           })
           .catch(error => {
             this.errorMessage = error.message;
@@ -884,7 +937,7 @@ export default {
         return false  
       }
       if(this.selectedEm === '' || this.selectedEm === null | this.selectedEm === undefined){
-        this.managerId = ''
+        this.userId = ''
       }
       let data = {
         recipientId: this.recipientId,
@@ -892,7 +945,7 @@ export default {
         relationPhone: this.managerPhone,
         //relationCd: this.managerRelationCd, 
         //relationCdNm: this.managerRelationNm,
-        managerId: this.managerId,
+        userId: this.userId,
         typeCd: "TPE007"
       }
       const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/${this.changeRegSn}/update`
@@ -901,7 +954,7 @@ export default {
         this.$refs.menu2.sendMenu2Lending();
         this.popCheck2_2 = false
         alert("성공적으로 수정되었습니다")
-        this.managerPhone = null; this.managerName = null; this.managerId = null; this.selectedEm = ''; this.emdisable=false;
+        this.managerPhone = null; this.managerName = null; this.userId = null; this.selectedEm = ''; this.emdisable=false;
         }).catch(error => {
             console.log("fail to load")
             this.errorMessage = error.message;
@@ -925,7 +978,7 @@ export default {
         relationPhone: this.managerPhone,
         relationCd: this.managerRelationCd, 
         relationCdNm: this.managerRelationNm,
-        managerId: this.managerId,
+        userId: this.userId,
         typeCd: "TPE006"
       }
       axios.post(uri,data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
@@ -935,7 +988,7 @@ export default {
             this.popCheck4 = false
             
             alert("성공적으로 등록되었습니다.")
-            this.managerPhone = null; this.managerName = null; this.managerId = null; this.selectedLi = ''; this.lidisable=false;
+            this.managerPhone = null; this.managerName = null; this.userId = null; this.selectedLi = ''; this.lidisable=false;
           })
           .catch(error => {
             this.errorMessage = error.message;
@@ -951,7 +1004,7 @@ export default {
         return false  
       }
       if(this.selectedLi === '' || this.selectedLi === null | this.selectedLi === undefined){
-        this.managerId = ''
+        this.userId = ''
       }
       let data = {
         recipientId: this.recipientId,
@@ -959,7 +1012,7 @@ export default {
         relationPhone: this.managerPhone,
         //relationCd: this.managerRelationCd, 
         //relationCdNm: this.managerRelationNm,
-        managerId: this.managerId,
+        userId: this.userId,
         typeCd: "TPE006"
       }
       const url  = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/${this.changeRegSn}/update`
@@ -968,7 +1021,7 @@ export default {
         this.$refs.menu4.sendMenu4Lending();
         this.popCheck4_2 = false
         alert("성공적으로 수정되었습니다")
-        this.managerPhone = null; this.managerName = null; this.managerId = null; this.selectedLi = ''; this.lidisable=false;
+        this.managerPhone = null; this.managerName = null; this.userId = null; this.selectedLi = ''; this.lidisable=false;
         }).catch(error => {
             console.log("fail to load")
             this.errorMessage = error.message;

@@ -183,7 +183,6 @@ export default {
     this.loginCheck()
   },
   mounted: function () {
-    console.log(this);
     router = this.$router;
   },
   watch: {
@@ -255,14 +254,18 @@ export default {
           alert('등록된 사용자가 아니거나 비밀번호가 맞지 않습니다.');
           return false;
         }else {
+          console.log(userInfo)
           console.log(userInfo.userId)
           //this.getUserId = res.data.userId
           console.log("==== res.data.token: ", userInfo.token);
           sessionStorage.setItem("token", userInfo.token);
           sessionStorage.setItem("userId", userInfo.userId);
+          sessionStorage.setItem("userTypeCd", userInfo.userTypeCd);
           console.log(sessionStorage.getItem("token"));
           console.log(sessionStorage.getItem("userId"));
+          console.log(sessionStorage.getItem("userTypeCd"))
           this.$store.state.userId = sessionStorage.getItem("userId")
+          this.$store.state.userTypeCd = sessionStorage.getItem("userTypeCd")
           router.push({ path: '../dashboard/allView' });  
           // const now = new Date()
           // const tokenItem = {

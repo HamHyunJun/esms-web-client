@@ -32,6 +32,8 @@
       </div>
       <div class="list_title_wrap">
         <span>레이더센서</span>
+        <i class="ico_nav"></i>
+        <span class="on">60GHz Radar</span>
       </div>
       <div class="box_search_wrap add_btn box_style" @keypress.enter='manageInquiry'>
         <div class="table_wrap">
@@ -44,24 +46,24 @@
             </colgroup>
             <thead>
               <th scope="row">호실</th>
-              <th scope="row">센서명</th>
+              <th scope="row">센서위치</th>
               <th scope="row">대상자명</th>              
             </thead>
             <tbody>
               <tr>
                 <td>
-                  <select v-model="selectedSidoItems" @change="onChangeSgg($event)">
-                    <option v-for="(sido, index) in sidoItems" :value="sido.value" v-bind:key="index">{{sido.label}}</option>
+                  <select v-model="selectedRoomNmItem">
+                    <option v-for="(roomName, index) in RoomNameItem" :value="roomName.value" v-bind:key="index">{{roomName.label}}</option>
                   </select>
                 </td>
                 <td>
-                  <select v-model="selectedSggItems" @change="onChangeOrg($event)">
-                    <option v-for="(sgg, index) in sggItems" :value="sgg.value" v-bind:key="index">{{sgg.label}}</option>
+                  <select v-model="selectedLocateItem">
+                    <option v-for="(locate, index) in LocateItem" :value="locate.value" v-bind:key="index">{{locate.label}}</option>
                   </select>
                 </td>
                 <td>
-                  <select v-model="selectedOrgItems">
-                    <option v-for="(orgm, index) in orgmItems" :value="orgm.value" v-bind:key="index">{{orgm.label}}</option>
+                  <select v-model="selectedRecipientNm">
+                    <option v-for="(recipientName, index) in RecipientNameItem" :value="recipientName.value" v-bind:key="index">{{recipientName.label}}</option>
                   </select>
                 </td>
                 <td>
@@ -88,11 +90,11 @@
         <div class="list result">
           <table>
             <colgroup>
-                <col style="width:6%;">
+                <col style="width:5%;">
+                <col style="width:5%;">
+                <col style="width:5%;">
                 <col style="width:7%;">
                 <col style="width:5%;">
-                <col style="width:8%;">
-                <col style="width:5%;">
                 <col style="width:5%;">
                 <col style="width:5%;">
                 <col style="width:8%;">
@@ -100,12 +102,12 @@
                 <col style="width:6%;">
                 <col style="width:6%;">
                 <col style="width:6%;">
-                <col style="width:8%;">
+                <col style="width:7%;">
             </colgroup>
             <thead>
               <tr>
                 <th scope="col">호실</th>
-                <th scope="col">센서명</th>
+                <th scope="col">센서위치</th>
                 <th scope="col">대상자명</th>
                 <th scope="col">생년월일</th>
                 <th scope="col">나이</th>
@@ -123,11 +125,11 @@
           <div class="tbody">
             <table>
               <colgroup>
-                <col style="width:6%;">
+                <col style="width:5%;">
+                <col style="width:5%;">
+                <col style="width:5%;">
                 <col style="width:7%;">
                 <col style="width:5%;">
-                <col style="width:8%;">
-                <col style="width:5%;">
                 <col style="width:5%;">
                 <col style="width:5%;">
                 <col style="width:8%;">
@@ -135,23 +137,24 @@
                 <col style="width:6%;">
                 <col style="width:6%;">
                 <col style="width:6%;">
-                <col style="width:8%;">
+                <col style="width:7%;">
               </colgroup>
               <tbody >
                 <tr v-for="(item,index) in recipientItems" v-bind:key="index">
-                  <td>201</td>
-                  <td>배드1</td>
-                  <td>윤시내</td>
-                  <td>1943-06-06</td>
-                  <td>79</td> 
-                  <td>여</td>
+                  <td>{{item.roomNm}}</td>
+                  <td>{{changeSensor(item.sensorLocCd)}}</td>
+                  <td>{{changeNm(item.macAddr)}}</td>
+                  <td>{{changeBirthday(item.macAddr)}}</td>
+                  <td>{{changeOld(item.macAddr)}}</td> 
+                  <td>{{changeSex(item.macAddr)}}</td>
                   <td>작동중</td>
-                  <td>2022-10-28 00:53:30</td>
-                  <td>78</td>
-                  <td>28</td>
-                  <td>828</td>
-                  <td style="color:blue">감지</td>
-                  <td>최수진</td>
+                  <td>{{item.measureDtime}}</td>
+                  <td>{{item.hr}}</td>
+                  <td>{{item.br}}</td>
+                  <td>{{item.act}}</td>
+                  <td v-if="item.pd === '1'" style="color:#FFFF00">감지</td>
+                  <td v-else style="color:red">미감지</td>
+                  <td>{{changeManager(item.macAddr)}}</td>
                 </tr>                                
               </tbody>
                 <!--  
@@ -194,13 +197,15 @@ export default {
     return{
       orgNm:'',orgId:'', sido:'', sidoCd:'', sgg:'', sggCd:'', s_date: '', e_date: '',
       sidoItems:[], sggItems:[], orgmItems:[], typeItems:[], number:[], stateItems:[], changeStateItems:[], recipientItems:[],
+      RoomNameItem:[{label:'전체', value:''},{label:'202', value:'71'}],
+      RecipientNameItem:[{label:'전체', value:''},{label:'이수진', value:'847127fffe4cfcc9'}],
+      LocateItem:[{label:'전체', value:''}], selectedRoomNmItem:'', selectedLocateItem:'',
       orgSido:'', orgSgg:'', orgCode:'',
-      selectedSidoItems:'', selectedSggItems:'', selectedOrgItems:'', selectedRecipientNm:'', selectedTypeItems:'', selectedStateItems:'',
-      cBirthday:'', cAddr: '', NCount : 0,
+      selectedSidoItems:'', selectedSggItems:'', selectedOrgItems:'', selectedRecipientNm:'',
+      NCount : 0,
       errorpopup1: false, errorpopup2: false, errorpopup3: false,
-      saveChangeData: null, updDtime:'',
       searchCheck1 : 1, searchCheck2 : 0,
-      checkStartDate:moment().subtract(6,'days').format('YYYY-MM-DD'),
+      checkStartDate:moment().subtract(1,'days').format('YYYY-MM-DD'),
       checkEndDate:moment().format('YYYY-MM-DD'),
       routeQueryCount:0,
       roomid:'', roomNm:'', sensorLocCd:'',
@@ -213,11 +218,12 @@ export default {
     }
   },
   created() {
-    this.s_date=moment().subtract(6, 'days').format('YYYY-MM-DD');
+    this.s_date=moment().subtract(1, 'days').format('YYYY-MM-DD');
     this.e_date=moment().format('YYYY-MM-DD');
     this.getSidoData();
     this.getSggData();
     this.getOrgmData();
+    this.getLocateData();
     this.cBirthday=moment().format('YYYY-MM-DD');
     this.getRecipientData();
   },
@@ -227,10 +233,10 @@ export default {
     },
   methods:{
     pagingMethod(page) {
-        // this.listData = this.recipientItems.slice(
-        //   (page - 1) * this.limit,
-        //   page * this.limit
-        // )
+        this.listData = this.recipientItems.slice(
+          (page - 1) * this.limit,
+          page * this.limit
+        )
         this.page = page
         this.getRecipientData()
         this.pageDataSetting(this.total, this.limit, this.block, page)
@@ -351,37 +357,53 @@ export default {
           console.error("There was an error!", error);
         });
     },
-    getRecipientData() {
-      let addrCd = ''
-      let occurStartDate = this.s_date
-      let occurEndDate = this.e_date      
-      if(this.selectedSidoItems != '' && this.selectedSggItems == ''){
-        addrCd = this.sidoCd.substring(0,2)
-      }else if(this.selectedSggItems != ''){
-        if(this.sggCd.startsWith('0', 4) === true){
-          addrCd = this.sggCd.substring(0,4)
-        }else{
-          addrCd = this.sggCd.substring(0,5)
-        }
-      }else{
-        addrCd = ''
-      }
+    getLocateData() {
+      let url =this.$store.state.serverApi + "/admin/codes?cmmnCdGroup=SENSOR.LOCATECD";
+      axios.get(url, {headers: {"Authorization": sessionStorage.getItem("token")}})
+        .then(response => {
+          for(let i=0; i<response.data.data.length; i++) {
+            this.LocateItem.push({
+              label: response.data.data[i].cmmnCdNm,
+              value: response.data.data[i].cmmnCd,
+            });
+          } 
+          for(let i=0; i<this.LocateItem.length; i++){
+            if(this.LocateItem[i].label === '거실'){
+              this.LocateItem[i].label = '배드1'
+            }else if(this.LocateItem[i].label === '안방'){
+              this.LocateItem[i].label = '배드2'
+            }
+          }
+        })
+        .catch(error => {
+          this.errorMessage = error.message;
+          console.error("There was an error!", error);
+        });
+    },
+    async getRecipientData() {      
       // if(this.$route.query.state !== undefined && this.routeQueryCount === 0){
       //   this.selectedStateItems = this.$route.query.state
       //   this.routeQueryCount = 1
       // }
+
+      // let uri = this.$store.state.serverApi
+      // +"/admin/sensors/radars?pageIndex="+this.page+"&recordCountPerPage=30"
+      // +"&roomId="+this.roomid
+      // +"&roomNm="+this.roomNm
+      // +"&sensorLocCd="+this.sensorLocCd
+      // +"&measureStartDate="+this.s_date
+      // +"&measureEndDate="+this.e_date
       let uri = this.$store.state.serverApi
-      +"/admin/sensors/radars?pageIndex="+this.page+"&recordCountPerPage=30"
-      +"&roomId="+this.roomid
-      +"&roomNm="+this.roomNm
-      +"&sensorLocCd="+this.sensorLocCd
+      +"/admin/sensors/radars?recordCountPerPage=30&pageIndex="+(this.page - 1)
+      +"&userId="+this.$store.state.userId
+      +"&roomId="+this.selectedRoomNmItem
+      +"&sensorLocCd="+this.selectedLocateItem
+      +"&macAddr=847127fffe4cfcc9"
       +"&measureStartDate="+this.s_date
       +"&measureEndDate="+this.e_date
-      
-      axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
+      await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(response => {
           this.recipientItems = response.data.data
-          console.log(this.recipientItems)
           this.NCount = response.data.totalCount
           this.total = this.NCount
         //   if(this.searchCheck1 === 1){
@@ -400,14 +422,6 @@ export default {
           console.error("There was an error!", error);
         });
     },
-    changeRecipientPhoneno(phone){
-      if(phone){
-        let changeNumber = phone.replace(/[^0-9]/, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
-        return changeNumber
-      }else{
-        return ''
-      }
-    },
     onChangeSgg(event){
       this.sidoCd = event.target.value
       this.getSggData()
@@ -418,16 +432,69 @@ export default {
       this.sggCd = event.target.value
       this.getOrgmData()
     },
-    makeAge(birthDay){
-      let tmp1 = this.$moment(birthDay).format('YYYY')
-      let tmp2 = this.$moment()
-      return tmp2.diff(tmp1, 'years');
-    },
     errorpopupClose(input){
         switch(input){
             case 1 : this.errorpopup1 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
             case 2 : this.errorpopup2 = false; this.s_date=this.checkStartDate; this.e_date=this.checkEndDate; break;
         }
+    },
+    changeSensor(input){
+      let result = ''
+      switch(input){
+        case 'LOC001' : result='배드1'; break;
+        case 'LOC002' : result='거실2'; break;
+        case 'LOC003' : result='배드2'; break;
+        case 'LOC004' : result='안방2'; break;
+        case 'LOC005' : result='화장실'; break;
+        case 'LOC006' : result='화장실2'; break;
+        case 'LOC007' : result='현관'; break;
+        case 'LOC008' : result='뒷문'; break;
+        case 'LOC009' : result='주방'; break;
+        case 'LOC010' : result='주방2'; break;
+        case 'LOC011' : result='작은방'; break;
+        case 'LOC012' : result='작은방2'; break;
+      }
+      return result
+    },
+    changeNm(input){
+      let result = ''
+      switch(input){
+        case '847127fffe4cfcc9' : result='이수진'; break;
+        
+      }
+      return result
+    },
+    changeBirthday(input){
+      let result = ''
+      switch(input){
+        case '847127fffe4cfcc9' : result='1950-06-25'; break;
+        
+      }
+      return result
+    },
+    changeOld(input){
+      let result = ''
+      switch(input){
+        case '847127fffe4cfcc9' : result='73'; break;
+        
+      }
+      return result
+    },
+    changeSex(input){
+      let result = ''
+      switch(input){
+        case '847127fffe4cfcc9' : result='여'; break;
+        
+      }
+      return result
+    },
+    changeManager(input){
+      let result = ''
+      switch(input){
+        case '847127fffe4cfcc9' : result='홍수호'; break;
+        
+      }
+      return result
     },
     manageInquiry() {
       if(this.s_date > this.e_date){

@@ -1,65 +1,37 @@
 <template>
-  <CRow>
-    <CCol col="12" lg="6">
-      <CCard>
-        <CCardHeader>
-          User id:  {{ $route.params.id }}
-        </CCardHeader>
-        <CCardBody>
-          <CDataTable
-            striped
-            small
-            fixed
-            :items="visibleData"
-            :fields="fields"
-          />
-        </CCardBody>
-        <CCardFooter>
-          <CButton color="primary" @click="goBack">Back</CButton>
-        </CCardFooter>
-      </CCard>
-    </CCol>
-  </CRow>
+  <div>
+    <a> {{this.test}} </a>  
+    <a @click="this.clickEvent()">{{this.test}}</a>
+  </div>  
 </template>
 
 <script>
-import usersData from './UsersData'
 export default {
-  name: 'User',
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.usersOpened = from.fullPath.includes('users')
-    })
-  },
-  data () {
-    return {
-      usersOpened: null
+  data(){
+    return{
+      a:'',
+      test:'',
     }
   },
-  computed: {
-    fields () {
-      return [
-        { key: 'key', label: this.username, _style: 'width:150px'},
-        { key: 'value', label: '', _style: 'width:150px;' }
-      ]
-    },
-    userData () {
-      const id = this.$route.params.id
-      const user = usersData.find((user, index) => index + 1 == id)
-      const userDetails = user ? Object.entries(user) : [['id', 'Not found']]
-      return userDetails.map(([key, value]) => { return { key, value } })
-    },
-    visibleData () {
-      return this.userData.filter(param => param.key !== 'username')
-    },
-    username () {
-      return this.userData.filter(param => param.key === 'username')[0].value
-    }
+  created(){
+    test()
   },
-  methods: {
-    goBack() {
-      this.usersOpened ? this.$router.go(-1) : this.$router.push({path: '/users'})
+  methods:{
+    test(){
+      for(let i = 0; i< 4; i++){
+        this.a = i
+      }
+      if(a !== ''){
+        this.test = this.a
+      }
+    },
+    clickEvent(){
+      this.test = 'Click'
     }
   }
 }
 </script>
+
+<style>
+
+</style>

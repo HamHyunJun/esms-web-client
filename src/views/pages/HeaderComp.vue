@@ -27,14 +27,15 @@
         <li :class="getPath==='/setting'? 'drop on':'drop'">
           <a href="#"><router-link to="/setting/allView" ><i class="ico-4"></i>시스템관리</router-link></a>
           <ul class="sub_menu">
-            <li :class="getDetailPath==='/setting/org'? 'on':''"><a href="#"><router-link to ="/setting/org">기관관리</router-link></a></li>
-            <li :class="getDetailPath==='/setting/customer'? 'on':''"><a href="#"><router-link to ="/setting/customer">사용자관리</router-link></a></li>
+            <li v-if="this.$store.state.userTypeCd === 'TPE001' || this.$store.state.userTypeCd === 'TPE002' || this.$store.state.userTypeCd === 'TPE003' || this.$store.state.userTypeCd === 'TPE004'" :class="getDetailPath==='/setting/org'? 'on':''"><a href="#"><router-link to ="/setting/org">기관관리</router-link></a></li>
+            <li v-if="this.$store.state.userTypeCd === 'TPE001' || this.$store.state.userTypeCd === 'TPE002' || this.$store.state.userTypeCd === 'TPE003' || this.$store.state.userTypeCd === 'TPE004' || this.$store.state.userTypeCd === 'TPE005'"
+            :class="getDetailPath==='/setting/customer'? 'on':''"><a href="#"><router-link to ="/setting/customer">사용자관리</router-link></a></li>
             <li :class="getDetailPath==='/setting/allView'? 'on':''"><a href="#"><router-link to ="/setting/allView">장비관리</router-link></a></li>
-            <li :class="getDetailPath==='/setting/ippbx'? 'on':''"><a href="#"><router-link to ="/setting/ippbx">IP-PBX 관리</router-link></a></li>
-            <li :class="getDetailPath==='/setting/firmware'? 'on':''"><a href="#"><router-link to ="/setting/firmware">펌웨어 관리</router-link></a></li>
+            <li v-if="this.$store.state.userTypeCd === 'TPE001'" :class="getDetailPath==='/setting/ippbx'? 'on':''"><a href="#"><router-link to ="/setting/ippbx">IP-PBX 관리</router-link></a></li>
+            <li v-if="this.$store.state.userTypeCd === 'TPE001'" :class="getDetailPath==='/setting/firmware'? 'on':''"><a href="#"><router-link to ="/setting/firmware">펌웨어 관리</router-link></a></li>
             <li :class="getDetailPath==='/setting/notice'? 'on':''"><a href="#"><router-link to ="/setting/notice">공지사항</router-link></a></li>
-            <li :class="getDetailPath==='/setting/manageLog'? 'on':''"><a href="#"><router-link to ="/setting/manageLog">로그관리</router-link></a></li>
-            <li :class="getDetailPath==='/setting/appLog'? 'on':''"><a href="#"><router-link to ="/setting/appLog">앱로그수집</router-link></a></li>
+            <li v-if="this.$store.state.userTypeCd === 'TPE001'" :class="getDetailPath==='/setting/manageLog'? 'on':''"><a href="#"><router-link to ="/setting/manageLog">로그관리</router-link></a></li>
+            <li v-if="this.$store.state.userTypeCd === 'TPE001'" :class="getDetailPath==='/setting/appLog'? 'on':''"><a href="#"><router-link to ="/setting/appLog">앱로그수집</router-link></a></li>
             <li :class="getDetailPath==='/setting/deviceRecord'? 'on':''"><a href="#"><router-link to ="/setting/deviceRecord">장비이력관리</router-link></a></li>
             <li :class="getDetailPath==='/setting/installCheck'? 'on':''"><a href="#"><router-link to ="/setting/installCheck">설치완료확인서</router-link></a></li>
           </ul>
@@ -48,13 +49,15 @@
             <li :class="getDetailPath==='/as/Cancel'? 'on':''"><a href="#"><router-link to ="/as/Cancel">A/S 취소</router-link></a></li>
           </ul>
         </li>
-        <li :class="getPath==='/schedule'? 'drop on':'drop'">
-          <a href="#"><router-link to="/schedule/Calendar" ><i class="ico-6"></i>일정관리</router-link></a>
+        <li :class="getPath==='/schedule'? 'on':''"><a href="#"><router-link to="/schedule/Calendar" ><i class="ico-6"></i>일정관리</router-link></a></li>
+        <!-- <li :class="getPath==='/radar'? 'on':''"><a href="#" ><router-link to="/radar/radarSensor" ><i class="ico-7"></i>레이더센서</router-link></a></li> -->
+        <li :class="getPath==='/radar'? 'drop on':'drop'">
+          <a href="#"><router-link to="/radar/radarSensor" ><i class="ico-7"></i>레이더센서</router-link></a>
           <ul class="sub_menu">
-            <li :class="getDetailPath==='/schedule/Calendar'? 'on':''"><a href="#"><router-link to ="/schedule/Calendar">달력</router-link></a></li>
+            <li :class="getDetailPath==='/radar/radarSensor'? 'on':''"><a href="#"><router-link to ="/radar/radarSensor">60GHz Radar</router-link></a></li>
+            <li :class="getDetailPath==='/radar/radarSensor24'? 'on':''"><a href="#"><router-link to ="/radar/radarSensor24">24GHz Radar</router-link></a></li>
           </ul>
         </li>
-        <li :class="getPath==='/radar'? 'on':''"><a href="#" ><router-link to="/radar/radarSensor" ><i class="ico-7"></i>레이더센서</router-link></a></li>
       </ul>
       <div class="emerg_area">
         <button type="button"  style="margin-right:10px;" :class="Emeventtoggle===0 ? 'btn': 'btn on'" @click="clickEmergency()"><i></i>응급상황 수신</button> 
@@ -77,6 +80,7 @@ export default {
   },
   data: () => ({
     userId: null,
+    userTypeCd: null,
     s_date: '',
     e_date: '',
     oldEmevent : 0,
@@ -127,19 +131,27 @@ export default {
     // },
     getUserId(){
       this.userId = sessionStorage.getItem("userId");
+      this.userTypeCd = sessionStorage.getItem("userTypeCd")
+      this.$store.state.userTypeCd = this.userTypeCd
+      console.log(this.userTypeCd)
       console.log("this.userId")
       console.log(this.userId)
       console.log("this.$store.state.data")
+      console.log(this.$store.state.userTypeCd)
       console.log(this.$store.state.userId)
+      console.log(this.$store)
     },
     logOut(){
       alert("로그아웃 되었습니다")
       sessionStorage.setItem("token", null);
       sessionStorage.setItem("userId", null);
+      sessionStorage.setItem("userTypeCd", null);
       sessionStorage.removeItem('token')
       sessionStorage.removeItem('userId')
+      sessionStorage.removeItem('userTypeCd')
       this.userId = null
       this.$store.state.userId = null
+      this.$store.state.userTypeCd = null
       console.log(sessionStorage.getItem("token"));
       
       clearTimeout(this.timerId);
@@ -149,7 +161,7 @@ export default {
     async checkCount(){
       console.log("this Emeventtoggle ==> "+this.Emeventtoggle)
       console.log(moment().format('YYYY-MM-DD HH:mm:ss'))
-      let uri = this.$store.state.serverApi+"/admin/emergencys/checkcnt";
+      let uri = this.$store.state.serverApi+"/admin/emergencys/checkcnt?userId="+this.$store.state.userId;
       await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
       .then(response => {
        this.newEmevent = response.data.totalCount
@@ -176,7 +188,7 @@ export default {
       console.log(this.s_date)
       console.log(this.e_date)
 
-      let uri = this.$store.state.serverApi+`/admin/emergencys/gateway-events?occurStartDate=${this.s_date}&occurEndDate=${this.e_date}`;
+      let uri = this.$store.state.serverApi+`/admin/emergencys/gateway-events?occurStartDate=${this.s_date}&occurEndDate=${this.e_date}&userId=${this.$store.state.userId}`;
       await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
       .then(response => {
         console.log(response)

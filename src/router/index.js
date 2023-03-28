@@ -100,6 +100,7 @@ const ScheduleCalendar = () => import('@/views/schedule/Calendar')
 
 //Radar
 const RadarRadarSensor = () => import('@/views/radar/RadarSensor')
+const RadarRadarSensor24 = () => import('@/views/radar/RadarSensor24')
 
 Vue.use(Router)
 
@@ -234,6 +235,11 @@ function configRoutes () {
               path: 'radarSensor',
               name: 'RadarSensor',
               component: RadarRadarSensor
+            },
+            {
+              path: 'radarSensor24',
+              name: 'RadarSensor24',
+              component: RadarRadarSensor24
             }
           ]
         },

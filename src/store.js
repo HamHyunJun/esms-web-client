@@ -10,7 +10,7 @@ const state = {
   // serverApi2:'http://210.122.45.62:8081',
   moduleName:'/admin',
   userId:null,
-
+  userTypeCd:null,
 }
 
 const mutations = {

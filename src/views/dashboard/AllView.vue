@@ -246,6 +246,7 @@
             </div>
           </div>
         </div>
+           <!-- 이용약관 -->
       </div>
     </div>
 </template>
@@ -513,7 +514,12 @@ export default {
       }else{
         addrCd = ''
       }
-      let url =this.$store.state.serverApi + "/admin/organizations/stat/total?orgId="+this.selectedOrgItems+"&addrCd="+addrCd+"&startDate="+this.s_date+"&endDate="+this.e_date;
+      let url =this.$store.state.serverApi + "/admin/organizations/stat/total?orgId="+this.selectedOrgItems
+      +"&userId="+this.$store.state.userId
+      +"&addrCd="+addrCd
+      +"&startDate="+this.s_date
+      +"&endDate="+this.e_date;
+      console.log(url)
       axios.get(url, {headers: {"Authorization": sessionStorage.getItem("token")}})
         .then(response => {
           let totalCData = response.data.data
@@ -640,8 +646,14 @@ export default {
         addrCd = ''
       }
       this.e_date =  moment(this.s_date).add(6,'days').format('YYYY-MM-DD')
-      let urlEuTodayChart = this.$store.state.serverApi + "/admin/organizations/stat/oper?startDate="+this.s_date+"&endDate="+this.e_date;
-      let urlEuChart = this.$store.state.serverApi + "/admin/organizations/stat/oper?addrCd="+addrCd+"&orgId="+this.selectedOrgItems+"&startDate="+this.s_date+"&endDate="+this.e_date;
+      let urlEuTodayChart = this.$store.state.serverApi + "/admin/organizations/stat/oper?startDate="+this.s_date
+      +"&userId="+this.$store.state.userId
+      +"&endDate="+this.e_date;
+      let urlEuChart = this.$store.state.serverApi + "/admin/organizations/stat/oper?addrCd="+addrCd
+      +"&userId="+this.$store.state.userId
+      +"&orgId="+this.selectedOrgItems
+      +"&startDate="+this.s_date
+      +"&endDate="+this.e_date;
       // 전체 가동률
       await axios.get(urlEuTodayChart, {headers: {"Authorization": sessionStorage.getItem("token")}})
         .then(response => {
@@ -979,7 +991,11 @@ export default {
       }
       this.e_date = moment(this.s_date).add(6,'days').format('YYYY-MM-DD')
       this.e_date1 = moment(this.s_date).add(7,'days').format('YYYY-MM-DD')
-      let urlEventStatus = this.$store.state.serverApi + "/admin/organizations/stat/alarm?addrCd="+addrCd+"&orgId="+this.selectedOrgItems+"&startDate="+this.s_date+"&endDate="+this.e_date
+      let urlEventStatus = this.$store.state.serverApi + "/admin/organizations/stat/alarm?addrCd="+addrCd
+      +"&userId="+this.$store.state.userId
+      +"&orgId="+this.selectedOrgItems
+      +"&startDate="+this.s_date
+      +"&endDate="+this.e_date
       await axios.get(urlEventStatus, {headers: {"Authorization": sessionStorage.getItem("token")}})
           .then(response => {
             const EvtempArr = [];
@@ -1209,7 +1225,11 @@ export default {
         addrCd = ''
       }
       this.e_date =  moment(this.s_date).add(6,'days').format('YYYY-MM-DD')
-      let urlBattery =this.$store.state.serverApi + "/admin/organizations/stat/battery?addrCd="+addrCd+"&orgId="+this.selectedOrgItems+"&startDate="+this.s_date+"&endDate="+this.e_date;
+      let urlBattery =this.$store.state.serverApi + "/admin/organizations/stat/battery?addrCd="+addrCd
+      +"&userId="+this.$store.state.userId
+      +"&orgId="+this.selectedOrgItems
+      +"&startDate="+this.s_date
+      +"&endDate="+this.e_date;
       await axios.get(urlBattery, {headers: {"Authorization": sessionStorage.getItem("token")}})
           .then(response => {
             const BttempArr = [];
@@ -1641,7 +1661,11 @@ export default {
         addrCd = ''
       }
       this.e_date =  moment(this.s_date).add(6,'days').format('YYYY-MM-DD')
-      let urlPower = this.$store.state.serverApi + "/admin/organizations/stat/com?addrCd="+addrCd+"&orgId="+this.selectedOrgItems+"&startDate="+this.s_date+"&endDate="+this.e_date
+      let urlPower = this.$store.state.serverApi + "/admin/organizations/stat/com?addrCd="+addrCd
+      +"&userId="+this.$store.state.userId
+      +"&orgId="+this.selectedOrgItems
+      +"&startDate="+this.s_date
+      +"&endDate="+this.e_date
       await axios.get(urlPower, {headers: {"Authorization": sessionStorage.getItem("token")}})
           .then(response => {
             const PwtempArr = [];
@@ -2131,7 +2155,11 @@ export default {
       }else{
         addrCd = ''
       }
-      let url =this.$store.state.serverApi + "/admin/organizations/stat/as?orgId="+this.selectedOrgItems+"&addrCd="+addrCd+"&startDate="+this.ASs_date+"&endDate="+this.ASe_date;
+      let url =this.$store.state.serverApi + "/admin/organizations/stat/as?orgId="+this.selectedOrgItems
+      +"&userId="+this.$store.state.userId
+      +"&addrCd="+addrCd
+      +"&startDate="+this.ASs_date
+      +"&endDate="+this.ASe_date;
       axios.get(url, {headers: {"Authorization": sessionStorage.getItem("token")}})
           .then(response => {
             let rqData = response.data.data
@@ -2190,6 +2218,7 @@ export default {
             let licpCArrToString = ''
             let flicpCArrToString = ''         
 
+console.log(this.$store.state.userTypeCd)
             // 요청
             gwrqCArrToString = rqData.filter(cd=>{
             return cd.equipTypeCd ==="EQP001"

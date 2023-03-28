@@ -370,10 +370,11 @@ export default {
 
       }
       let uri = ''
-      uri = this.$store.state.serverApi+"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;
+      uri = this.$store.state.serverApi+"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"+"&userId="+this.$store.state.userId+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;
       if(this.selectedSidoItems !== '' || this.selectedRecipientNm !== '' || this.selectedOrgItems !== '' || this.selectedEventItems !== ''){
       uri = this.$store.state.serverApi
       +"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"
+      +"&userId="+this.$store.state.userId
       +"&addrCd="+addrCd
       +"&orgId="+this.selectedOrgItems
       +"&eventCd="+this.selectedEventItems
