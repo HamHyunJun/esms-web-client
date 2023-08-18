@@ -102,6 +102,9 @@ const ScheduleCalendar = () => import('@/views/schedule/Calendar')
 const RadarRadarSensor = () => import('@/views/radar/RadarSensor')
 const RadarRadarSensor24 = () => import('@/views/radar/RadarSensor24')
 
+//Switch
+const SwitchAllvue = () => import('@/views/switch/Allvue')
+
 Vue.use(Router)
 
 export default new Router({
@@ -240,6 +243,20 @@ function configRoutes () {
               path: 'radarSensor24',
               name: 'RadarSensor24',
               component: RadarRadarSensor24
+            }
+          ]
+        },{
+          path: 'switch',
+          redirect: '/switch/Allvue',
+          name: 'switch',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'allvue',
+              name: 'Allvue',
+              component: SwitchAllvue
             }
           ]
         },

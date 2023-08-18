@@ -17,7 +17,7 @@
         <li :class="getPath==='/emevent'? 'drop on':'drop'"> <!-- gnb li에 마우스 오버시 드랍메뉴 on -->
           <a href="#"><router-link to="/emevent/allView" ><i class="ico-3"></i>이벤트 리포트</router-link></a>
           <ul class="sub_menu">
-            <li :class="getDetailPath==='/emevent/allView'? 'on':''"><a href="#"><router-link to ="/emevent/allView">응급알람</router-link></a></li>
+            <li :class="getDetailPath.includes('/emevent/allView')? 'on':''"><a href="#"><router-link to ="/emevent/allView">응급알람</router-link></a></li>
             <li :class="getDetailPath==='/emevent/outingEvent'? 'on':''"><a href="#"><router-link to ="/emevent/outingEvent">외출이벤트</router-link></a></li>
             <li :class="getDetailPath==='/emevent/activityDetection'? 'on':''"><a href="#"><router-link to ="/emevent/activityDetection">활동 미감지</router-link></a></li>
             <li :class="getDetailPath==='/emevent/equipmentEvent'? 'on':''"><a href="#"><router-link to ="/emevent/equipmentEvent">장비 이벤트</router-link></a></li>
@@ -58,9 +58,15 @@
             <li :class="getDetailPath==='/radar/radarSensor24'? 'on':''"><a href="#"><router-link to ="/radar/radarSensor24">24GHz Radar</router-link></a></li>
           </ul>
         </li>
+        <li :class="getPath==='/switch'? 'drop on':'drop'">
+          <a href="#"><router-link to="/switch/allvue" ><i class="ico-8"></i>스마트 스위치</router-link></a>
+          <ul class="sub_menu">
+            <li :class="getDetailPath==='/switch/allvue'? 'on':''"><a href="#"><router-link to ="/switch/allvue">스위치 관리</router-link></a></li>
+          </ul>
+        </li>
       </ul>
       <div class="emerg_area">
-        <button type="button"  style="margin-right:10px;" :class="Emeventtoggle===0 ? 'btn': 'btn on'" @click="clickEmergency()"><i></i>응급상황 수신</button> 
+        <button type="button"  style="margin-right:10px;" :class="Emeventtoggle===0 ? 'btn': 'btn on blinking'" @click="clickEmergency()"><i></i>응급상황 수신</button>
         <button type="button" :class="Eqeventtoggle===0 ? 'btn': 'btn on'" @click="clickEquipmentEvent()"><i></i>장비 이벤트</button>
         <!--<button type="button" style="margin-right:10px;" :class="this.socketData==='ALL' || this.socketData==='ALARM' ? 'btn on': 'btn' " @click="clickEmergency()"><i></i>응급상황 수신</button> 
         <button type="button" :class="this.socketData==='ALL' || this.socketData==='EVENT' ? 'btn on': 'btn' " @click="clickEquipmentEvent()"><i></i>장비 이벤트</button> -->
@@ -72,6 +78,7 @@
 <script>
 import axios from "axios";
 import moment from "moment";
+import VueRouter from 'vue-router'
 let router;
 export default {
   name: 'HeaderComp',
@@ -81,6 +88,7 @@ export default {
   data: () => ({
     userId: null,
     userTypeCd: null,
+    userNm:null,
     s_date: '',
     e_date: '',
     oldEmevent : 0,
@@ -132,26 +140,26 @@ export default {
     getUserId(){
       this.userId = sessionStorage.getItem("userId");
       this.userTypeCd = sessionStorage.getItem("userTypeCd")
+      this.userNm = sessionStorage.getItem("userNm")
       this.$store.state.userTypeCd = this.userTypeCd
-      console.log(this.userTypeCd)
-      console.log("this.userId")
-      console.log(this.userId)
-      console.log("this.$store.state.data")
-      console.log(this.$store.state.userTypeCd)
-      console.log(this.$store.state.userId)
-      console.log(this.$store)
+      this.$store.state.userNm = this.userNm
     },
     logOut(){
       alert("로그아웃 되었습니다")
       sessionStorage.setItem("token", null);
       sessionStorage.setItem("userId", null);
       sessionStorage.setItem("userTypeCd", null);
+      sessionStorage.setItem("userNm", null);
       sessionStorage.removeItem('token')
       sessionStorage.removeItem('userId')
       sessionStorage.removeItem('userTypeCd')
+      sessionStorage.removeItem('userNm')
       this.userId = null
+      this.userTypeCd = null
+      this.userNm = null
       this.$store.state.userId = null
       this.$store.state.userTypeCd = null
+      this.$store.state.userNm = null
       console.log(sessionStorage.getItem("token"));
       
       clearTimeout(this.timerId);
@@ -213,11 +221,29 @@ export default {
       }
     },
     clickEmergency(){
-      if(this.$route.path !==`/emevent/allView2`){
+      if(this.$route.path !== `/emevent/allView`){
         this.$router.push({
-        path : `/emevent/allView2`
-      })
+          path: '/emevent/allView',
+          query: { 
+            stateCd: 'STE001', 
+            type: 'emergencys'
+            }
+        })
+      }else if(this.$route.path === `/emevent/allView`){
+        this.$router.push({
+          path: '/emevent/allView2'
+        })
       }
+      // if(this.$route.path !==`/emevent/allView2`){
+      //   this.$router.push({
+      //   path : `/emevent/allView2`
+      // })
+      // }else if(this.$route.path === `/emevent/allView2`){
+      //   //this.$router.go()
+      //   this.$router.push({path : '/emevent/allView2'}).catch(() => {})
+      // }
+      
+
       // if(this.$route.path !==`/emevent/allView`){
       //   this.$router.push({
       //   path : `/emevent/allView`,
@@ -226,11 +252,27 @@ export default {
       // } 
     },
     clickEquipmentEvent(){
-      if(this.$route.path !==`/emevent/EquipmentEvent2`){
+      let time = moment().subtract(15, 'seconds').format('YYYY-MM-DD HH:mm:ss')
+      if(this.$route.path !== `/emevent/EquipmentEvent`){
         this.$router.push({
-        path : `/emevent/EquipmentEvent2`
-      })
-      } 
+          path: '/emevent/EquipmentEvent',
+          query: { 
+            type: 'emergencys'
+            }
+        })
+      }else if(this.$route.path === `/emevent/EquipmentEvent`){
+        this.$router.push({
+          path: '/emevent/EquipmentEvent2'
+        })
+      }
+      //if(this.$route.path !==`/emevent/EquipmentEvent2`){
+      //  this.$router.push({
+      //  path : `/emevent/EquipmentEvent2`
+      //})
+      //}else if(this.$route.path === `/emevent/EquipmentEvent2`){
+      //  this.$router.go()
+      // }
+      
       // if(this.$route.path !==`/emevent/EquipmentEvent`){
       //   this.$router.push({
       //   path : `/emevent/equipmentEvent`,
@@ -241,27 +283,21 @@ export default {
   },
   computed: {
     loginCheck(){
-      console.log("this.$store.state.data")
-      this.userId = sessionStorage.getItem("userId")
-      console.log(this.$store.state.data)
-      return this.userId
+      // this.userId = sessionStorage.getItem("userId")
+      // return this.userId
+      this.userNm = sessionStorage.getItem("userNm")
+      return this.userNm
     },
     getPath(){
       let tmpPath = this.$route.path
       let tmpResult = tmpPath.split("/")
-      console.log(tmpResult)
       let result = "/" + tmpResult[1] 
-      console.log("path is")
-      console.log(result)
       return result
     },
     getDetailPath(){
       let tmpPath = this.$route.path
       let tmpResult = tmpPath.split("/")
-      console.log(tmpResult)
       let result = "/" + tmpResult[1] + "/" + tmpResult[2]
-      console.log("path is")
-      console.log(result)
       return result
     }
 
@@ -291,6 +327,7 @@ export default {
 #gnb > ul > li > a i.ico-5{background-image: url(../../assets/images/menu_05.png);}
 #gnb > ul > li > a i.ico-6{background-image: url(../../assets/images/menu_06.png);}
 #gnb > ul > li > a i.ico-7{background-image: url(../../assets/images/menu_07.png);}
+#gnb > ul > li > a i.ico-8{background-image: url(../../assets/images/menu_08.png);}
 #gnb > ul > li:hover > a{color: #11B787;}
 #gnb > ul > li:hover > a i.ico-1{background-image: url(../../assets/images/menu_01_on.png);}
 #gnb > ul > li:hover > a i.ico-2{background-image: url(../../assets/images/menu_02_on.png);}
@@ -299,6 +336,7 @@ export default {
 #gnb > ul > li:hover > a i.ico-5{background-image: url(../../assets/images/menu_05_on.png);}
 #gnb > ul > li:hover > a i.ico-6{background-image: url(../../assets/images/menu_06_on.png);}
 #gnb > ul > li:hover > a i.ico-7{background-image: url(../../assets/images/menu_07_on.png);}
+#gnb > ul > li:hover > a i.ico-8{background-image: url(../../assets/images/menu_08_on.png);}
 #gnb > ul > li.on > a{color: #11B787;}
 #gnb > ul > li.on > a i.ico-1{background-image: url(../../assets/images/menu_01_on.png);}
 #gnb > ul > li.on > a i.ico-2{background-image: url(../../assets/images/menu_02_on.png);}
@@ -307,6 +345,7 @@ export default {
 #gnb > ul > li.on > a i.ico-5{background-image: url(../../assets/images/menu_05_on.png);}
 #gnb > ul > li.on > a i.ico-6{background-image: url(../../assets/images/menu_06_on.png);}
 #gnb > ul > li.on > a i.ico-7{background-image: url(../../assets/images/menu_07_on.png);}
+#gnb > ul > li.on > a i.ico-8{background-image: url(../../assets/images/menu_08_on.png);}
 #gnb > ul > li.drop{padding: 0 18px 0 0;background-image: url(../../assets/images/ico_menu_drop.png);background-repeat: no-repeat;background-position: right center;position: relative;}
 #gnb > ul > li.drop:hover{background-image: url(../../assets/images/ico_menu_drop_on.png);}
 #gnb > ul > li.drop.on{background-image: url(../../assets/images/ico_menu_drop_on.png);}
@@ -323,4 +362,19 @@ export default {
 #gnb .emerg_area .btn.on{background-color: #F61919;}
 #gnb .emerg_area .btn i{display: inline-block;vertical-align: top;width: 19px;height: 23px;background-image: url(../../assets/images/ico_emerg.png);;background-repeat: no-repeat;background-position: center;margin: 9px 10px 0 0;}
 #header .header_top .user_name .btn.form2{display: inline-block;width: auto;height: 40px;line-height: 40px;font-size: 14px;font-weight: 300;padding: 0 20px;background-color: #11B787;border-radius: 30px;color: #fff;box-shadow: 0px 6px 12px #0000000F;margin: 0 10px 0 0;}
+.blinking {
+  animation: blink-animation 1s infinite;
+}
+
+@keyframes blink-animation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 </style>

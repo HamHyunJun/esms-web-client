@@ -40,8 +40,8 @@
             <p class="alert_txt">선택하신 응급알람을 취소하시겠습니까?</p>
           </div>
           <div class="popbtn_area type-02">
-            <button type="button" class="btn form3" @click="saveState()">확인</button>
-            <button type="button" class="btn form2" @click="errorpopup3 = false">취소</button>
+            <button type="button" class="btn form3" @click="saveState()" :disabled="isSaving">확인</button>
+            <button type="button" class="btn form2" @click="errorpopup3 = false" :disabled="isSaving">취소</button>
           </div>
         </div>
       </div>
@@ -249,7 +249,7 @@ export default {
       cBirthday:'', cAddr: '', NCount : 0,
       errorpopup1: false, errorpopup2: false, errorpopup3: false,
       saveChangeData: null, updDtime:'',
-      searchCheck1 : 1, searchCheck2 : 0,
+      searchCheck1 : 1, searchCheck2 : 0, isSaving:false,
       checkStartDate:moment().subtract(6,'days').format('YYYY-MM-DD'),
       checkEndDate:moment().format('YYYY-MM-DD'),
       routeQueryCount:0,
@@ -271,11 +271,12 @@ export default {
     this.getStateData();
     this.cBirthday=moment().format('YYYY-MM-DD');
     this.getRecipientData();
+    console.log(this.$route.query.stateCd);
+    console.log(this.$route.query.type);
   },
-
-    mounted() {
-      this.pagingMethod(this.page)
-    },
+    // mounted() {
+    //  this.pagingMethod(this.page)
+    // },
   methods:{
     pagingMethod(page) {
         // this.listData = this.recipientItems.slice(
@@ -469,20 +470,60 @@ export default {
       //   this.selectedStateItems = this.$route.query.state
       //   this.routeQueryCount = 1
       // }
-      let uri = this.$store.state.serverApi+"/admin/emergencys?pageIndex="+this.page+"&recordCountPerPage=30"+"&userId="+this.$store.state.userId+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;
-      if(this.selectedSidoItems != '' || this.selectedRecipientNm != '' || this.selectedTypeItems != '' || this.selectedStateItems != ''){
-        uri = this.$store.state.serverApi
-        +"/admin/emergencys?pageIndex="+this.page+"&recordCountPerPage=30"
-        +"&userId="+this.$store.state.userId
-        +"&addrCd="+addrCd
-        +"&orgId="+this.selectedOrgItems
-        +"&typeCd="+this.selectedTypeItems
-        +"&signalStateCd="+this.selectedStateItems
-        +"&recipientNm="+this.selectedRecipientNm
-        +"&occurStartDate="+occurStartDate
-        +"&occurEndDate="+occurEndDate;
-      }
-      axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
+      let uri = ''
+      if(this.$route.query.type === 'emergencys'){
+        console.log("this")
+        this.selectedStateItems = this.$route.query.stateCd
+        uri = this.$store.state.serverApi+"/admin/emergencys?pageIndex="+this.page+"&recordCountPerPage=30"+"&userId="+this.$store.state.userId+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;
+        if(this.selectedSidoItems != '' || this.selectedRecipientNm != '' || this.selectedTypeItems != '' || this.selectedStateItems != ''){
+          uri = this.$store.state.serverApi
+          +"/admin/emergencys?pageIndex="+this.page+"&recordCountPerPage=30"
+          +"&userId="+this.$store.state.userId
+          +"&addrCd="+addrCd
+          +"&orgId="+this.selectedOrgItems
+          +"&typeCd="+this.selectedTypeItems
+          +"&signalStateCd="+this.selectedStateItems
+          +"&recipientNm="+this.selectedRecipientNm
+          +"&occurStartDate="+occurStartDate
+          +"&occurEndDate="+occurEndDate;
+        }
+        axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
+        .then(response => {
+          this.recipientItems = response.data.data
+          this.NCount = response.data.totalCount
+          this.total = this.NCount
+          this.$route.query.type = ''
+        //   if(this.searchCheck1 === 1){
+        //     this.searchCheck1 = 0
+        // }
+        // if(this.recipientItems.length !== 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
+        //     alert("성공적으로 조회 되었습니다.")
+        //     this.searchCheck2 = 0
+        // }else if(this.recipientItems.length === 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
+        //     alert("조회 결과가 존재하지 않습니다.")
+        //     this.searchCheck2 = 0
+        // }
+        })
+        .catch(error => {
+          this.errorMessage = error.message;
+          console.error("There was an error!", error);
+        });
+      }else{
+        console.log("this2")
+        uri = this.$store.state.serverApi+"/admin/emergencys?pageIndex="+this.page+"&recordCountPerPage=30"+"&userId="+this.$store.state.userId+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;
+        if(this.selectedSidoItems != '' || this.selectedRecipientNm != '' || this.selectedTypeItems != '' || this.selectedStateItems != ''){
+          uri = this.$store.state.serverApi
+          +"/admin/emergencys?pageIndex="+this.page+"&recordCountPerPage=30"
+          +"&userId="+this.$store.state.userId
+          +"&addrCd="+addrCd
+          +"&orgId="+this.selectedOrgItems
+          +"&typeCd="+this.selectedTypeItems
+          +"&signalStateCd="+this.selectedStateItems
+          +"&recipientNm="+this.selectedRecipientNm
+          +"&occurStartDate="+occurStartDate
+          +"&occurEndDate="+occurEndDate;
+        }
+        axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
         .then(response => {
           this.recipientItems = response.data.data
           this.NCount = response.data.totalCount
@@ -502,6 +543,9 @@ export default {
           this.errorMessage = error.message;
           console.error("There was an error!", error);
         });
+      }
+      
+      
     },
     changeRecipientPhoneno(phone){
       if(phone){
@@ -564,6 +608,7 @@ export default {
       }
     },
     saveState(){
+      this.isSaving = true
       let url = this.$store.state.serverApi+`/admin/emergencys/${this.recipientItems[this.saveChangeData].emergSignalId}/cancel`
       this.updDtime = moment().format('YYYY-MM-DD HH:mm:ss')
       let data ={
@@ -575,13 +620,15 @@ export default {
       .then(res => {
         let resData = res.data.data
         if(resData){
+          this.isSaving = false
           alert("응급알람이 취소되었습니다.")
           this.errorpopup3 = false
           this.getRecipientData()
         }
       })
       .catch(error => {
-          console.log("fail to load")
+        this.isSaving = false
+        console.log("fail to load")
         this.errorMessage = error.message;
         console.error("There was an error!", error);
       });

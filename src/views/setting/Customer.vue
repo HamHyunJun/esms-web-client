@@ -1171,6 +1171,7 @@ export default {
         regId:this.$store.state.userId,
         deptNm:this.selectedUpdateDeptNm,
       }
+      console.log(data)
         let url = this.$store.state.serverApi+`/admin/users`
         await axios.post(url,data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
             .then(res => {
@@ -1254,7 +1255,7 @@ export default {
         alert("아이디를 입력하여 주세요.")
         return false;
       }
-      let url = this.$store.state.serverApi+`/admin/users`
+      let url = this.$store.state.serverApi+`/admin/users?recordCountPerPage=1000`
       await axios.get(url, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
             this.checkUserItems = res.data.data
@@ -1264,10 +1265,12 @@ export default {
             this.errorMessage = error.message;
             console.error("There was an error!", error);
           });
-
+          console.log(this.checkUserItems)
+          console.log(this.selectedUpdateUserId)
           this.userId = this.checkUserItems.filter(cd=>{
             return cd.userId === this.selectedUpdateUserId
-          })
+          })         
+          console.log(this.userId)
           if(this.userId[0]){ 
             alert("이미 등록된 아이디 입니다.")
             return this.checkUserId = 'None'

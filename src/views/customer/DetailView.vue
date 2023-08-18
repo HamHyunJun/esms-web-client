@@ -458,7 +458,7 @@
             </div>
           </div>
           <div class="popbtn_area">
-            <button type="button" class="btn form2" @click="insertManager()">추가</button>
+            <button type="button" class="btn form2" @click="insertProtecter()">추가</button>
             <button type="button" class="btn" @click="closeModal">취소</button>
           </div>
       </div>
@@ -749,7 +749,7 @@ export default {
     },
     async getLiuserInfo(){
       this.selectedLi = ''
-      let uri = this.$store.state.serverApi + "/admin/users?orgId=" + this.emorgId + "&userTypeCd=TPE005"
+      let uri = this.$store.state.serverApi + "/admin/users?orgId=" + this.emorgId + "&userId=admin" + "&userTypeCd=TPE006"
       await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(res => {
           const liArr = [{label: '선택', value: '', value2:''}];
@@ -891,7 +891,46 @@ export default {
             this.errorMessage = error.message;
             console.error("There was an error!", error);
           });
-          
+    },
+    insertProtecter(){
+      let uri = this.$store.state.serverApi + `/admin/recipients/${this.recipientId}/phoneNumbers/save`
+      if(this.managerName === null || this.managerName === undefined || this.managerName === ''){
+        alert("이름을 작성하여 주세요.")
+        return false
+      }else if(this.managerPhone === null || this.managerPhone === undefined || this.managerPhone === ''){
+        alert("휴대폰번호를 작성하여 주세요.")
+        return false
+      }else if(this.managerRelationCd === null || this.managerRelationCd === undefined || this.managerRelationCd === ''){
+        alert("관계를 선택하여 주세요.")
+        return false
+      }
+      this.managerRelationNm = this.relationArr.filter(cd=>{
+       return cd.value === this.managerRelationCd
+      })[0].text
+      
+      if(this.managerPhone.length<3){ alert("전화번호는 세자리 이상을 입력해 주세요"); return false;}
+      if(this.managerPhone.length>11){ alert("전화번호는 최대 11자리까지 입력 가능합니다."); return false;}
+      let data = {
+        recipientId: this.recipientId,
+        relationNm: this.managerName,
+        relationPhone: this.managerPhone,
+        relationCd: this.managerRelationCd, 
+        relationCdNm: this.managerRelationNm,
+        typeCd: "TPE009"
+      }
+      axios.post(uri,data, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
+          .then(res => {
+            this.insertData = res.data.data
+            this.$refs.menu6.sendMenu6Lending();
+            this.popCheck6 = false
+            
+            alert("성공적으로 등록되었습니다.")
+            this.managerPhone = null; this.managerName = null; this.managerRelationCd = '';
+          })
+          .catch(error => {
+            this.errorMessage = error.message;
+            console.error("There was an error!", error);
+          });
     },
     insertEmergencyManager(){
       // /recipients/{recipientId}/phoneNumbers

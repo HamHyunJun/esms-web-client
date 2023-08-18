@@ -11,6 +11,7 @@ const state = {
   moduleName:'/admin',
   userId:null,
   userTypeCd:null,
+  userNm:null,
 }
 
 const mutations = {

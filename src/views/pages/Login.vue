@@ -261,11 +261,14 @@ export default {
           sessionStorage.setItem("token", userInfo.token);
           sessionStorage.setItem("userId", userInfo.userId);
           sessionStorage.setItem("userTypeCd", userInfo.userTypeCd);
+          sessionStorage.setItem("userNm", userInfo.userNm);
           console.log(sessionStorage.getItem("token"));
           console.log(sessionStorage.getItem("userId"));
           console.log(sessionStorage.getItem("userTypeCd"))
+          console.log(sessionStorage.getItem("userNm"))
           this.$store.state.userId = sessionStorage.getItem("userId")
           this.$store.state.userTypeCd = sessionStorage.getItem("userTypeCd")
+          this.$store.state.userNm = sessionStorage.getItem("userNm")
           router.push({ path: '../dashboard/allView' });  
           // const now = new Date()
           // const tokenItem = {

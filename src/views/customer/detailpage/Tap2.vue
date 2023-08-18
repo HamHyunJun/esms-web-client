@@ -68,9 +68,11 @@
                     </table>
                     <div class="tbody htype-01">
                       <div v-if="this.pending" style="text-align: center;">
-                        <img src="../../../assets/images/loading.png"  />
+                        <div class="tabcontent">
+                          <img src="../../../assets/images/loading.png"  />
+                        </div>
                       </div>
-                        <table>
+                        <table v-else>
                             <colgroup>
                                 <col style="width:8%;">
                                 <col style="width:8%;">

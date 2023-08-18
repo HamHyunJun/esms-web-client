@@ -31,20 +31,20 @@
         </div>
       </div>
       <div id="" class="popupLayer" v-if="errorpopup3 == true">
-              <div class="popup_wrap type-02">
-                <div class="title_wrap">
-                  <div class="title">경고</div>
-                  <button type="button" class="btn_close" @click="errorpopup3 = false">닫기</button>
-                </div>
-                <div class="popup_cnt">
-                  <p class="alert_txt">선택하신 응급알람을 취소하시겠습니까?</p>
-                </div>
-                <div class="popbtn_area type-02">
-                  <button type="button" class="btn form3" @click="saveState()">확인</button>
-                  <button type="button" class="btn form2" @click="errorpopup3 = false">취소</button>
-                </div>
-              </div>
-            </div>
+        <div class="popup_wrap type-02">
+          <div class="title_wrap">
+            <div class="title">경고</div>
+            <button type="button" class="btn_close" @click="errorpopup3 = false">닫기</button>
+          </div>
+          <div class="popup_cnt">
+            <p class="alert_txt">선택하신 응급알람을 취소하시겠습니까?</p>
+          </div>
+          <div class="popbtn_area type-02">
+            <button type="button" class="btn form3" @click="saveState()" :disabled="isSaving">확인</button>
+            <button type="button" class="btn form2" @click="errorpopup3 = false" :disabled="isSaving">취소</button>
+          </div>
+        </div>
+      </div>
       <div class="list_title_wrap">
         <span>이벤트 리포트</span>
         <i class="ico_nav"></i>
@@ -250,7 +250,7 @@ export default {
       cBirthday:'', cAddr: '', NCount : 0,
       errorpopup1: false, errorpopup2: false, errorpopup3: false,
       saveChangeData: null, updDtime:'',
-      searchCheck1 : 1, searchCheck2 : 0,
+      searchCheck1 : 1, searchCheck2 : 0, isSaving:false,
       checkStartDate:moment().subtract(6,'days').format('YYYY-MM-DD'),
       checkEndDate:moment().format('YYYY-MM-DD'),
 
@@ -444,6 +444,7 @@ export default {
         });
     },
     getRecipientData() {
+      console.log("this")
       let addrCd = ''
       let occurStartDate = this.s_date
       let occurEndDate = this.e_date
@@ -551,6 +552,7 @@ export default {
       }
     },
     saveState(){
+      this.isSaving = true
       let url = this.$store.state.serverApi+`/admin/emergencys/${this.recipientItems[this.saveChangeData].emergSignalId}/cancel`
       this.updDtime = moment().format('YYYY-MM-DD HH:mm:ss')
       let data ={
@@ -562,13 +564,15 @@ export default {
           .then(res => {
             let resData = res.data.data
             if(resData){
+              this.isSaving = false
               alert("응급알람이 취소되었습니다.")
               this.errorpopup3 = false
               this.getRecipientData()
             }
           })
           .catch(error => {
-              console.log("fail to load")
+            this.isSaving = false
+            console.log("fail to load")
             this.errorMessage = error.message;
             console.error("There was an error!", error);
           });

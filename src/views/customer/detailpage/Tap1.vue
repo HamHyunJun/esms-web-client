@@ -115,10 +115,12 @@
                         </thead>
                     </table>
                     <div class="tbody htype-05">
-                        <div v-if="this.pending" style="text-align: center;">
-                        <img src="../../../assets/images/loading.png"  />
-                    </div>
-                        <table>
+                        <div v-if="this.pending" style="text-align:center; line-height:500px;">
+                            <div class="tabcontent" style="height:200px">
+                                <img src="../../../assets/images/loading.png"/>
+                            </div>
+                        </div>
+                        <table v-else>
                             <colgroup>
                                 <col style="width:10%;">
                                 <col style="width:15%;">
@@ -264,13 +266,14 @@ import pagination from "../../pages/pagination.vue"
         this.searchCheck2 = 1
         this.checkStartDate = this.measureStartDate
         this.checkEndDate = this.measureEndDate
+        this.pending = true
         this.getSensorsData(input,input2,input3,input4);
       }
         
     },
     async getSensorsData(input,input2,input3,input4){
         let code = input ? input : input2 ? input2 : input3 ? input3 :  input4 
-        this.delay()
+        // this.delay()
         //드롭다운 코드화 및 값 설정
         // switch (code){
         //   case 1 : this.selectedValue = 'all'; break;
@@ -426,7 +429,6 @@ import pagination from "../../pages/pagination.vue"
                 }else if(this.selectedValue==="TPE012"){
                     for(let i=0; i <lengthTmp.totalCount ;i++ ){
                         tmpData = res.data.data[i]
-                        console.log(tmpData)
                         tmp = res.data.data[i].measureValue.split(',')
                         for(let j=tmp.length-1; j >=0 ;j-- ){
                             this.sensorsData.push({

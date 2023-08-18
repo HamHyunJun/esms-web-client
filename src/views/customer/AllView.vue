@@ -1655,6 +1655,7 @@ export default {
       }
     },
     manageInquiry() {
+      console.log("click")
       this.searchCheck2 = 1
       this.page = 1
       this.getRecipientData();

@@ -197,11 +197,11 @@ export default {
     return{
       orgNm:'',orgId:'', sido:'', sidoCd:'', sgg:'', sggCd:'', s_date: '', e_date: '',
       sidoItems:[], sggItems:[], orgmItems:[], typeItems:[], number:[], stateItems:[], changeStateItems:[], recipientItems:[],
-      RoomNameItem:[{label:'전체', value:''},{label:'202', value:'71'}],
-      RecipientNameItem:[{label:'전체', value:''},{label:'이수진', value:'847127fffe4cfcc9'}],
+      RoomNameItem:[{label:'전체', value:''},{label:'202', value:'71'},{label:'아이오비', value:'70'},{label:'박해만', value:'75'}],
+      RecipientNameItem:[{label:'전체', value:''},{label:'박해만', value:'847127fffe4cfcc9'},{label:'김기영', value:'847127fffe4cfcd4'},{label:'배현석', value:'847127fffe4cfcbe'}],
       LocateItem:[{label:'전체', value:''}], selectedRoomNmItem:'', selectedLocateItem:'',
       orgSido:'', orgSgg:'', orgCode:'',
-      selectedSidoItems:'', selectedSggItems:'', selectedOrgItems:'', selectedRecipientNm:'',
+      selectedSidoItems:'', selectedSggItems:'', selectedOrgItems:'', selectedRecipientNm:'', selectedMacAddr:'',
       NCount : 0,
       errorpopup1: false, errorpopup2: false, errorpopup3: false,
       searchCheck1 : 1, searchCheck2 : 0,
@@ -398,7 +398,7 @@ export default {
       +"&userId="+this.$store.state.userId
       +"&roomId="+this.selectedRoomNmItem
       +"&sensorLocCd="+this.selectedLocateItem
-      +"&macAddr=847127fffe4cfcc9"
+      +"&macAddr="+this.selectedRecipientNm
       +"&measureStartDate="+this.s_date
       +"&measureEndDate="+this.e_date
       await axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
@@ -459,32 +459,36 @@ export default {
     changeNm(input){
       let result = ''
       switch(input){
-        case '847127fffe4cfcc9' : result='이수진'; break;
-        
+        case '847127fffe4cfcc9' : result='박해만'; break;
+        case '847127fffe4cfcd4' : result='김기영'; break;
+        case '847127fffe4cfcbe' : result='배현석'; break;
       }
       return result
     },
     changeBirthday(input){
       let result = ''
       switch(input){
-        case '847127fffe4cfcc9' : result='1950-06-25'; break;
-        
+        case '847127fffe4cfcc9' : result='1970-01-01'; break;
+        case '847127fffe4cfcd4' : result='1961-11-12'; break;
+        case '847127fffe4cfcbe' : result='1954-02-05'; break;
       }
       return result
     },
     changeOld(input){
       let result = ''
       switch(input){
-        case '847127fffe4cfcc9' : result='73'; break;
-        
+        case '847127fffe4cfcc9' : result='53'; break;
+        case '847127fffe4cfcd4' : result='61'; break;
+        case '847127fffe4cfcbe' : result='69'; break;
       }
       return result
     },
     changeSex(input){
       let result = ''
       switch(input){
-        case '847127fffe4cfcc9' : result='여'; break;
-        
+        case '847127fffe4cfcc9' : result='남'; break;
+        case '847127fffe4cfcd4' : result='남'; break;
+        case '847127fffe4cfcbe' : result='남'; break;
       }
       return result
     },
@@ -492,7 +496,8 @@ export default {
       let result = ''
       switch(input){
         case '847127fffe4cfcc9' : result='홍수호'; break;
-        
+        case '847127fffe4cfcd4' : result='이현정'; break;
+        case '847127fffe4cfcbe' : result='김미혜'; break;
       }
       return result
     },

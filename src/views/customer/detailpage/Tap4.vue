@@ -1231,6 +1231,7 @@ import axios from "axios";
             let revData = ''
             revData = res.data
             if(revData.data === true){
+                console.log(revData)
                 alert("성공적으로 요청 되었습니다")
                 this.reverseCheckpopup = false
             }
@@ -1413,6 +1414,8 @@ import axios from "axios";
         let result = ''
         switch(input){
             case '847127fffe4cfcc9' : result='60GHz Radar'; break;
+            case '847127fffe4cfcd4' : result='60GHz Radar'; break;
+            case '847127fffe4cfcbe' : result='60GHz Radar'; break;
             case '847127fffe4cfcbf' : result='24GHz Radar'; break;
         }
         return result

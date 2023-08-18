@@ -239,7 +239,7 @@
               <canvas height="100px" width="100px" ref="doughnutChart4"/>
             </div>
             <div style="float: left; width: 160px; margin-left: 3%; position: relative;">
-              <div style="font-size:30px; font-weight: bold; width: 100%; height: 40px; position: absolute; top: 55%; left: 0; margin-top: -20px; line-height:19px; text-align: center; font">
+              <div style="font-size:30px;  font-weight: bold; width: 100%; height: 40px; position: absolute; top: 55%; left: 0; margin-top: -20px; line-height:19px; text-align: center; font">
                 {{this.finalPwLiData1[0]}}%
               </div>
               <canvas height="100px" width="100px" ref="doughnutChart6"/>
@@ -377,6 +377,8 @@ export default {
     newPwDoArr:[],
     newPwAcArr:[],
     newPwLiArr:[],
+    rootEuId:'',
+    Eucount:1,
   }
   },
   created(){
@@ -546,36 +548,60 @@ export default {
     },
     //--------------------------장비 가동률 차트--------------------------
     createEuData(){
-      let data={
-      labels: [],
-      labelsColor: 'rgba(17, 183, 1, 1)',
-      datasets: [{
-        label: '지역 가동률',
-        type: 'line',
-        data: this.EuData,
-        borderColor:'rgba(17, 183, 135, 1)',
-        borderWidth: 3.5,
-        tension: 0.5,
-        fill: true,
-        backgroundColor: 'rgba(17, 183, 135, 0.3)',
-        animation: {        
-          easing: 'easeInOutQuart'
+      let data = ''
+      if(this.$store.state.userTypeCd === 'TPE001'){
+        data={
+          labels: [],
+          labelsColor: 'rgba(17, 183, 1, 1)',
+          datasets: [
+          {
+            label: '전체 가동률',
+            type: 'line',
+            data: this.TotalEuData,
+            borderColor:'rgba(30, 118, 225, 1)',
+            borderWidth: 3.5,
+            tension: 0.5,
+            fill: true,
+            backgroundColor: 'rgba(30, 118, 225, 0.3)',
+            animation: {        
+              easing: 'easeInOutQuart',
+            }
+          }]
         }
-      },
-      {
-        label: '전체 가동률',
-        type: 'line',
-        data: this.TotalEuData,
-        borderColor:'rgba(30, 118, 225, 1)',
-        borderWidth: 3.5,
-        tension: 0.5,
-        fill: true,
-        backgroundColor: 'rgba(30, 118, 225, 0.3)',
-        animation: {        
-          easing: 'easeInOutQuart'
-        }
-      }]
+      }else{
+        data={
+        labels: [],
+        labelsColor: 'rgba(17, 183, 1, 1)',
+        datasets: [{
+          label: '지역 가동률',
+          type: 'line',
+          data: this.EuData,
+          borderColor:'rgba(17, 183, 135, 1)',
+          borderWidth: 3.5,
+          tension: 0.5,
+          fill: true,
+          backgroundColor: 'rgba(17, 183, 135, 0.3)',
+          animation: {        
+            easing: 'easeInOutQuart',
+          }
+        },
+        {
+          label: '전체 가동률',
+          type: 'line',
+          data: this.TotalEuData,
+          borderColor:'rgba(30, 118, 225, 1)',
+          borderWidth: 3.5,
+          tension: 0.5,
+          fill: true,
+          backgroundColor: 'rgba(30, 118, 225, 0.3)',
+          animation: {        
+            easing: 'easeInOutQuart',
+          }
+        }]
       }
+        
+      }
+      
       let options={
         scales: {
           x:{
@@ -585,9 +611,9 @@ export default {
           },
           y: {
             beginAtZero: true,
+            min:0,
+            max:100,
             ticks:{
-              min: 0,
-              max: 100,
               stepSize: 5,
               color: "rgba(255, 255, 255, 1)"
             }
@@ -612,13 +638,28 @@ export default {
       this.createEuChartDateTime()
       this.EuchartRedraw();
     },
-    EuchartRedraw(){
+    EuchartRedraw() {
+      if (this.EuchartImage) {
+        this.EuchartImage.destroy(); // 이전 차트 삭제
+      }
       this.EuchartImage = new Chart(this.$refs.lineChart,{
-        type:'line',
-        data:this.EuchartData,
-        options:this.EuchartOptions
-      })
-      this.EuchartImage.update();
+        type: 'line',
+        data: this.EuchartData,
+        options: this.EuchartOptions
+      });
+
+      let count = 0; 
+      // const intervalId = setInterval(() => {
+      //   count++;
+      //   console.log(count)
+      //   console.log(moment().format('YYYY-MM-DD HH:mm:ss'))
+      //   if (count === 10) {
+      //     clearInterval(intervalId);
+      //   }
+      //   this.createEuData();
+      //   this.EuchartImage.data.datasets[0].data = this.EuchartData.datasets[0].data;
+      //   this.EuchartImage.update();
+      // }, 10000);
     },
     createEuChartDateTime(){
       if(this.EuchartData){
@@ -655,6 +696,8 @@ export default {
       +"&startDate="+this.s_date
       +"&endDate="+this.e_date;
       // 전체 가동률
+      console.log(urlEuTodayChart)
+      console.log(urlEuChart)
       await axios.get(urlEuTodayChart, {headers: {"Authorization": sessionStorage.getItem("token")}})
         .then(response => {
           this.EuTodayChartItems=[];     
@@ -665,6 +708,7 @@ export default {
               operCnt: response.data.data[i].operCnt,
             });
           }
+          console.log(this.EuTodayChartItems)
         })
         .catch(error => {
           this.errorMessage = error.message;
@@ -681,6 +725,7 @@ export default {
               operCnt: response.data.data[i].operCnt,
             });
           }
+          console.log(this.EuChartItems)
         })
         .catch(error => {
           this.errorMessage = error.message;
@@ -715,19 +760,21 @@ export default {
         })
       }
       if(checkAll.length !== 0){
-      tmpArr1.push({
-        statDate: checkAll[0].statDate,
-        installCnt: checkAll[0].installCnt,
-        operCnt: checkAll[0].operCnt
-      })
+        tmpArr1.push({
+          statDate: checkAll[0].statDate,
+          installCnt: checkAll[0].installCnt,
+          operCnt: checkAll[0].operCnt
+        })
       }
       if(checkAll2.length !== 0){
         tmpArr2.push({
-        statDate: checkAll2[0].statDate,
-        installCnt: checkAll2[0].installCnt,
-        operCnt: checkAll2[0].operCnt
-      })
+          statDate: checkAll2[0].statDate,
+          installCnt: checkAll2[0].installCnt,
+          operCnt: checkAll2[0].operCnt
+        })
       }
+      console.log(tmpArr1)
+      console.log(tmpArr2)
       if(this.EuChartItems != ''){
       for(let i=0; i<this.EuChartItems.length; i++){
         if(this.EuChartItems[i].installCnt !== 0){
@@ -769,7 +816,7 @@ export default {
         }
       }}
 
-      if(checkAll.length !== 0){
+      /*if(checkAll.length !== 0){
       for(let i=0; i<tmpArr1.length-1; i++){
         tmpArr1[i].installCnt = Number(tmpArr1[i].installCnt)+Number(checkAll[0].installCnt)
       }
@@ -778,8 +825,9 @@ export default {
       for(let i=0; i<tmpArr2.length-1; i++){
         tmpArr2[i].installCnt = Number(tmpArr2[i].installCnt)+Number(checkAll2[0].installCnt)
       }
-      }
+      }*/
       if(this.EuChartItems != ''){
+        console.log(tmpArr1)
         for(let i=0; i<7; i++){
           if(tmpArr1[i].installCnt !== 0){
           this.newEuArr[i] = (tmpArr1[i].operCnt/tmpArr1[i].installCnt*100)
@@ -800,6 +848,7 @@ export default {
         }
       }
       if(this.EuTodayChartItems != ''){
+        console.log(tmpArr2)
         for(let i=0; i<7; i++){
           if(tmpArr2[i].installCnt !== 0){
           this.newTotalEuArr[i] = (tmpArr2[i].operCnt/tmpArr2[i].installCnt*100)
@@ -815,8 +864,13 @@ export default {
       }
       this.EuData = this.newEuArr
       this.TotalEuData = this.newTotalEuArr
-      this.EuchartData.datasets[0].data = this.EuData
-      this.EuchartData.datasets[1].data = this.newTotalEuArr
+      console.log(this.EuchartData)
+      if(this.$store.state.userTypeCd === 'TPE001'){
+        this.EuchartData.datasets[0].data = this.newTotalEuArr
+      }else{
+        this.EuchartData.datasets[0].data = this.EuData
+        this.EuchartData.datasets[1].data = this.newTotalEuArr
+      }
       this.EuchartData.labels = this.newEuChartLabelArr
       this.EuchartRedraw();
     },
@@ -882,7 +936,7 @@ export default {
     this.createEvChartDateTime()
     this.EvchartRedraw();
     },
-    EvchartRedraw(){  
+    EvchartRedraw(){
       this.EvchartImage1 = new Chart(this.$refs.BarChart1, {
         type:'bar',
         data:this.EvchartData1,
@@ -1262,6 +1316,11 @@ export default {
               statCnt: 0,
             })
           }
+          tmpArr1.push({
+            sensorTypeCd: 'TPE016',
+            statName: "충만",
+            statCnt: 0
+          })
           for(let i=0; i<6; i++){
             tmpArr2.push({
               sensorTypeCd: "TPE00"+i,
@@ -1269,6 +1328,11 @@ export default {
               statCnt: 0,
             })
           }
+          tmpArr2.push({
+            sensorTypeCd: 'TPE016',
+            statName: "부족",
+            statCnt: 0
+          })
           for(let i=0; i<6; i++){
             tmpArr3.push({
               sensorTypeCd: "TPE00"+i,
@@ -1276,6 +1340,11 @@ export default {
               statCnt: 0,
             })
           }
+          tmpArr3.push({
+            sensorTypeCd: 'TPE016',
+            statName: "교체",
+            statCnt: 0
+          })
           if(this.BtChartItems != ''){
             for(let i=0; i<this.BtChartItems.length; i++){
               if(!this.BtChartItems[i]){
@@ -1296,6 +1365,9 @@ export default {
                 let tmpidx = tmpArr3.findIndex(idx=>{
                   return idx.sensorTypeCd == this.BtChartItems[i].sensorTypeCd
                 })
+                console.log(tmpidx)
+                console.log(tmpArr3)
+                console.log(this.BtChartItems)
                 tmpArr3[tmpidx].statName = this.BtChartItems[i].statName
                 tmpArr3[tmpidx].statCnt = this.BtChartItems[i].statCnt
               }
@@ -1334,17 +1406,21 @@ export default {
         datasets: [{
         label: '연결',
         data: this.finalPwGwData1,
-        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(19, 126, 255, 0.1)"],
         borderColor: 'rgba(255, 255, 255, 1)',
         hoverBorderColor: 'rgba(255, 255, 255, 1)',
         borderWidth: 0,
         cutout: '65%', 
-        borderRadius: 30
+        borderRadius: 30,
+        animation:{
+          delay : 10000,
+          loop : true
+        }
       },
       {
         label: '차단',
         data: this.finalPwGwData2,
-        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(173, 176, 187, 0.1)"],
         borderColor: 'rgba(255, 255, 255, 1)',
         hoverBorderColor: 'rgba(255, 255, 255, 1)',
         borderWidth: 0,
@@ -1366,17 +1442,21 @@ export default {
         datasets: [{
         label: '연결',
         data: this.finalPwEmData1,
-        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(19, 126, 255, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
         cutout: '60%', 
-        borderRadius: 30
+        borderRadius: 30,
+        animation:{
+          delay : 10000,
+          loop : true
+        }
       },
       {
         label: '연결',
         data: this.finalPwEmData2,
-        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(173, 176, 187, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
@@ -1386,7 +1466,7 @@ export default {
       {
         label: '연결',
         data: this.finalPwEmData3,
-        backgroundColor: [ "rgba(255, 60, 166, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(255, 60, 166, 0.8)", "rgba(255, 60, 166, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
@@ -1408,17 +1488,21 @@ export default {
         datasets: [{
         label: '연결',
         data: this.finalPwFiData1,
-        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(19, 126, 255, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
         cutout: '60%', 
-        borderRadius: 30
+        borderRadius: 30,
+        animation:{
+          delay : 10000,
+          loop : true
+        }
       },
       {
         label: '연결',
         data: this.finalPwFiData2,
-        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(173, 176, 187, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
@@ -1428,7 +1512,7 @@ export default {
       {
         label: '연결',
         data: this.finalPwFiData3,
-        backgroundColor: [ "rgba(255, 60, 166, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(255, 60, 166, 0.8)", "rgba(255, 60, 166, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
@@ -1450,17 +1534,21 @@ export default {
         datasets: [{
         label: '연결',
         data: this.finalPwDoData1,
-        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(19, 126, 255, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
         cutout: '60%', 
-        borderRadius: 30
+        borderRadius: 30,
+        animation:{
+          delay : 10000,
+          loop : true
+        }
       },
       {
         label: '연결',
         data: this.finalPwDoData2,
-        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(173, 176, 187, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
@@ -1470,7 +1558,7 @@ export default {
       {
         label: '연결',
         data: this.finalPwDoData3,
-        backgroundColor: [ "rgba(255, 60, 166, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(255, 60, 166, 0.8)", "rgba(255, 60, 166, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
@@ -1492,17 +1580,21 @@ export default {
         datasets: [{
         label: '연결',
         data: this.finalPwAcData1,
-        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(19, 126, 255, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
         cutout: '60%', 
-        borderRadius: 30
+        borderRadius: 30,
+        animation:{
+          delay : 10000,
+          loop : true
+        }
       },
       {
         label: '연결',
         data: this.finalPwAcData2,
-        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(173, 176, 187, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
@@ -1512,7 +1604,7 @@ export default {
       {
         label: '연결',
         data: this.finalPwAcData3,
-        backgroundColor: [ "rgba(255, 60, 166, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(255, 60, 166, 0.8)", "rgba(255, 60, 166, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
@@ -1534,17 +1626,21 @@ export default {
         datasets: [{
         label: '연결',
         data: this.finalPwLiData1,
-        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(19, 126, 255, 0.8)", "rgba(19, 126, 255, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
         cutout: '60%', 
-        borderRadius: 30
+        borderRadius: 30,
+        animation:{
+          delay : 10000,
+          loop : true
+        }
       },
       {
         label: '연결',
         data: this.finalPwLiData2,
-        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(173, 176, 187, 0.8)", "rgba(173, 176, 187, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
@@ -1554,7 +1650,7 @@ export default {
       {
         label: '연결',
         data: this.finalPwLiData3,
-        backgroundColor: [ "rgba(255, 60, 166, 0.8)", "rgba(75, 85, 106, 0.2)", "rgba(75, 85, 106, 0.2)"],
+        backgroundColor: [ "rgba(255, 60, 166, 0.8)", "rgba(255, 60, 166, 0.1)"],
         borderColor: "rgba(75, 85, 106, 0.2)",
         hoverBorderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 1,
@@ -2045,9 +2141,23 @@ export default {
       this.finalPwGwData1 = [Math.round((this.PwGwData[0].statCnt/this.percentPwGwData)*100), Math.round((this.PwGwData[1].statCnt/this.percentPwGwData)*100)]
       this.finalPwGwData2 = [Math.round((this.PwGwData[1].statCnt/this.percentPwGwData)*100), Math.round((this.PwGwData[0].statCnt/this.percentPwGwData)*100)]
       this.finalPwGwData1[0] = this.finalPwGwData1[0]? this.finalPwGwData1[0] : 0
-      this.finalPwGwData1[1] = this.finalPwGwData1[1]? this.finalPwGwData1[1] : 0
+      if(!this.finalPwGwData1[0]){
+        if(this.finalPwGwData1[1]){
+          this.finalPwGwData1[1] = this.finalPwGwData1[1]    
+        }else{
+          this.finalPwGwData1[1] = 1
+        }
+      }
+      //this.finalPwGwData1[1] = this.finalPwGwData1[1]? this.finalPwGwData1[1] : 0
       this.finalPwGwData2[0] = this.finalPwGwData2[0]? this.finalPwGwData2[0] : 0
-      this.finalPwGwData2[1] = this.finalPwGwData2[1]? this.finalPwGwData2[1] : 0
+      if(!this.finalPwGwData2[0]){
+        if(this.finalPwGwData2[1]){
+          this.finalPwGwData2[1] = this.finalPwGwData2[1]    
+        }else{
+          this.finalPwGwData2[1] = 1
+        }
+      }
+      //this.finalPwGwData2[1] = this.finalPwGwData2[1]? this.finalPwGwData2[1] : 0
 
       
       this.percentPwEmData = this.PwEmData[0].statCnt+this.PwEmData[1].statCnt+this.PwEmData[2].statCnt
@@ -2058,11 +2168,32 @@ export default {
       this.finalPwEmData2 = [Math.round((this.PwEmData[1].statCnt/this.percentPwEmData)*100), Math.round((this.sumPwEmData3/this.percentPwEmData)*100)]
       this.finalPwEmData3 = [Math.round((this.PwEmData[2].statCnt/this.percentPwEmData)*100), Math.round((this.sumPwEmData1/this.percentPwEmData)*100)]
       this.finalPwEmData1[0] = this.finalPwEmData1[0]? this.finalPwEmData1[0] : 0
-      this.finalPwEmData1[1] = this.finalPwEmData1[1]? this.finalPwEmData1[1] : 0
+      if(!this.finalPwEmData1[0]){
+        if(this.finalPwEmData1[1]){
+          this.finalPwEmData1[1] = this.finalPwEmData1[1]    
+        }else{
+          this.finalPwEmData1[1] = 1
+        }
+      }
+      //this.finalPwEmData1[1] = this.finalPwEmData1[1]? this.finalPwEmData1[1] : 0
       this.finalPwEmData2[0] = this.finalPwEmData2[0]? this.finalPwEmData2[0] : 0
-      this.finalPwEmData2[1] = this.finalPwEmData2[1]? this.finalPwEmData2[1] : 0
+      if(!this.finalPwEmData2[0]){
+        if(this.finalPwEmData2[1]){
+          this.finalPwEmData2[1] = this.finalPwEmData2[1]    
+        }else{
+          this.finalPwEmData2[1] = 1
+        }
+      }
+      //this.finalPwEmData2[1] = this.finalPwEmData2[1]? this.finalPwEmData2[1] : 0
       this.finalPwEmData3[0] = this.finalPwEmData3[0]? this.finalPwEmData3[0] : 0
-      this.finalPwEmData3[1] = this.finalPwEmData3[1]? this.finalPwEmData3[1] : 0
+      if(!this.finalPwEmData3[0]){
+        if(this.finalPwEmData3[1]){
+          this.finalPwEmData3[1] = this.finalPwEmData3[1]    
+        }else{
+          this.finalPwEmData3[1] = 1
+        }
+      }
+      //this.finalPwEmData3[1] = this.finalPwEmData3[1]? this.finalPwEmData3[1] : 0
 
       this.percentPwFiData = this.PwFiData[0].statCnt+this.PwFiData[1].statCnt+this.PwFiData[2].statCnt
       this.sumPwFiData1 = this.PwFiData[0].statCnt + this.PwFiData[1].statCnt
@@ -2072,11 +2203,32 @@ export default {
       this.finalPwFiData2 = [Math.round((this.PwFiData[1].statCnt/this.percentPwFiData)*100), Math.round((this.sumPwFiData3/this.percentPwFiData)*100)]
       this.finalPwFiData3 = [Math.round((this.PwFiData[2].statCnt/this.percentPwFiData)*100), Math.round((this.sumPwFiData1/this.percentPwFiData)*100)]
       this.finalPwFiData1[0] = this.finalPwFiData1[0]? this.finalPwFiData1[0] : 0
-      this.finalPwFiData1[1] = this.finalPwFiData1[1]? this.finalPwFiData1[1] : 0
+      if(!this.finalPwFiData1[0]){
+        if(this.finalPwFiData1[1]){
+          this.finalPwFiData1[1] = this.finalPwFiData1[1]    
+        }else{
+          this.finalPwFiData1[1] = 1
+        }
+      }
+      //this.finalPwFiData1[1] = this.finalPwFiData1[1]? this.finalPwFiData1[1] : 0
       this.finalPwFiData2[0] = this.finalPwFiData2[0]? this.finalPwFiData2[0] : 0
-      this.finalPwFiData2[1] = this.finalPwFiData2[1]? this.finalPwFiData2[1] : 0
+      if(!this.finalPwFiData2[0]){
+        if(this.finalPwFiData2[1]){
+          this.finalPwFiData2[1] = this.finalPwFiData2[1]    
+        }else{
+          this.finalPwFiData2[1] = 1
+        }
+      }
+      //this.finalPwFiData2[1] = this.finalPwFiData2[1]? this.finalPwFiData2[1] : 0
       this.finalPwFiData3[0] = this.finalPwFiData3[0]? this.finalPwFiData3[0] : 0
-      this.finalPwFiData3[1] = this.finalPwFiData3[1]? this.finalPwFiData3[1] : 0
+      if(!this.finalPwFiData3[0]){
+        if(this.finalPwFiData3[1]){
+          this.finalPwFiData3[1] = this.finalPwFiData3[1]    
+        }else{
+          this.finalPwFiData3[1] = 1
+        }
+      }
+      //this.finalPwFiData3[1] = this.finalPwFiData3[1]? this.finalPwFiData3[1] : 0
 
       this.percentPwDoData = this.PwDoData[0].statCnt+this.PwDoData[1].statCnt+this.PwDoData[2].statCnt
       this.sumPwDoData1 = this.PwDoData[0].statCnt + this.PwDoData[1].statCnt
@@ -2086,11 +2238,32 @@ export default {
       this.finalPwDoData2 = [Math.round((this.PwDoData[1].statCnt/this.percentPwDoData)*100), Math.round((this.sumPwDoData3/this.percentPwDoData)*100)]
       this.finalPwDoData3 = [Math.round((this.PwDoData[2].statCnt/this.percentPwDoData)*100), Math.round((this.sumPwDoData1/this.percentPwDoData)*100)]
       this.finalPwDoData1[0] = this.finalPwDoData1[0]? this.finalPwDoData1[0] : 0
-      this.finalPwDoData1[1] = this.finalPwDoData1[1]? this.finalPwDoData1[1] : 0
+      if(!this.finalPwDoData1[0]){
+        if(this.finalPwDoData1[1]){
+          this.finalPwDoData1[1] = this.finalPwDoData1[1]    
+        }else{
+          this.finalPwDoData1[1] = 1
+        }
+      }
+      //this.finalPwDoData1[1] = this.finalPwDoData1[1]? this.finalPwDoData1[1] : 0
       this.finalPwDoData2[0] = this.finalPwDoData2[0]? this.finalPwDoData2[0] : 0
-      this.finalPwDoData2[1] = this.finalPwDoData2[1]? this.finalPwDoData2[1] : 0
+      if(!this.finalPwDoData2[0]){
+        if(this.finalPwDoData2[1]){
+          this.finalPwDoData2[1] = this.finalPwDoData2[1]    
+        }else{
+          this.finalPwDoData2[1] = 1
+        }
+      }
+      //this.finalPwDoData2[1] = this.finalPwDoData2[1]? this.finalPwDoData2[1] : 0
       this.finalPwDoData3[0] = this.finalPwDoData3[0]? this.finalPwDoData3[0] : 0
-      this.finalPwDoData3[1] = this.finalPwDoData3[1]? this.finalPwDoData3[1] : 0
+      if(!this.finalPwDoData3[0]){
+        if(this.finalPwDoData3[1]){
+          this.finalPwDoData3[1] = this.finalPwDoData3[1]    
+        }else{
+          this.finalPwDoData3[1] = 1
+        }
+      }
+      //this.finalPwDoData3[1] = this.finalPwDoData3[1]? this.finalPwDoData3[1] : 0
 
       this.percentPwAcData = this.PwAcData[0].statCnt+this.PwAcData[1].statCnt+this.PwAcData[2].statCnt
       this.sumPwAcData1 = this.PwAcData[0].statCnt + this.PwAcData[1].statCnt
@@ -2100,11 +2273,32 @@ export default {
       this.finalPwAcData2 = [Math.round((this.PwAcData[1].statCnt/this.percentPwAcData)*100), Math.round((this.sumPwAcData3/this.percentPwAcData)*100)]
       this.finalPwAcData3 = [Math.round((this.PwAcData[2].statCnt/this.percentPwAcData)*100), Math.round((this.sumPwAcData1/this.percentPwAcData)*100)]
       this.finalPwAcData1[0] = this.finalPwAcData1[0]? this.finalPwAcData1[0] : 0
-      this.finalPwAcData1[1] = this.finalPwAcData1[1]? this.finalPwAcData1[1] : 0
+      if(!this.finalPwAcData1[0]){
+        if(this.finalPwAcData1[1]){
+          this.finalPwAcData1[1] = this.finalPwAcData1[1]    
+        }else{
+          this.finalPwAcData1[1] = 1
+        }
+      }
+      //this.finalPwAcData1[1] = this.finalPwAcData1[1]? this.finalPwAcData1[1] : 0
       this.finalPwAcData2[0] = this.finalPwAcData2[0]? this.finalPwAcData2[0] : 0
-      this.finalPwAcData2[1] = this.finalPwAcData2[1]? this.finalPwAcData2[1] : 0
+      if(!this.finalPwAcData2[0]){
+        if(this.finalPwAcData2[1]){
+          this.finalPwAcData2[1] = this.finalPwAcData2[1]    
+        }else{
+          this.finalPwAcData2[1] = 1
+        }
+      }
+      //this.finalPwAcData2[1] = this.finalPwAcData2[1]? this.finalPwAcData2[1] : 0
       this.finalPwAcData3[0] = this.finalPwAcData3[0]? this.finalPwAcData3[0] : 0
-      this.finalPwAcData3[1] = this.finalPwAcData3[1]? this.finalPwAcData3[1] : 0
+      if(!this.finalPwAcData3[0]){
+        if(this.finalPwAcData3[1]){
+          this.finalPwAcData3[1] = this.finalPwAcData3[1]    
+        }else{
+          this.finalPwAcData3[1] = 1
+        }
+      }
+      //this.finalPwAcData3[1] = this.finalPwAcData3[1]? this.finalPwAcData3[1] : 0
 
       this.percentPwLiData = this.PwLiData[0].statCnt+this.PwLiData[1].statCnt+this.PwLiData[2].statCnt
       this.sumPwLiData1 = this.PwLiData[0].statCnt + this.PwLiData[1].statCnt
@@ -2114,11 +2308,32 @@ export default {
       this.finalPwLiData2 = [Math.round((this.PwLiData[1].statCnt/this.percentPwLiData)*100), Math.round((this.sumPwLiData3/this.percentPwLiData)*100)]
       this.finalPwLiData3 = [Math.round((this.PwLiData[2].statCnt/this.percentPwLiData)*100), Math.round((this.sumPwLiData1/this.percentPwLiData)*100)]
       this.finalPwLiData1[0] = this.finalPwLiData1[0]? this.finalPwLiData1[0] : 0
-      this.finalPwLiData1[1] = this.finalPwLiData1[1]? this.finalPwLiData1[1] : 0
+      if(!this.finalPwLiData1[0]){
+        if(this.finalPwLiData1[1]){
+          this.finalPwLiData1[1] = this.finalPwLiData1[1]    
+        }else{
+          this.finalPwLiData1[1] = 1
+        }
+      }
+      //this.finalPwLiData1[1] = this.finalPwLiData1[1]? this.finalPwLiData1[1] : 0
       this.finalPwLiData2[0] = this.finalPwLiData2[0]? this.finalPwLiData2[0] : 0
-      this.finalPwLiData2[1] = this.finalPwLiData2[1]? this.finalPwLiData2[1] : 0
+      if(!this.finalPwLiData2[0]){
+        if(this.finalPwLiData2[1]){
+          this.finalPwLiData2[1] = this.finalPwLiData2[1]    
+        }else{
+          this.finalPwLiData2[1] = 1
+        }
+      }
+      //this.finalPwLiData2[1] = this.finalPwLiData2[1]? this.finalPwLiData2[1] : 0
       this.finalPwLiData3[0] = this.finalPwLiData3[0]? this.finalPwLiData3[0] : 0
-      this.finalPwLiData3[1] = this.finalPwLiData3[1]? this.finalPwLiData3[1] : 0
+      if(!this.finalPwLiData3[0]){
+        if(this.finalPwLiData3[1]){
+          this.finalPwLiData3[1] = this.finalPwLiData3[1]    
+        }else{
+          this.finalPwLiData3[1] = 1
+        }
+      }
+      //this.finalPwLiData3[1] = this.finalPwLiData3[1]? this.finalPwLiData3[1] : 0
 
 
       this.PwchartData1.datasets[0].data = this.finalPwGwData1
@@ -2621,5 +2836,12 @@ console.log(this.$store.state.userTypeCd)
 }
 </script>
 <style>
+.blinking{
+  animation: blink 1s ease-in-out infinite alternate; 
+}
 
+@keyframes blink{
+  0% {opacity: 0;}
+  100% {opacity: 10;}
+}
 </style>

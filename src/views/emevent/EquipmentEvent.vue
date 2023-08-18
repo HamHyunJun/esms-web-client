@@ -367,22 +367,58 @@ export default {
       // if(this.$route.query.date !== undefined && this.routeQueryDate === 0){
       //   occurStartDate = this.$route.query.date
       //   this.routeQueryDate = 1
-
       }
       let uri = ''
-      uri = this.$store.state.serverApi+"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"+"&userId="+this.$store.state.userId+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;
-      if(this.selectedSidoItems !== '' || this.selectedRecipientNm !== '' || this.selectedOrgItems !== '' || this.selectedEventItems !== ''){
-      uri = this.$store.state.serverApi
-      +"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"
-      +"&userId="+this.$store.state.userId
-      +"&addrCd="+addrCd
-      +"&orgId="+this.selectedOrgItems
-      +"&eventCd="+this.selectedEventItems
-      +"&recipientNm="+this.selectedRecipientNm
-      +"&occurStartDate="+occurStartDate
-      +"&occurEndDate="+occurEndDate;
-      }
-      axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
+      if(this.$route.query.type === 'emergencys'){
+        occurStartDate = moment().subtract(15, 'seconds').format('YYYY-MM-DD HH:mm:ss')
+        console.log(occurStartDate)
+        uri = this.$store.state.serverApi+"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"+"&userId="+this.$store.state.userId+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;
+        if(this.selectedSidoItems !== '' || this.selectedRecipientNm !== '' || this.selectedOrgItems !== '' || this.selectedEventItems !== ''){
+          uri = this.$store.state.serverApi
+          +"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"
+          +"&userId="+this.$store.state.userId
+          +"&addrCd="+addrCd
+          +"&orgId="+this.selectedOrgItems
+          +"&eventCd="+this.selectedEventItems
+          +"&recipientNm="+this.selectedRecipientNm
+          +"&occurStartDate="+occurStartDate
+          +"&occurEndDate="+occurEndDate;
+        }
+        axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
+          .then(response => {
+            this.recipientItems = response.data.data
+            this.NCount = response.data.totalCount
+            this.total = this.NCount
+            this.$route.query.type = ''
+        //     if(this.searchCheck1 === 1){
+        //     this.searchCheck1 = 0
+        // }
+        // if(this.recipientItems.length !== 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
+        //     alert("성공적으로 조회 되었습니다.")
+        //     this.searchCheck2 = 0
+        // }else if(this.recipientItems.length === 0 && this.searchCheck1 === 0 && this.searchCheck2 === 1){
+        //     alert("조회 결과가 존재하지 않습니다.")
+        //     this.searchCheck2 = 0
+        // }
+          })
+          .catch(error => {
+            this.errorMessage = error.message;
+            console.error("There was an error!", error);
+          });
+      }else{
+        uri = this.$store.state.serverApi+"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"+"&userId="+this.$store.state.userId+"&occurStartDate="+occurStartDate+"&occurEndDate="+occurEndDate;
+        if(this.selectedSidoItems !== '' || this.selectedRecipientNm !== '' || this.selectedOrgItems !== '' || this.selectedEventItems !== ''){
+          uri = this.$store.state.serverApi
+          +"/admin/emergencys/gateway-events?pageIndex="+this.page+"&recordCountPerPage=30"
+          +"&userId="+this.$store.state.userId
+          +"&addrCd="+addrCd
+          +"&orgId="+this.selectedOrgItems
+          +"&eventCd="+this.selectedEventItems
+          +"&recipientNm="+this.selectedRecipientNm
+          +"&occurStartDate="+occurStartDate
+          +"&occurEndDate="+occurEndDate;
+        }
+        axios.get(uri, {headers: {"Authorization": "Bearer " + sessionStorage.getItem("token")}})
           .then(response => {
             this.recipientItems = response.data.data
             this.NCount = response.data.totalCount
@@ -402,6 +438,8 @@ export default {
             this.errorMessage = error.message;
             console.error("There was an error!", error);
           });
+      }
+      
     },
     changeRecipientPhoneno(phone){
       if(phone){

@@ -196,7 +196,7 @@ export default {
             this.relationPhone = this.relationPhoneData[index].relationPhone
             if(this.radioCheck === this.relationPhoneData[index].regSn){
                 this.selectIndex = ''
-                this.radioCheck = ''
+                this.radioCheck = '' 
             }
 
         },
